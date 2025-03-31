@@ -553,3 +553,164 @@ body.dark-mode tr:nth-child(even) {
     margin: 0;
 }
 
+/* this style is on the visualization */
+    /* Visualization Styles */
+    .graph-scroll-container {
+        width: 100%;
+        overflow-x: auto;
+        padding: 10px 0;
+        margin: 1.5rem 0;
+        background: rgba(255,255,255,0.05);
+        border-radius: 8px;
+    }
+    
+    .graph-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+        height: 250px;
+        padding: 0 10px;
+        margin: 0 auto;
+        transition: width 0.2s ease-out;
+    }
+    
+    .graph-bar {
+        width: 30px; /* Fixed width */
+        flex-shrink: 0; /* Prevent shrinking */
+        background: linear-gradient(to top, #3a86ff, #4cc9f0);
+        border-radius: 4px 4px 0 0;
+        transition: 
+            height 0.3s ease,
+            background-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        position: relative;
+    }
+    
+    .graph-bar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.1), transparent);
+    }
+    
+    .bar-label {
+        padding: 3px;
+        font-size: 11px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    
+    /* Animation Classes */
+    .pulse {
+        animation: pulse 1s infinite alternate;
+    }
+    
+    .wiggle {
+        animation: wiggle 0.5s ease infinite alternate;
+    }
+    
+    .jump {
+        animation: jump 0.5s ease;
+    }
+    
+    .sorted {
+        box-shadow: 0 0 0 2px rgba(6, 214, 160, 0.5);
+    }
+    
+    @keyframes pulse {
+        0% { transform: scaleY(1); }
+        100% { transform: scaleY(1.05); box-shadow: 0 0 10px rgba(131, 56, 236, 0.7); }
+    }
+    
+    @keyframes wiggle {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(3px); }
+    }
+    
+    @keyframes jump {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    
+    /* Color Overrides */
+    .graph-bar[style*="rgb(255, 0, 110)"] {
+        background: linear-gradient(to top, #ff006e, #ff7096) !important;
+    }
+    
+    .graph-bar[style*="rgb(131, 56, 236)"] {
+        background: linear-gradient(to top, #8338ec, #b388ff) !important;
+    }
+    
+    .graph-bar[style*="rgb(6, 214, 160)"] {
+        background: linear-gradient(to top, #06d6a0, #7ae582) !important;
+    }
+    
+    .graph-bar[style*="rgb(255, 190, 11)"] {
+        background: linear-gradient(to top, #ffbe0b, #ffd166) !important;
+    }
+    
+    /* Controls Styling */
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        margin: 1.5rem 0;
+    }
+    
+    .control-group {
+        background: rgba(255,255,255,0.1);
+        padding: 8px 12px;
+        border-radius: 8px;
+        min-width: 140px;
+    }
+    
+    .control-group label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+        color: var(--text-color);
+    }
+    
+    #selection-status {
+        text-align: center;
+        font-size: 1rem;
+        margin-top: 1rem;
+        min-height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.1);
+        padding: 8px;
+        border-radius: 8px;
+    }
+    
+    /* Custom scrollbar for graph container */
+    .graph-scroll-container::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .graph-scroll-container::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.1);
+        border-radius: 4px;
+    }
+    
+    .graph-scroll-container::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.3);
+        border-radius: 4px;
+    }
+    
+    .graph-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,0.4);
+    }

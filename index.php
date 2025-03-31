@@ -76,139 +76,252 @@
                     <strong>Note:</strong> Bubble sort is not a practical sorting algorithm when n is large. It will not be efficient in the case of a reverse-ordered collection.
                 </div>
 
-                
+               
+                <!-- code implementaion start -->
+
                 <?php include "includes/bubblesort-ci.php"; ?>
 
-                <h2>Complexity Analysis of Bubble Sort</h2>
-                <div class="table-container">
-                    <table>
-                        <tr>
-                            <th>Case</th>
-                            <th>Time Complexity</th>
-                        </tr>
-                        <tr>
-                            <td>Best Case</td>
-                            <td>O(n) (when array is already sorted)</td>
-                        </tr>
-                        <tr>
-                            <td>Average Case</td>
-                            <td>O(n<sup>2</sup>)</td>
-                        </tr>
-                        <tr>
-                            <td>Worst Case</td>
-                            <td>O(n<sup>2</sup>) (when array is reverse sorted)</td>
-                        </tr>
-                        <tr>
-                            <td>Space Complexity</td>
-                            <td>O(1) (Auxiliary Space)</td>
-                        </tr>
-                        <tr>
-                            <td>Stable</td>
-                            <td>Yes</td>
-                        </tr>
-                    </table>
-                </div>
 
-                <h2>Bubble Sort Visualization</h2>
-                <div class="visualization">
-                    <h3>Interactive Bubble Sort Demonstration</h3>
-                    <div class="array-container" id="arrayContainer">
-                        <!-- Array elements will be inserted here by JavaScript -->
-                    </div>
-                    <div class="controls">
-                        <button class="btn" id="startBtn">Start Sorting</button>
-                        <button class="btn btn-secondary" id="resetBtn">Reset Array</button>
-                    </div>
-                    <p id="statusText" style="text-align: center; margin-top: 1rem;">Click "Start Sorting" to begin the visualization</p>
-                </div>
-            </div>
+                <!-- code implementation end -->
+
+               
+
+        <?php include "visualization/bubble-sort-visualization.php";?>
+
         </main>
 
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-widget">
-                <h3>Related Articles</h3>
-                <ul class="widget-links">
-                    <li><a href="#">Selection Sort Algorithm</a></li>
-                    <li><a href="#">Insertion Sort Algorithm</a></li>
-                    <li><a href="#">Merge Sort Algorithm</a></li>
-                    <li><a href="#">Quick Sort Algorithm</a></li>
-                    <li><a href="#">Heap Sort Algorithm</a></li>
-                </ul>
-            </div>
-
-            <div class="sidebar-widget">
-                <h3>Complexity Cheatsheet</h3>
-                <ul class="widget-links">
-                    <li><a href="#">Time Complexity of All Sorting Algorithms</a></li>
-                    <li><a href="#">Space Complexity Comparison</a></li>
-                    <li><a href="#">When to Use Each Sorting Algorithm</a></li>
-                </ul>
-            </div>
-
-            <div class="sidebar-widget">
-                <h3>Practice Problems</h3>
-                <ul class="widget-links">
-                    <li><a href="#">Sort an Array of 0s, 1s and 2s</a></li>
-                    <li><a href="#">Bubble Sort in Linked List</a></li>
-                    <li><a href="#">Sort a Nearly Sorted Array</a></li>
-                    <li><a href="#">Sorting a String Array</a></li>
-                </ul>
-            </div>
-        </aside>
+        <?php include "includes/aside.php";?>
     </div>
 
     <!-- Footer -->
    
-    <footer class="footer" style="border-top:3px solid  #4ec9b0; ">
-        <div class="footer-content">
-            <div class="footer-column">
-                <h3>SortArtOnline</h3>
-                <ul class="footer-links">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Learn</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Algorithms</a></li>
-                    <li><a href="#">Data Structures</a></li>
-                    <li><a href="#">Languages</a></li>
-                    <li><a href="#">CS Subjects</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Practice</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Quizzes</a></li>
-                    <li><a href="#">Coding Challenges</a></li>
-                    <li><a href="#">Interview Prep</a></li>
-                    <li><a href="#">Competitive Programming</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Contribute</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Write an Article</a></li>
-                    <li><a href="#">Improve an Article</a></li>
-                    <li><a href="#">Pick a Topic to Write</a></li>
-                    <li><a href="#">Report a Bug</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2023 SortArtOnline. All rights reserved.</p>
-        </div>
-    </footer>
+   
 
     <!-- Dark Mode Toggle -->
     <button class="dark-mode-toggle" id="darkModeToggle">🌓</button>
 
     <script src="assets/js/script.js"></script>
        
+    <script>
+        // Configuration - Adjust these as needed
+        const CONFIG = {
+            barWidth: 30,       // Default pixel width for each bar
+            barGap: 6,          // Fixed gap between bars
+            maxBars: 50,        // Maximum number of bars
+            minValue: 10,       // Minimum bar height value
+            maxValue: 100,      // Maximum bar height value
+            heightScale: 2.2    // Vertical scaling factor
+        };
+
+        // Vibrant color palette
+        const COLORS = {
+            default: '#3a86ff',
+            compare: '#ff006e',
+            min: '#8338ec',
+            sorted: '#06d6a0',
+            swap: '#ffbe0b'
+        };
+
+        // State management
+        let state = {
+            array: [],
+            sorting: false,
+            speed: 800,
+            maxElements: 10 // Default value
+        };
+
+        // Function to dynamically adjust barWidth based on the number of elements
+        function adjustBarWidth(elementCount) {
+            const maxBarWidth = 35; // Maximum bar width
+            const minBarWidth = 10; // Minimum bar width
+            const maxElements = CONFIG.maxBars;
+
+            // Calculate barWidth based on the number of elements
+            CONFIG.barWidth = Math.max(
+                minBarWidth,
+                maxBarWidth - (elementCount - 10) // Reduce barWidth as elements increase
+            );
+        }
+
+        // Generate new random array
+        function generateNewArray(size) {
+            adjustBarWidth(size); // Adjust barWidth dynamically
+            state.array = Array.from({ length: size }, () =>
+                Math.floor(Math.random() * (CONFIG.maxValue - CONFIG.minValue + 1)) + CONFIG.minValue
+            );
+            renderGraph();
+        }
+
+        // Render the graph visualization
+        function renderGraph(highlight = {}, sortedUpTo = -1) {
+            const container = document.getElementById('selection-graph-container');
+            container.innerHTML = '';
+            container.style.width = `${calculateGraphWidth(state.array.length)}px`;
+
+            state.array.forEach((value, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'graph-bar';
+                bar.style.width = `${CONFIG.barWidth}px`;
+                bar.style.height = `${value * CONFIG.heightScale}px`;
+                bar.style.backgroundColor = COLORS.default;
+
+                // Apply state-based styling
+                if (index <= sortedUpTo) {
+                    bar.style.backgroundColor = COLORS.sorted;
+                    bar.classList.add('sorted');
+                }
+                if (index === highlight.minIndex) {
+                    bar.style.backgroundColor = COLORS.min;
+                    bar.classList.add('pulse');
+                }
+                if (highlight.compareIndices?.includes(index)) {
+                    bar.style.backgroundColor = COLORS.compare;
+                    bar.classList.add('wiggle');
+                }
+                if (index === highlight.swapIndex) {
+                    bar.style.backgroundColor = COLORS.swap;
+                    bar.classList.add('jump');
+                }
+
+                // Add value label
+                const label = document.createElement('div');
+                label.className = 'bar-label';
+                label.textContent = value;
+                bar.appendChild(label);
+
+                container.appendChild(bar);
+            });
+        }
+
+        // Calculate total graph width
+        function calculateGraphWidth(elementCount) {
+            return (CONFIG.barWidth * elementCount) + (CONFIG.barGap * (elementCount - 1));
+        }
+
+        // Initialize the visualization
+        function init() {
+            generateNewArray(state.maxElements);
+            setupEventListeners();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Speed control
+            document.getElementById('selection-speed').addEventListener('input', function () {
+                state.speed = 1600 - this.value;
+                document.getElementById('speed-value').textContent =
+                    this.value < 500 ? 'Fast' :
+                    this.value < 1000 ? 'Medium' : 'Slow';
+            });
+
+            // Elements control
+            document.getElementById('elements-count').addEventListener('input', function () {
+                const count = parseInt(this.value);
+                state.maxElements = count;
+                document.getElementById('elements-value').textContent = count;
+                if (!state.sorting) {
+                    generateNewArray(count);
+                }
+            });
+
+            // Reset button
+            document.getElementById('selection-reset-btn').addEventListener('click', function () {
+                if (!state.sorting) {
+                    generateNewArray(state.maxElements);
+                    updateStatus('New array generated! Ready to sort');
+                }
+            });
+
+            // Start button
+            document.getElementById('selection-start-btn').addEventListener('click', selectionSortVisualization);
+        }
+
+        // Selection Sort Algorithm Visualization
+        async function selectionSortVisualization() {
+            if (state.sorting) return;
+            state.sorting = true;
+            disableControls(true);
+
+            let comparisons = 0;
+            let swaps = 0;
+            const arr = [...state.array];
+            const n = arr.length;
+
+            for (let i = 0; i < n - 1; i++) {
+                let min_idx = i;
+
+                // Show current minimum candidate
+                renderGraph({ minIndex: min_idx }, i - 1);
+                updateStatus(`🔍 Finding minimum starting at index ${i}`);
+                await delay(state.speed / 2);
+
+                for (let j = i + 1; j < n; j++) {
+                    comparisons++;
+
+                    // Highlight comparison
+                    renderGraph({
+                        minIndex: min_idx,
+                        compareIndices: [j]
+                    }, i - 1);
+                    updateStatus(`🔎 Comparing ${arr[j]} < ${arr[min_idx]}? (Comparisons: ${comparisons})`);
+                    await delay(state.speed / 2);
+
+                    if (arr[j] < arr[min_idx]) {
+                        min_idx = j;
+                        // Show new minimum
+                        renderGraph({ minIndex: min_idx }, i - 1);
+                        updateStatus(`✨ New minimum found: ${arr[min_idx]}`);
+                        await delay(state.speed / 2);
+                    }
+                }
+
+                // Perform swap if needed
+                if (min_idx !== i) {
+                    swaps++;
+                    [arr[i], arr[min_idx]] = [arr[min_idx], arr[i]];
+
+                    // Animate swap
+                    renderGraph({
+                        swapIndex: i,
+                        minIndex: min_idx
+                    }, i - 1);
+                    updateStatus(`🔄 Swapping elements (Swaps: ${swaps})`);
+                    await delay(state.speed);
+                }
+
+                // Update state and render
+                state.array = [...arr];
+                renderGraph({}, i);
+                await delay(state.speed / 3);
+            }
+
+            // Final render
+            renderGraph({}, n - 1);
+            updateStatus(`🎉 Sorting complete! Comparisons: ${comparisons}, Swaps: ${swaps}`);
+            state.sorting = false;
+            disableControls(false);
+        }
+
+        // Helper functions
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function updateStatus(text) {
+            document.getElementById('selection-status').innerHTML = text;
+        }
+
+        function disableControls(disabled) {
+            document.getElementById('selection-start-btn').disabled = disabled;
+            document.getElementById('selection-reset-btn').disabled = disabled;
+            document.getElementById('elements-count').disabled = disabled;
+            document.getElementById('selection-speed').disabled = disabled;
+        }
+
+        // Initialize the visualization
+        init();
+    </script>
    
 </body>
 </html>
