@@ -31,325 +31,122 @@
 </div>
 
 <script>
-    // Configuration
-    const CONFIG = {
-        barWidth: 28,           // Fixed pixel width for each bar
-        barGap: 6,              // Fixed gap between bars
-        viewportWidth: "90vw",  // Fixed viewport width (90% of screen)
-        minValue: 10,           // Minimum bar height value
-        maxValue: 100,          // Maximum bar height value
-        heightScale: 2.2        // Vertical scaling factor
-    };
+   // Configuration - Adjust these as needed
+const CONFIG = {
+    barWidth: 30,       // Default pixel width for each bar
+    barGap: 6,          // Fixed gap between bars
+    maxBars: 50,        // Maximum number of bars
+    minValue: 10,       // Minimum bar height value
+    maxValue: 100,      // Maximum bar height value
+    heightScale: 2.2    // Vertical scaling factor
+};
 
-    // State management
-    const state = {
-        array: [],
-        sorting: false,
-        speed: 800,
-        elementCount: 15
-    };
+// Vibrant color palette
+const COLORS = {
+    default: '#3a86ff',
+    compare: '#ff006e',
+    min: '#8338ec',
+    sorted: '#06d6a0',
+    swap: '#ffbe0b'
+};
 
-    // Initialize visualization
-    function init() {
-        generateNewArray(state.elementCount);
-        setupEventListeners();
-        setupViewport();
-    }
+// State management
+let state = {
+    array: [],
+    sorting: false,
+    speed: 800,
+    maxElements: 10 // Default value
+};
 
-    // Set up the fixed-width viewport
-    function setupViewport() {
-        const viewport = document.querySelector('.graph-viewport');
-        viewport.style.width = CONFIG.viewportWidth;
-    }
+// Function to dynamically adjust barWidth based on the number of elements
+function adjustBarWidth(elementCount) {
+    const maxBarWidth = 35; // Maximum bar width
+    const minBarWidth = 10; // Minimum bar width
+    const maxElements = CONFIG.maxBars;
 
-    // Generate new random array
-    function generateNewArray(size) {
-        state.array = Array.from({length: size}, () => 
-            Math.floor(Math.random() * (CONFIG.maxValue - CONFIG.minValue + 1)) + CONFIG.minValue
-        );
+    // Calculate barWidth based on the number of elements
+    CONFIG.barWidth = Math.max(
+        minBarWidth,
+        maxBarWidth - (elementCount - 10) // Reduce barWidth as elements increase
+    );
+}
+
+// Generate new random array with growth animation
+async function generateNewArray(size) {
+    adjustBarWidth(size); // Adjust barWidth dynamically
+    
+    // Create new array with random values
+    const newArray = Array.from({ length: size }, () =>
+        Math.floor(Math.random() * (CONFIG.maxValue - CONFIG.minValue + 1)) + CONFIG.minValue
+    );
+    
+    // If we're increasing the array size, animate the new elements growing in
+    if (size > state.array.length) {
+        // Start with the existing array (or empty if first run)
+        const baseArray = state.array.length > 0 ? [...state.array] : [];
+        
+        // Fill the rest with height 0 for animation
+        const animatedArray = [...baseArray];
+        while (animatedArray.length < size) {
+            animatedArray.push(0);
+        }
+        
+        state.array = animatedArray;
+        renderGraph();
+        
+        // Animate the new bars growing to their full height
+        for (let i = baseArray.length; i < size; i++) {
+            state.array[i] = newArray[i];
+            renderGraph();
+            await delay(100); // Speed of growth animation
+        }
+    } else {
+        // For shrinking or same size, just update
+        state.array = newArray;
         renderGraph();
     }
+}
 
-    // Calculate total graph width
-    function calculateGraphWidth(elementCount) {
-        return (CONFIG.barWidth * elementCount) + (CONFIG.barGap * (elementCount - 1));
-    }
-
-    // Render the graph visualization
-    function renderGraph(highlight = {}, sortedUpTo = -1) {
-        const container = document.getElementById('selection-graph-container');
-        container.innerHTML = '';
+// Render the graph visualization with smooth transitions
+function renderGraph(highlight = {}, sortedUpTo = -1) {
+    const container = document.getElementById('selection-graph-container');
+    container.innerHTML = '';
+    container.style.width = `${calculateGraphWidth(state.array.length)}px`;
+    
+    state.array.forEach((value, index) => {
+        const bar = document.createElement('div');
+        bar.className = 'graph-bar';
+        bar.style.width = `${CONFIG.barWidth}px`;
+        bar.style.height = `${value * CONFIG.heightScale}px`;
+        bar.style.backgroundColor = COLORS.default;
+        bar.style.transition = 'height 0.3s ease, width 0.3s ease'; // Smooth transitions
         
-        // Set the container width based on element count
-        container.style.width = `${calculateGraphWidth(state.array.length)}px`;
-        
-        state.array.forEach((value, index) => {
-            const bar = document.createElement('div');
-            bar.className = 'graph-bar';
-            bar.style.width = `${CONFIG.barWidth}px`;
-            bar.style.height = `${value * CONFIG.heightScale}px`;
-            
-            // Apply state-based styling
-            if (index <= sortedUpTo) {
-                bar.style.backgroundColor = '#06d6a0'; // Sorted
-                bar.classList.add('sorted');
-            } else if (index === highlight.minIndex) {
-                bar.style.backgroundColor = '#8338ec'; // Current min
-                bar.classList.add('pulse');
-            } else if (highlight.compareIndices?.includes(index)) {
-                bar.style.backgroundColor = '#ff006e'; // Being compared
-                bar.classList.add('wiggle');
-            } else if (index === highlight.swapIndex) {
-                bar.style.backgroundColor = '#ffbe0b'; // Being swapped
-                bar.classList.add('jump');
-            } else {
-                bar.style.backgroundColor = '#3a86ff'; // Default
-            }
-            
-            // Add value label
-            const label = document.createElement('div');
-            label.className = 'bar-label';
-            label.textContent = value;
-            bar.appendChild(label);
-            
-            container.appendChild(bar);
-        });
-    }
-
-    // Setup event listeners
-    function setupEventListeners() {
-        // Speed control
-        document.getElementById('selection-speed').addEventListener('input', function() {
-            state.speed = 1600 - this.value;
-            document.getElementById('speed-value').textContent = 
-                this.value < 500 ? 'Fast' :
-                this.value < 1000 ? 'Medium' : 'Slow';
-        });
-        
-        // Elements control
-        document.getElementById('elements-count').addEventListener('input', function() {
-            state.elementCount = parseInt(this.value);
-            document.getElementById('elements-value').textContent = state.elementCount;
-            if (!state.sorting) {
-                generateNewArray(state.elementCount);
-            }
-        });
-
-        // Reset button
-        document.getElementById('selection-reset-btn').addEventListener('click', function() {
-            if (!state.sorting) {
-                generateNewArray(state.elementCount);
-                updateStatus('New array generated! Ready to sort');
-            }
-        });
-
-        // Start button
-        document.getElementById('selection-start-btn').addEventListener('click', selectionSortVisualization);
-    }
-
-    // Selection Sort Algorithm Visualization
-    async function selectionSortVisualization() {
-        if (state.sorting) return;
-        state.sorting = true;
-        disableControls(true);
-        
-        let comparisons = 0;
-        let swaps = 0;
-        const arr = [...state.array];
-        const n = arr.length;
-        
-        for (let i = 0; i < n-1; i++) {
-            let min_idx = i;
-            
-            // Show current minimum candidate
-            renderGraph({minIndex: min_idx}, i-1);
-            updateStatus(`🔍 Finding minimum starting at index ${i}`);
-            await delay(state.speed/2);
-            
-            for (let j = i+1; j < n; j++) {
-                comparisons++;
-                
-                // Highlight comparison
-                renderGraph({
-                    minIndex: min_idx,
-                    compareIndices: [j]
-                }, i-1);
-                updateStatus(`🔎 Comparing ${arr[j]} < ${arr[min_idx]}? (Comparisons: ${comparisons})`);
-                await delay(state.speed/2);
-                
-                if (arr[j] < arr[min_idx]) {
-                    min_idx = j;
-                    // Show new minimum
-                    renderGraph({minIndex: min_idx}, i-1);
-                    updateStatus(`✨ New minimum found: ${arr[min_idx]}`);
-                    await delay(state.speed/2);
-                }
-            }
-            
-            // Perform swap if needed
-            if (min_idx !== i) {
-                swaps++;
-                [arr[i], arr[min_idx]] = [arr[min_idx], arr[i]];
-                
-                // Animate swap
-                renderGraph({
-                    swapIndex: i,
-                    minIndex: min_idx
-                }, i-1);
-                updateStatus(`🔄 Swapping elements (Swaps: ${swaps})`);
-                await delay(state.speed);
-            }
-            
-            // Update state and render
-            state.array = [...arr];
-            renderGraph({}, i);
-            await delay(state.speed/3);
+        // Apply state-based styling
+        if (index <= sortedUpTo) {
+            bar.style.backgroundColor = COLORS.sorted;
+            bar.classList.add('sorted');
+        }
+        if (index === highlight.minIndex) {
+            bar.style.backgroundColor = COLORS.min;
+            bar.classList.add('pulse');
+        }
+        if (highlight.compareIndices?.includes(index)) {
+            bar.style.backgroundColor = COLORS.compare;
+            bar.classList.add('wiggle');
+        }
+        if (index === highlight.swapIndex) {
+            bar.style.backgroundColor = COLORS.swap;
+            bar.classList.add('jump');
         }
         
-        // Final render
-        renderGraph({}, n-1);
-        updateStatus(`🎉 Sorting complete! Comparisons: ${comparisons}, Swaps: ${swaps}`);
-        state.sorting = false;
-        disableControls(false);
-    }
-    
-    // Helper functions
-    function delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    
-    function updateStatus(text) {
-        document.getElementById('selection-status').innerHTML = text;
-    }
-    
-    function disableControls(disabled) {
-        document.getElementById('selection-start-btn').disabled = disabled;
-        document.getElementById('selection-reset-btn').disabled = disabled;
-        document.getElementById('elements-count').disabled = disabled;
-        document.getElementById('selection-speed').disabled = disabled;
-    }
-
-    // Initialize the visualization
-    init();
+        // Add value label
+        const label = document.createElement('div');
+        label.className = 'bar-label';
+        label.textContent = value > 0 ? value : ''; // Hide label for zero-height bars
+        bar.appendChild(label);
+        
+        container.appendChild(bar);
+    });
+}
 </script>
 
-<style>
-    /* Visualization Styles */
-    .graph-viewport {
-        width: 90vw; /* Fixed viewport width */
-        max-width: 1200px; /* Maximum width */
-        margin: 1.5rem auto;
-        overflow-x: auto;
-        padding: 10px 0;
-        background: rgba(255,255,255,0.05);
-        border-radius: 8px;
-    }
-    
-    .graph-container {
-        display: flex;
-        align-items: flex-end;
-        gap: 6px;
-        height: 250px;
-        padding: 0 10px;
-    }
-    
-    .graph-bar {
-        width: 28px; /* Fixed width */
-        flex-shrink: 0; /* Prevent shrinking */
-        background: #3a86ff;
-        border-radius: 4px 4px 0 0;
-        transition: 
-            height 0.3s ease,
-            background-color 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        position: relative;
-    }
-    
-    .graph-bar::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        background: linear-gradient(to top, rgba(0,0,0,0.1), transparent);
-    }
-    
-    .bar-label {
-        padding: 3px;
-        font-size: 11px;
-        font-weight: bold;
-        color: white;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    }
-    
-    /* Animation Classes */
-    .pulse {
-        animation: pulse 1s infinite alternate;
-    }
-    
-    .wiggle {
-        animation: wiggle 0.5s ease infinite alternate;
-    }
-    
-    .jump {
-        animation: jump 0.5s ease;
-    }
-    
-    .sorted {
-        box-shadow: 0 0 0 2px rgba(6, 214, 160, 0.5);
-    }
-    
-    @keyframes pulse {
-        0% { transform: scaleY(1); }
-        100% { transform: scaleY(1.05); box-shadow: 0 0 10px rgba(131, 56, 236, 0.7); }
-    }
-    
-    @keyframes wiggle {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(3px); }
-    }
-    
-    @keyframes jump {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-15px); }
-    }
-    
-    /* Custom scrollbar */
-    .graph-viewport::-webkit-scrollbar {
-        height: 8px;
-    }
-    
-    .graph-viewport::-webkit-scrollbar-track {
-        background: rgba(255,255,255,0.1);
-        border-radius: 4px;
-    }
-    
-    .graph-viewport::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,0.3);
-        border-radius: 4px;
-    }
-    
-    .graph-viewport::-webkit-scrollbar-thumb:hover {
-        background: rgba(255,255,255,0.4);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .graph-viewport {
-            width: 95vw; /* Slightly wider on mobile */
-        }
-        
-        .graph-bar {
-            width: 24px; /* Slightly smaller bars on mobile */
-        }
-        
-        .bar-label {
-            font-size: 10px; /* Smaller text on mobile */
-        }
-    }
-</style>

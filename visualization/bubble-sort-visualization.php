@@ -9,6 +9,7 @@
     <div class="graph-scroll-container">
         <div class="graph-container" id="selection-graph-container"></div>
     </div>
+    <p id="selection-status" style="font-size: 12.5px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Ready to sort! Click start to begin</p>
     <div class="controls">
         <button class="btn" id="selection-start-btn">🎬 Start Sorting</button>
         <button class="btn btn-secondary" id="selection-reset-btn">🔄 New Array</button>
@@ -27,5 +28,5 @@
             </span>
         </div>
     </div>
-    <p id="selection-status">Ready to sort! Click start to begin</p>
+
 </div>

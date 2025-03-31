@@ -554,60 +554,75 @@ body.dark-mode tr:nth-child(even) {
 }
 
 /* this style is on the visualization */
-    /* Visualization Styles */
-    .graph-scroll-container {
-        width: 100%;
-        overflow-x: auto;
-        padding: 10px 0;
-        margin: 1.5rem 0;
-        background: rgba(255,255,255,0.05);
-        border-radius: 8px;
-    }
-    
-    .graph-container {
-        display: flex;
-        align-items: flex-end;
-        gap: 6px;
-        height: 250px;
-        padding: 0 10px;
-        margin: 0 auto;
-        transition: width 0.2s ease-out;
-    }
-    
-    .graph-bar {
-        width: 30px; /* Fixed width */
-        flex-shrink: 0; /* Prevent shrinking */
-        background: linear-gradient(to top, #3a86ff, #4cc9f0);
-        border-radius: 4px 4px 0 0;
-        transition: 
-            height 0.3s ease,
-            background-color 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        position: relative;
-    }
-    
-    .graph-bar::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        background: linear-gradient(to top, rgba(0,0,0,0.1), transparent);
-    }
-    
-    .bar-label {
-        padding: 3px;
-        font-size: 11px;
-        font-weight: bold;
-        color: white;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    }
-    
+  /* Enhanced Animation Styles */
+.graph-scroll-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 15px 0;
+    margin: 1.5rem 0;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+}
+
+.graph-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 250px;
+    padding: 0 10px;
+    margin: 0 auto;
+    transition: width 0.4s ease-out;
+}
+
+.graph-bar {
+    width: 30px;
+    flex-shrink: 0;
+    background: linear-gradient(to top, #3a86ff, #4cc9f0);
+    border-radius: 4px 4px 0 0;
+    transition: 
+        height 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+        background-color 0.3s ease,
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    transform-origin: bottom;
+}
+
+.bar-label {
+    padding: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+}
+
+/* Animation Classes */
+.graph-bar.sorted {
+    background: linear-gradient(to top, #06d6a0, #7ae582);
+    box-shadow: 0 0 0 2px rgba(6, 214, 160, 0.3);
+}
+
+.graph-bar.comparing {
+    background: linear-gradient(to top, #ff006e, #ff7096);
+    transform: translateY(-8px) scaleY(1.08);
+    z-index: 2;
+}
+
+.graph-bar.swapping {
+    background: linear-gradient(to top, #ffbe0b, #ffd166);
+    transform: translateY(-15px);
+    z-index: 3;
+}
+
+.graph-bar.minimum {
+    background: linear-gradient(to top, #8338ec, #b388ff);
+    transform: scaleY(1.05);
+    z-index: 2;
+}
     /* Animation Classes */
     .pulse {
         animation: pulse 1s infinite alternate;
@@ -714,3 +729,4 @@ body.dark-mode tr:nth-child(even) {
     .graph-scroll-container::-webkit-scrollbar-thumb:hover {
         background: rgba(255,255,255,0.4);
     }
+    
