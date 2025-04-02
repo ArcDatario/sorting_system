@@ -76,153 +76,166 @@
                     <strong>Note:</strong> Bubble sort is not a practical sorting algorithm when n is large. It will not be efficient in the case of a reverse-ordered collection.
                 </div>
 
-               
                 <!-- code implementaion start -->
 
                 <?php include "includes/bubblesort-ci.php"; ?>
 
-
                 <!-- code implementation end -->
 
-               
-
-        <?php include "visualization/bubble-sort-visualization.php";?>
+                <?php include "visualization/bubble-sort-visualization.php"; ?>
 
         </main>
 
         <!-- Sidebar -->
-        <?php include "includes/aside.php";?>
+        <?php include "includes/aside.php"; ?>
     </div>
 
     <!-- Footer -->
-   
-   
 
     <!-- Dark Mode Toggle -->
     <button class="dark-mode-toggle" id="darkModeToggle">🌓</button>
 
     <script src="assets/js/script.js"></script>
-       
+
     <script>
-       const CONFIG = {
-    barWidth: 30,
-    barGap: 6,
-    maxBars: 50,
-    minValue: 10,
-    maxValue: 100,
-    heightScale: 2.2,
-    animationDuration: 0.5 // seconds for smooth transitions
-};
+        // Configuration - Responsive settings
+        const CONFIG = {
+            mobileBreakpoint: 768, // px width for mobile detection
+            desktopBarWidth: 30,
+            mobileBarWidth: 18,
+            barGap: 6,
+            maxBars: 50,
+            minValue: 10,
+            maxValue: 100,
+            heightScale: 2.2,
+            animationDuration: 0.5 // seconds for smooth transitions
+        };
 
-// Vibrant color palette
-const COLORS = {
-    default: '#3a86ff',
-    compare: '#ff006e',
-    min: '#8338ec',
-    sorted: '#06d6a0',
-    swap: '#ffbe0b'
-};
+        // Helper function to check mobile view
+        function isMobileView() {
+            return window.innerWidth <= CONFIG.mobileBreakpoint;
+        }
 
-// State management
-let state = {
-    array: [],
-    sorting: false,
-    speed: 800,
-    maxElements: 10 // Default value
-};
+        // Get current bar width based on viewport
+        function getCurrentBarWidth(elementCount) {
+            const baseWidth = isMobileView() ? CONFIG.mobileBarWidth : CONFIG.desktopBarWidth;
+            const maxBarWidth = isMobileView() ? 25 : 35;
+            const minBarWidth = isMobileView() ? 8 : 10;
 
-// Function to dynamically adjust barWidth based on the number of elements
-function adjustBarWidth(elementCount) {
-    const maxBarWidth = 35;
-    const minBarWidth = 10;
-    CONFIG.barWidth = Math.max(
-        minBarWidth,
-        maxBarWidth - (elementCount - 10)
-    );
-}
+            return Math.max(
+                minBarWidth,
+                maxBarWidth - (elementCount - 10)
+            );
+        }
 
-// Generate new random array with smooth transitions
-function generateNewArray(size) {
-    adjustBarWidth(size);
-    const newArray = Array.from({length: size}, () =>
-        Math.floor(Math.random() * (CONFIG.maxValue - CONFIG.minValue + 1)) + CONFIG.minValue
-    );
-    
-    // If first generation, just set the array
-    if (state.array.length === 0) {
-        state.array = newArray;
-        renderGraph();
-        return;
-    }
-    
-    // Animate from current to new array
-    const startArray = [...state.array];
-    const startTime = performance.now();
-    
-    function animate(timestamp) {
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / (state.speed * 2), 1);
-        
-        // Interpolate values
-        state.array = newArray.map((val, i) => {
-            const startVal = i < startArray.length ? startArray[i] : CONFIG.minValue;
-            return startVal + (val - startVal) * progress;
-        });
-        
-        renderGraph();
-        
-        if (progress < 1) {
+        // Vibrant color palette
+        const COLORS = {
+            default: '#3a86ff',
+            compare: '#ff006e',
+            min: '#8338ec',
+            sorted: '#06d6a0',
+            swap: '#ffbe0b'
+        };
+
+        // State management
+        let state = {
+            array: [],
+            sorting: false,
+            speed: 800, // Default speed for sorting
+            maxElements: 10 // Default number of elements
+        };
+
+        // Adjust bar width dynamically
+        function adjustBarWidth(elementCount) {
+            CONFIG.barWidth = getCurrentBarWidth(elementCount);
+        }
+
+        // Generate new random array with smooth transitions
+        function generateNewArray(size) {
+            adjustBarWidth(size);
+            const newArray = Array.from({ length: size }, () =>
+                Math.floor(Math.random() * (CONFIG.maxValue - CONFIG.minValue + 1)) + CONFIG.minValue
+            );
+
+            if (state.array.length === 0) {
+                state.array = newArray;
+                renderGraph();
+                return;
+            }
+
+            const startArray = [...state.array];
+            const startTime = performance.now();
+
+            function animate(timestamp) {
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / (state.speed * 2), 1);
+
+                state.array = newArray.map((val, i) => {
+                    const startVal = i < startArray.length ? startArray[i] : CONFIG.minValue;
+                    return startVal + (val - startVal) * progress;
+                });
+
+                renderGraph();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    state.array = newArray;
+                    renderGraph();
+                }
+            }
+
             requestAnimationFrame(animate);
-        } else {
-            state.array = newArray;
-            renderGraph();
-        }
-    }
-    
-    requestAnimationFrame(animate);
-}
-
-// Render the graph with smooth animations
-function renderGraph(highlight = {}, sortedUpTo = -1) {
-    const container = document.getElementById('selection-graph-container');
-    container.innerHTML = '';
-    container.style.width = `${calculateGraphWidth(state.array.length)}px`;
-    container.style.transition = `width ${CONFIG.animationDuration}s ease-out`;
-    
-    state.array.forEach((value, index) => {
-        const bar = document.createElement('div');
-        bar.className = 'graph-bar';
-        bar.style.width = `${CONFIG.barWidth}px`;
-        bar.style.height = `${value * CONFIG.heightScale}px`;
-        bar.style.transition = `all ${CONFIG.animationDuration}s cubic-bezier(0.65, 0, 0.35, 1)`;
-        bar.style.backgroundColor = COLORS.default;
-
-        // Apply state-based styling
-        if (index <= sortedUpTo) {
-            bar.style.backgroundColor = COLORS.sorted;
-        }
-        if (index === highlight.minIndex) {
-            bar.style.backgroundColor = COLORS.min;
-            bar.style.transform = 'scaleY(1.05)';
-        }
-        if (highlight.compareIndices?.includes(index)) {
-            bar.style.backgroundColor = COLORS.compare;
-            bar.style.transform = 'translateY(-5px)';
-        }
-        if (index === highlight.swapIndex) {
-            bar.style.backgroundColor = COLORS.swap;
-            bar.style.transform = 'translateY(-15px)';
         }
 
-        // Add value label
-        const label = document.createElement('div');
-        label.className = 'bar-label';
-        label.textContent = Math.round(value);
-        bar.appendChild(label);
-        
-        container.appendChild(bar);
-    });
-}
+        // Render the graph with responsive design
+        function renderGraph(highlight = {}, sortedUpTo = -1) {
+            const container = document.getElementById('selection-graph-container');
+            container.innerHTML = '';
+            adjustBarWidth(state.array.length); // Re-check responsive width
+            container.style.width = `${calculateGraphWidth(state.array.length)}px`;
+            container.style.transition = `width ${CONFIG.animationDuration}s ease-out`;
+
+            state.array.forEach((value, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'graph-bar';
+                bar.style.width = `${CONFIG.barWidth}px`;
+                bar.style.height = `${value * CONFIG.heightScale}px`;
+                bar.style.transition = `all ${CONFIG.animationDuration}s cubic-bezier(0.65, 0, 0.35, 1)`;
+                bar.style.backgroundColor = COLORS.default;
+
+                // State-based styling
+                if (index <= sortedUpTo) bar.style.backgroundColor = COLORS.sorted;
+                if (index === highlight.minIndex) {
+                    bar.style.backgroundColor = COLORS.min;
+                    bar.style.transform = 'scaleY(1.05)';
+                }
+                if (highlight.compareIndices?.includes(index)) {
+                    bar.style.backgroundColor = COLORS.compare;
+                    bar.style.transform = 'translateY(-5px)';
+                }
+                if (index === highlight.swapIndex) {
+                    bar.style.backgroundColor = COLORS.swap;
+                    bar.style.transform = 'translateY(-15px)';
+                }
+
+                // Value label
+                const label = document.createElement('div');
+                label.className = 'bar-label';
+                label.textContent = Math.round(value);
+                bar.appendChild(label);
+
+                container.appendChild(bar);
+            });
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (!state.sorting) {
+                adjustBarWidth(state.array.length);
+                renderGraph();
+            }
+        });
 
         // Calculate total graph width
         function calculateGraphWidth(elementCount) {
@@ -240,6 +253,7 @@ function renderGraph(highlight = {}, sortedUpTo = -1) {
             // Speed control
             document.getElementById('selection-speed').addEventListener('input', function () {
                 state.speed = 1600 - this.value;
+                CONFIG.animationDuration = state.speed / 1600; // Adjust animation duration based on speed
                 document.getElementById('speed-value').textContent =
                     this.value < 500 ? 'Fast' :
                     this.value < 1000 ? 'Medium' : 'Slow';
@@ -352,6 +366,6 @@ function renderGraph(highlight = {}, sortedUpTo = -1) {
         // Initialize the visualization
         init();
     </script>
-   
+
 </body>
 </html>
