@@ -6,152 +6,145 @@
     <link rel="icon" href="assets/images/sort-icon.png" type="image/png">
     <title>Bubble Sort Algorithm | SortArtOnline</title>
     <link rel="stylesheet" href="assets/css/styles.css">
-
     <style>
-    .video-container {
-    position: relative;
-    width: 100%;
-    max-width: 800px; /* Maximum width for large screens */
-    margin: 25px auto;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    overflow: hidden;
-}
-
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.video-caption {
-    display: block;
-    text-align: center;
-    font-style: italic;
-    margin-top: 10px;
-    color: #555;
-    font-size: 0.9em;
-    padding: 0 15px;
-}
-
-/* Optional: Add some responsive adjustments */
-@media (max-width: 768px) {
-    .video-container {
-        margin: 20px auto;
-        padding-bottom: 62.5%; /* Slightly taller ratio on mobile */
-    }
-    
-    .video-caption {
-        font-size: 0.85em;
-      
-    }
-}
-
-@media (max-width: 480px) {
-    .video-container {
-        padding-bottom: 75%; /* Even taller ratio on small mobile */
-        margin: 15px auto;
-    }
-}
-
-/* style for toggle button */
-
-.toggle-btn {
-    background-color: #f44336; /* Red for OFF state */
+        .dynamic-island {
+    position: fixed;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    background-color: #1a1a1a;
     color: white;
-    border: none;
+    border-radius: 30px;
+    padding: 5px 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border: 2px solid #4ec9b0;
 }
 
-.toggle-btn.active {
-    background-color: #4CAF50; /* Green for ON state */
+@media (max-width: 768px) {
+    .dynamic-island {
+        border: 1.5px solid #4ec9b0;
+        top: 75px;
+        width: 200px;
+        padding: 3px 12px;
+    }
+    .dropdown-header {
+        padding: 5px 0;
+    }
 }
 
+.dynamic-island:hover {
+    transform: translateX(-50%) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
 
-
-
-/* Button Container Styles */
-.control-panel {
+.dropdown-header {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 8px;
-    margin: 10px 0;
-    overflow-x: auto;
-    padding-bottom: 5px;
-    width: 100%;
-}
-
-/* Hide scrollbar but keep functionality */
-.control-panel::-webkit-scrollbar {
-    height: 5px;
-}
-
-.control-panel::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 5px;
-}
-
-/* Base Button Styles */
-.btn {
-    flex-shrink: 0; /* Prevent buttons from shrinking */
-    min-width: 120px; /* Set minimum width */
-    white-space: nowrap; /* Keep text in one line */
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
+    justify-content: space-between;
+    align-items: center;
     cursor: pointer;
+    padding: 6px 0;
+}
+
+.dropdown-title {
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.dropdown-icon {
+    transition: transform 0.3s ease;
+    font-size: 12px;
+    color: #4ec9b0;
+}
+
+.dropdown-icon.open {
+    transform: rotate(180deg);
+}
+
+.dropdown-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    scrollbar-width: thin;
+    scrollbar-color: #4ec9b0 #2a2a2a;
+}
+
+.dropdown-content.open {
+    max-height: 300px;
+    overflow-y: auto;
+    transition: max-height 0.3s ease-in;
+}
+
+/* Modern scrollbar styling */
+.dropdown-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dropdown-content::-webkit-scrollbar-track {
+    background: #2a2a2a;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+    background-color: #4ec9b0;
+    border-radius: 10px;
+    border: 2px solid #2a2a2a;
+    transition: all 0.3s ease;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb:hover {
+    background-color: #3aa899;
+    transform: scale(1.05);
+}
+
+.dropdown-content::-webkit-scrollbar-thumb:active {
+    background-color: #2e8e81;
+}
+
+.dropdown-list {
+    list-style: none;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-item {
+    padding: 10px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    padding-left: 10px;
     font-size: 14px;
-    transition: all 0.2s;
-    text-align: center;
-    box-sizing: border-box;
+    margin: 2px 0;
 }
 
-/* Toggle Button */
-.toggle-btn {
-    background-color: #f0f0f0;
-    color: #333;
+.dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(3px);
 }
 
-/* Active Toggle State */
-.toggle-btn.active {
-    background-color: #4CAF50;
-    color: white;
+.dropdown-item.selected {
+    background-color: rgba(78, 201, 176, 0.2);
+    font-weight: 500;
+    color: #4ec9b0;
 }
 
-/* Secondary Buttons */
-.btn-secondary {
-    background-color: #e0e0e0;
-    color: #333;
-    min-width: 50px; /* Smaller width for prev/next buttons */
+/* Animation for the dynamic island */
+@keyframes pulse {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
+    100% { transform: translateX(-50%) scale(1); }
 }
 
-/* Start Button */
-#selection-start-btn {
-    background-color: #3a86ff;
-    color: white;
+.dynamic-island.pulse {
+    animation: pulse 0.5s ease;
 }
 
-/* Disabled State */
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .btn {
-        min-width: 100px;
-        padding: 8px 10px;
-        font-size: 13px;
-    }
-    
-    .btn-secondary {
-        min-width: 40px;
-    }
+/* Smooth transition for dropdown items */
+.dropdown-item {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
     </style>
 </head>
@@ -172,15 +165,36 @@
 
     <!-- Main Container -->
     <div class="container">
-
+        <!-- Dynamic Island -->
+        <div class="dynamic-island" id="dynamicIsland">
+              <div class="dropdown-header" id="dropdownHeader">
+                  <div class="dropdown-title" id="dropdownTitle">Select an option</div>
+                  <div class="dropdown-icon" id="dropdownIcon">▼</div>
+              </div>
+              <div class="dropdown-content" id="dropdownContent">
+    <ul class="dropdown-list" id="dropdownList">
+        <li class="dropdown-item" data-value="bubble-sort">Bubble Sort</li>
+        <li class="dropdown-item" data-value="insertion-sort">Insertion Sort</li>
+        <li class="dropdown-item" data-value="selection-sort">Selection Sort</li>
+        <li class="dropdown-item" data-value="merge-sort">Merge Sort</li>
+        <li class="dropdown-item" data-value="quick-sort">Quick Sort</li>
+        <li class="dropdown-item" data-value="counting-sort">Counting Sort</li>
+        <li class="dropdown-item" data-value="bucket-sort">Bucket Sort</li>
+        <li class="dropdown-item" data-value="radix-sort">Radix Sort</li>
+        <li class="dropdown-item" data-value="heap-sort">Heap Sort</li>
+        <li class="dropdown-item" data-value="tree-sort">Tree Sort</li>
+    </ul>
+</div>
+        </div>
         <!-- Main Content -->
+
         <main class="main-content">
             <div class="article-header">
                 <h1>Bubble Sort Algorithm</h1>
                 <div class="breadcrumb">
                     <a href="#">Home</a>
                     <span>/</span>
-                    <a href="#">Sorting Algorithms</a>
+                    <a href="#">Algorithms</a>
                     <span>/</span>
                     <span>Bubble Sort</span>
                 </div>
@@ -257,6 +271,8 @@
     <script src="assets/js/script.js"></script>
 
     <script src="assets/js/bubble-sort-graph.js"></script>
+
+    <script src="assets/js/dynamic-island.js"></script>
 
 </body>
 </html>

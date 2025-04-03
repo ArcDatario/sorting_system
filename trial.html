@@ -1,152 +1,191 @@
-<h2>Selection Sort Algorithm</h2>
-<div class="algorithm-description">
-    <p>Watch the algorithm in action with these colorful, animated bars!</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Island Dropdown</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
 
-<!-- Visualization -->
-<div class="visualization">
-    <h3>Selection Sort Visualization</h3>
-    <div class="graph-viewport">
-        <div class="graph-container" id="selection-graph-container"></div>
-    </div>
-    <div class="controls">
-        <button class="btn" id="selection-start-btn">🎬 Start Sorting</button>
-        <button class="btn btn-secondary" id="selection-reset-btn">🔄 New Array</button>
-        
-        <div class="control-group">
-            <span class="speed-control">
-                <label>⏱️ Speed: <span id="speed-value">Medium</span></label>
-                <input type="range" id="selection-speed" min="100" max="1500" value="800">
-            </span>
+        body {
+            height: 200vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .dynamic-island {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            background-color: #1a1a1a;
+            color: white;
+            border-radius: 30px;
+            padding: 10px 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .dynamic-island:hover {
+            transform: translateX(-50%) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px 0;
+        }
+
+        .dropdown-title {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .dropdown-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .dropdown-content.open {
+            max-height: 200px;
+            transition: max-height 0.3s ease-in;
+        }
+
+        .dropdown-list {
+            list-style: none;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-item {
+            padding: 10px 0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 8px;
+            padding-left: 10px;
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-item.selected {
+            background-color: rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+        }
+
+        /* Animation for the dynamic island */
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        .dynamic-island.pulse {
+            animation: pulse 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-island" id="dynamicIsland">
+        <div class="dropdown-header" id="dropdownHeader">
+            <div class="dropdown-title" id="dropdownTitle">Select an option</div>
+            <div class="dropdown-icon" id="dropdownIcon">▼</div>
         </div>
-        
-        <div class="control-group">
-            <span class="elements-control">
-                <label>📊 Elements: <span id="elements-value">15</span></label>
-                <input type="range" id="elements-count" min="5" max="50" value="15">
-            </span>
+        <div class="dropdown-content" id="dropdownContent">
+            <ul class="dropdown-list" id="dropdownList">
+                <li class="dropdown-item" data-value="option1">Option 1</li>
+                <li class="dropdown-item" data-value="option2">Option 2</li>
+                <li class="dropdown-item" data-value="option3">Option 3</li>
+                <li class="dropdown-item" data-value="option4">Option 4</li>
+                <li class="dropdown-item" data-value="option5">Option 5</li>
+            </ul>
         </div>
     </div>
-    <p id="selection-status">Ready to sort! Click start to begin</p>
-</div>
 
-<script>
-   // Configuration - Adjust these as needed
-const CONFIG = {
-    barWidth: 30,       // Default pixel width for each bar
-    barGap: 6,          // Fixed gap between bars
-    maxBars: 50,        // Maximum number of bars
-    minValue: 10,       // Minimum bar height value
-    maxValue: 100,      // Maximum bar height value
-    heightScale: 2.2    // Vertical scaling factor
-};
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dynamicIsland = document.getElementById('dynamicIsland');
+            const dropdownHeader = document.getElementById('dropdownHeader');
+            const dropdownContent = document.getElementById('dropdownContent');
+            const dropdownIcon = document.getElementById('dropdownIcon');
+            const dropdownTitle = document.getElementById('dropdownTitle');
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
 
-// Vibrant color palette
-const COLORS = {
-    default: '#3a86ff',
-    compare: '#ff006e',
-    min: '#8338ec',
-    sorted: '#06d6a0',
-    swap: '#ffbe0b'
-};
+            let isOpen = false;
 
-// State management
-let state = {
-    array: [],
-    sorting: false,
-    speed: 800,
-    maxElements: 10 // Default value
-};
+            // Toggle dropdown
+            dropdownHeader.addEventListener('click', function() {
+                isOpen = !isOpen;
+                
+                if (isOpen) {
+                    dropdownContent.classList.add('open');
+                    dropdownIcon.classList.add('open');
+                    dynamicIsland.classList.add('pulse');
+                    
+                    // Remove pulse class after animation completes
+                    setTimeout(() => {
+                        dynamicIsland.classList.remove('pulse');
+                    }, 500);
+                } else {
+                    dropdownContent.classList.remove('open');
+                    dropdownIcon.classList.remove('open');
+                }
+            });
 
-// Function to dynamically adjust barWidth based on the number of elements
-function adjustBarWidth(elementCount) {
-    const maxBarWidth = 35; // Maximum bar width
-    const minBarWidth = 10; // Minimum bar width
-    const maxElements = CONFIG.maxBars;
+            // Select item from dropdown
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove selected class from all items
+                    dropdownItems.forEach(i => i.classList.remove('selected'));
+                    
+                    // Add selected class to clicked item
+                    this.classList.add('selected');
+                    
+                    // Update title
+                    dropdownTitle.textContent = this.textContent;
+                    
+                    // Close dropdown
+                    isOpen = false;
+                    dropdownContent.classList.remove('open');
+                    dropdownIcon.classList.remove('open');
+                    
+                    // Add pulse effect
+                    dynamicIsland.classList.add('pulse');
+                    setTimeout(() => {
+                        dynamicIsland.classList.remove('pulse');
+                    }, 500);
+                });
+            });
 
-    // Calculate barWidth based on the number of elements
-    CONFIG.barWidth = Math.max(
-        minBarWidth,
-        maxBarWidth - (elementCount - 10) // Reduce barWidth as elements increase
-    );
-}
-
-// Generate new random array with growth animation
-async function generateNewArray(size) {
-    adjustBarWidth(size); // Adjust barWidth dynamically
-    
-    // Create new array with random values
-    const newArray = Array.from({ length: size }, () =>
-        Math.floor(Math.random() * (CONFIG.maxValue - CONFIG.minValue + 1)) + CONFIG.minValue
-    );
-    
-    // If we're increasing the array size, animate the new elements growing in
-    if (size > state.array.length) {
-        // Start with the existing array (or empty if first run)
-        const baseArray = state.array.length > 0 ? [...state.array] : [];
-        
-        // Fill the rest with height 0 for animation
-        const animatedArray = [...baseArray];
-        while (animatedArray.length < size) {
-            animatedArray.push(0);
-        }
-        
-        state.array = animatedArray;
-        renderGraph();
-        
-        // Animate the new bars growing to their full height
-        for (let i = baseArray.length; i < size; i++) {
-            state.array[i] = newArray[i];
-            renderGraph();
-            await delay(100); // Speed of growth animation
-        }
-    } else {
-        // For shrinking or same size, just update
-        state.array = newArray;
-        renderGraph();
-    }
-}
-
-// Render the graph visualization with smooth transitions
-function renderGraph(highlight = {}, sortedUpTo = -1) {
-    const container = document.getElementById('selection-graph-container');
-    container.innerHTML = '';
-    container.style.width = `${calculateGraphWidth(state.array.length)}px`;
-    
-    state.array.forEach((value, index) => {
-        const bar = document.createElement('div');
-        bar.className = 'graph-bar';
-        bar.style.width = `${CONFIG.barWidth}px`;
-        bar.style.height = `${value * CONFIG.heightScale}px`;
-        bar.style.backgroundColor = COLORS.default;
-        bar.style.transition = 'height 0.3s ease, width 0.3s ease'; // Smooth transitions
-        
-        // Apply state-based styling
-        if (index <= sortedUpTo) {
-            bar.style.backgroundColor = COLORS.sorted;
-            bar.classList.add('sorted');
-        }
-        if (index === highlight.minIndex) {
-            bar.style.backgroundColor = COLORS.min;
-            bar.classList.add('pulse');
-        }
-        if (highlight.compareIndices?.includes(index)) {
-            bar.style.backgroundColor = COLORS.compare;
-            bar.classList.add('wiggle');
-        }
-        if (index === highlight.swapIndex) {
-            bar.style.backgroundColor = COLORS.swap;
-            bar.classList.add('jump');
-        }
-        
-        // Add value label
-        const label = document.createElement('div');
-        label.className = 'bar-label';
-        label.textContent = value > 0 ? value : ''; // Hide label for zero-height bars
-        bar.appendChild(label);
-        
-        container.appendChild(bar);
-    });
-}
-</script>
-
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!dynamicIsland.contains(event.target) && isOpen) {
+                    isOpen = false;
+                    dropdownContent.classList.remove('open');
+                    dropdownIcon.classList.remove('open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
