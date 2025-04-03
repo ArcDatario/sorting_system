@@ -8,13 +8,150 @@
     <link rel="stylesheet" href="assets/css/styles.css">
 
     <style>
-        .video-container {
-    margin: 20px 0;
-    text-align: center;
+    .video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px; /* Maximum width for large screens */
+    margin: 25px auto;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
 }
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
 .video-caption {
+    display: block;
+    text-align: center;
     font-style: italic;
-    margin-top: 5px;
+    margin-top: 10px;
+    color: #555;
+    font-size: 0.9em;
+    padding: 0 15px;
+}
+
+/* Optional: Add some responsive adjustments */
+@media (max-width: 768px) {
+    .video-container {
+        margin: 20px auto;
+        padding-bottom: 62.5%; /* Slightly taller ratio on mobile */
+    }
+    
+    .video-caption {
+        font-size: 0.85em;
+      
+    }
+}
+
+@media (max-width: 480px) {
+    .video-container {
+        padding-bottom: 75%; /* Even taller ratio on small mobile */
+        margin: 15px auto;
+    }
+}
+
+/* style for toggle button */
+
+.toggle-btn {
+    background-color: #f44336; /* Red for OFF state */
+    color: white;
+    border: none;
+}
+
+.toggle-btn.active {
+    background-color: #4CAF50; /* Green for ON state */
+}
+
+
+
+
+/* Button Container Styles */
+.control-panel {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin: 10px 0;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+/* Hide scrollbar but keep functionality */
+.control-panel::-webkit-scrollbar {
+    height: 5px;
+}
+
+.control-panel::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+}
+
+/* Base Button Styles */
+.btn {
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+    min-width: 120px; /* Set minimum width */
+    white-space: nowrap; /* Keep text in one line */
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Toggle Button */
+.toggle-btn {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Active Toggle State */
+.toggle-btn.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Secondary Buttons */
+.btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+    min-width: 50px; /* Smaller width for prev/next buttons */
+}
+
+/* Start Button */
+#selection-start-btn {
+    background-color: #3a86ff;
+    color: white;
+}
+
+/* Disabled State */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn {
+        min-width: 100px;
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    .btn-secondary {
+        min-width: 40px;
+    }
 }
     </style>
 </head>
@@ -55,8 +192,9 @@
 <!-- Added Bubble Sort video -->
 <div class="video-container">
     <iframe width="560" height="315" src="https://www.youtube.com/embed/xli_FI7CuzA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    <p class="video-caption">Video: Bubble Sort Algorithm Explained</p>
+ 
 </div>
+<p class="video-caption">Video: Bubble Sort Algorithm Explained</p>
 
 <h2>How Bubble Sort Works?</h2>
 <?php include "visualization/bubble-sort-visualization.php"; ?>
@@ -118,275 +256,7 @@
 
     <script src="assets/js/script.js"></script>
 
-    <script>
-        // Configuration - Responsive settings
-        const CONFIG = {
-            mobileBreakpoint: 768, // px width for mobile detection
-            desktopBarWidth: 30,
-            mobileBarWidth: 18,
-            barGap: 6,
-            maxBars: 50,
-            minValue: 10,
-            maxValue: 100,
-            heightScale: 2.2,
-            animationDuration: 0.5 // seconds for smooth transitions
-        };
-
-        // Helper function to check mobile view
-        function isMobileView() {
-            return window.innerWidth <= CONFIG.mobileBreakpoint;
-        }
-
-        // Get current bar width based on viewport
-        function getCurrentBarWidth(elementCount) {
-            const baseWidth = isMobileView() ? CONFIG.mobileBarWidth : CONFIG.desktopBarWidth;
-            const maxBarWidth = isMobileView() ? 25 : 35;
-            const minBarWidth = isMobileView() ? 8 : 10;
-
-            return Math.max(
-                minBarWidth,
-                maxBarWidth - (elementCount - 10)
-            );
-        }
-
-        // Vibrant color palette
-        const COLORS = {
-            default: '#3a86ff',
-            compare: '#ff006e',
-            min: '#8338ec',
-            sorted: '#06d6a0',
-            swap: '#ffbe0b'
-        };
-
-        // State management
-        let state = {
-            array: [],
-            sorting: false,
-            speed: 800, // Default speed for sorting
-            maxElements: 10 // Default number of elements
-        };
-
-        // Adjust bar width dynamically
-        function adjustBarWidth(elementCount) {
-            CONFIG.barWidth = getCurrentBarWidth(elementCount);
-        }
-
-        // Generate new random array with smooth transitions
-        function generateNewArray(size) {
-            adjustBarWidth(size);
-            const newArray = Array.from({ length: size }, () =>
-                Math.floor(Math.random() * (CONFIG.maxValue - CONFIG.minValue + 1)) + CONFIG.minValue
-            );
-
-            if (state.array.length === 0) {
-                state.array = newArray;
-                renderGraph();
-                return;
-            }
-
-            const startArray = [...state.array];
-            const startTime = performance.now();
-
-            function animate(timestamp) {
-                const elapsed = timestamp - startTime;
-                const progress = Math.min(elapsed / (state.speed * 2), 1);
-
-                state.array = newArray.map((val, i) => {
-                    const startVal = i < startArray.length ? startArray[i] : CONFIG.minValue;
-                    return startVal + (val - startVal) * progress;
-                });
-
-                renderGraph();
-
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                } else {
-                    state.array = newArray;
-                    renderGraph();
-                }
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        // Render the graph with responsive design
-        function renderGraph(highlight = {}, sortedUpTo = -1) {
-            const container = document.getElementById('selection-graph-container');
-            container.innerHTML = '';
-            adjustBarWidth(state.array.length); // Re-check responsive width
-            container.style.width = `${calculateGraphWidth(state.array.length)}px`;
-            container.style.transition = `width ${CONFIG.animationDuration}s ease-out`;
-
-            state.array.forEach((value, index) => {
-                const bar = document.createElement('div');
-                bar.className = 'graph-bar';
-                bar.style.width = `${CONFIG.barWidth}px`;
-                bar.style.height = `${value * CONFIG.heightScale}px`;
-                bar.style.transition = `all ${CONFIG.animationDuration}s cubic-bezier(0.65, 0, 0.35, 1)`;
-                bar.style.backgroundColor = COLORS.default;
-
-                // State-based styling
-                if (index <= sortedUpTo) bar.style.backgroundColor = COLORS.sorted;
-                if (index === highlight.minIndex) {
-                    bar.style.backgroundColor = COLORS.min;
-                    bar.style.transform = 'scaleY(1.05)';
-                }
-                if (highlight.compareIndices?.includes(index)) {
-                    bar.style.backgroundColor = COLORS.compare;
-                    bar.style.transform = 'translateY(-5px)';
-                }
-                if (index === highlight.swapIndex) {
-                    bar.style.backgroundColor = COLORS.swap;
-                    bar.style.transform = 'translateY(-15px)';
-                }
-
-                // Value label
-                const label = document.createElement('div');
-                label.className = 'bar-label';
-                label.textContent = Math.round(value);
-                bar.appendChild(label);
-
-                container.appendChild(bar);
-            });
-        }
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (!state.sorting) {
-                adjustBarWidth(state.array.length);
-                renderGraph();
-            }
-        });
-
-        // Calculate total graph width
-        function calculateGraphWidth(elementCount) {
-            return (CONFIG.barWidth * elementCount) + (CONFIG.barGap * (elementCount - 1));
-        }
-
-        // Initialize the visualization
-        function init() {
-            generateNewArray(state.maxElements);
-            setupEventListeners();
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Speed control
-            document.getElementById('selection-speed').addEventListener('input', function () {
-                state.speed = 1600 - this.value;
-                CONFIG.animationDuration = state.speed / 1600; // Adjust animation duration based on speed
-                document.getElementById('speed-value').textContent =
-                    this.value < 500 ? 'Fast' :
-                    this.value < 1000 ? 'Medium' : 'Slow';
-            });
-
-            // Elements control
-            document.getElementById('elements-count').addEventListener('input', function () {
-                const count = parseInt(this.value);
-                state.maxElements = count;
-                document.getElementById('elements-value').textContent = count;
-                if (!state.sorting) {
-                    generateNewArray(count);
-                }
-            });
-
-            // Reset button
-            document.getElementById('selection-reset-btn').addEventListener('click', function () {
-                if (!state.sorting) {
-                    generateNewArray(state.maxElements);
-                    updateStatus('New array generated! Ready to sort');
-                }
-            });
-
-            // Start button
-            document.getElementById('selection-start-btn').addEventListener('click', selectionSortVisualization);
-        }
-
-        // Selection Sort Algorithm Visualization
-        async function selectionSortVisualization() {
-            if (state.sorting) return;
-            state.sorting = true;
-            disableControls(true);
-
-            let comparisons = 0;
-            let swaps = 0;
-            const arr = [...state.array];
-            const n = arr.length;
-
-            for (let i = 0; i < n - 1; i++) {
-                let min_idx = i;
-
-                // Show current minimum candidate
-                renderGraph({ minIndex: min_idx }, i - 1);
-                updateStatus(`🔍 Finding minimum starting at index ${i}`);
-                await delay(state.speed / 2);
-
-                for (let j = i + 1; j < n; j++) {
-                    comparisons++;
-
-                    // Highlight comparison
-                    renderGraph({
-                        minIndex: min_idx,
-                        compareIndices: [j]
-                    }, i - 1);
-                    updateStatus(`🔎 Comparing ${arr[j]} < ${arr[min_idx]}? (Comparisons: ${comparisons})`);
-                    await delay(state.speed / 2);
-
-                    if (arr[j] < arr[min_idx]) {
-                        min_idx = j;
-                        // Show new minimum
-                        renderGraph({ minIndex: min_idx }, i - 1);
-                        updateStatus(`✨ New minimum found: ${arr[min_idx]}`);
-                        await delay(state.speed / 2);
-                    }
-                }
-
-                // Perform swap if needed
-                if (min_idx !== i) {
-                    swaps++;
-                    [arr[i], arr[min_idx]] = [arr[min_idx], arr[i]];
-
-                    // Animate swap
-                    renderGraph({
-                        swapIndex: i,
-                        minIndex: min_idx
-                    }, i - 1);
-                    updateStatus(`🔄 Swapping elements (Swaps: ${swaps})`);
-                    await delay(state.speed);
-                }
-
-                // Update state and render
-                state.array = [...arr];
-                renderGraph({}, i);
-                await delay(state.speed / 3);
-            }
-
-            // Final render
-            renderGraph({}, n - 1);
-            updateStatus(`🎉 Sorting complete! Comparisons: ${comparisons}, Swaps: ${swaps}`);
-            state.sorting = false;
-            disableControls(false);
-        }
-
-        // Helper functions
-        function delay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
-        function updateStatus(text) {
-            document.getElementById('selection-status').innerHTML = text;
-        }
-
-        function disableControls(disabled) {
-            document.getElementById('selection-start-btn').disabled = disabled;
-            document.getElementById('selection-reset-btn').disabled = disabled;
-            document.getElementById('elements-count').disabled = disabled;
-            document.getElementById('selection-speed').disabled = disabled;
-        }
-
-        // Initialize the visualization
-        init();
-    </script>
+    <script src="assets/js/bubble-sort-graph.js"></script>
 
 </body>
 </html>

@@ -604,7 +604,7 @@ body.dark-mode tr:nth-child(even) {
 /* Mobile-specific styles */
 @media (max-width: 768px) {
     .graph-container {
-        height: 180px;
+        height: 230px;
         gap: 4px;
     }
     
