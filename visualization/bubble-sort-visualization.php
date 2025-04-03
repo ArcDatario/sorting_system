@@ -1,4 +1,4 @@
-<h2>Selection Sort Algorithm</h2>
+
 <div class="algorithm-description">
     <p>Watch the algorithm in action with these colorful, animated bars!</p>
 </div>
