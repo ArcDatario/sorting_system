@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content  selection-sort">
     <div class="article-header">
         <h1>Selection Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -13,7 +13,8 @@
         <p class="video-caption">Video: Selection Sort Visualization</p>
 
         <h2>How Selection Sort Works?</h2>
-        <?php include "visualization/selection-sort-visualization.php"; ?>
+
+        <!-- include visualization -->
 
         <h3>Detailed Step-by-Step Example:</h3>
         <p>Sorting the array: [64, 25, 12, 22, 11]</p>

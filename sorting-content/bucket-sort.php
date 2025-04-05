@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content bucket-sort" id="bucket-sort" style="display:none;">
     <div class="article-header">
         <h1>Bucket Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -13,7 +13,8 @@
         <p class="video-caption">Video: Bucket Sort Visualization</p>
 
         <h2>How Bucket Sort Works?</h2>
-        <?php include "visualization/bucket-sort-visualization.php"; ?>
+
+       <!-- include visualization -->
 
         <h3>Step-by-Step Example (Sorting [0.42, 0.32, 0.75, 0.12, 0.89, 0.63]):</h3>
         

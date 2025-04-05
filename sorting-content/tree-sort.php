@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content tree-sort">
     <div class="article-header">
         <h1>Tree Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -14,7 +14,8 @@
 
         <h2>How Tree Sort Works?</h2>
         
-        <?php include "visualization/tree-sort-visualization.php"; ?>
+      
+        <!-- include visualization -->
 
         <h3>Step-by-Step Example (Sorting [7, 4, 9, 2, 5]):</h3>
         

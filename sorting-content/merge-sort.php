@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content merge-sort">
     <div class="article-header">
         <h1>Merge Sort Algorithm</h1>
         <div class="breadcrumb">
@@ -17,7 +17,8 @@
         <p class="video-caption">Video: Merge Sort Visualization</p>
 
         <h2>How Merge Sort Works?</h2>
-        <?php include "visualization/merge-sort-visualization.php"; ?>
+        
+        <!-- include visualization -->
 
         <h3>Step-by-Step Example (Sorting [38, 27, 43, 3, 9, 82, 10]):</h3>
         

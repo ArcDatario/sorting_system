@@ -8,6 +8,66 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let isOpen = false;
 
+    // Function to switch content with animation
+    function switchContent(selectedAlgorithm, skipAnimation = false) {
+        const allContents = document.querySelectorAll('.main-content');
+        const activeContent = document.getElementById(selectedAlgorithm);
+        
+        // Save to localStorage
+        localStorage.setItem('selectedAlgorithm', selectedAlgorithm);
+        
+        if (skipAnimation) {
+            // Just show/hide without animation
+            allContents.forEach(content => {
+                content.style.display = 'none';
+                content.style.animation = '';
+            });
+            if (activeContent) {
+                activeContent.style.display = 'block';
+            }
+            return;
+        }
+
+        // Add exit animation to currently visible content
+        allContents.forEach(content => {
+            if (content.style.display === 'block' || content.style.display === '') {
+                // Apply exit animation
+                content.style.animation = 'contentExit 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+                
+                // After animation completes, hide it
+                setTimeout(() => {
+                    content.style.display = 'none';
+                    content.style.animation = '';
+                    
+                    // Show new content with entry animation
+                    if (activeContent) {
+                        activeContent.style.display = 'block';
+                        activeContent.style.animation = 'contentEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+                        
+                        // Remove animation after it completes
+                        setTimeout(() => {
+                            activeContent.style.animation = '';
+                        }, 500);
+                    }
+                }, 400);
+            }
+        });
+    }
+
+    // Check localStorage for previously selected algorithm
+    const savedAlgorithm = localStorage.getItem('selectedAlgorithm');
+    if (savedAlgorithm) {
+        // Set the dropdown title
+        const selectedItem = document.querySelector(`.dropdown-item[data-value="${savedAlgorithm}"]`);
+        if (selectedItem) {
+            dropdownTitle.textContent = selectedItem.textContent;
+            selectedItem.classList.add('selected');
+        }
+        
+        // Show the saved content (without animation on page load)
+        switchContent(savedAlgorithm, true);
+    }
+
     // Toggle dropdown
     dropdownHeader.addEventListener('click', function() {
         isOpen = !isOpen;
@@ -49,6 +109,10 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 dynamicIsland.classList.remove('pulse');
             }, 500);
+            
+            // Switch content
+            const selectedValue = this.getAttribute('data-value');
+            switchContent(selectedValue);
         });
     });
 

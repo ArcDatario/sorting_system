@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content heap-sort">
     <div class="article-header">
         <h1>Heap Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -13,8 +13,9 @@
         <p class="video-caption">Video: Heap Sort Visualization</p>
 
         <h2>How Heap Sort Works?</h2>
-        <?php include "visualization/heap-sort-visualization.php"; ?>
 
+       <!-- include visualization -->
+        
         <h3>Step-by-Step Example (Sorting [4, 10, 3, 5, 1]):</h3>
         
         <h4>Step 1: Build Max Heap</h4>

@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content counting-sort">
     <div class="article-header">
         <h1>Counting Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -13,7 +13,8 @@
         <p class="video-caption">Video: Counting Sort Visualization</p>
 
         <h2>How Counting Sort Works?</h2>
-        <?php include "visualization/counting-sort-visualization.php"; ?>
+        
+       <!-- include visualization -->
 
         <h3>Step-by-Step Example (Sorting [4, 2, 2, 8, 3, 3, 1]):</h3>
         

@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content quick-sort">
     <div class="article-header">
         <h1>Quick Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -13,7 +13,8 @@
         <p class="video-caption">Video: Quick Sort Visualization</p>
 
         <h2>How Quick Sort Works?</h2>
-        <?php include "visualization/quick-sort-visualization.php"; ?>
+        
+        <!-- include visualization -->
 
         <h3>Detailed Example (Sorting [10, 80, 30, 90, 40, 50, 70]):</h3>
         

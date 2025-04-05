@@ -146,6 +146,64 @@
 .dropdown-item {
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+
+
+/* Animation Keyframes */
+@keyframes contentExit {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+        filter: blur(2px);
+    }
+}
+
+@keyframes contentEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+        filter: blur(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+
+
+
     </style>
 </head>
 <body>
@@ -173,22 +231,23 @@
               </div>
               <div class="dropdown-content" id="dropdownContent">
     <ul class="dropdown-list" id="dropdownList">
-        <li class="dropdown-item" data-value="bubble-sort">Bubble Sort</li>
-        <li class="dropdown-item" data-value="insertion-sort">Insertion Sort</li>
-        <li class="dropdown-item" data-value="selection-sort">Selection Sort</li>
-        <li class="dropdown-item" data-value="merge-sort">Merge Sort</li>
-        <li class="dropdown-item" data-value="quick-sort">Quick Sort</li>
-        <li class="dropdown-item" data-value="counting-sort">Counting Sort</li>
-        <li class="dropdown-item" data-value="bucket-sort">Bucket Sort</li>
-        <li class="dropdown-item" data-value="radix-sort">Radix Sort</li>
-        <li class="dropdown-item" data-value="heap-sort">Heap Sort</li>
-        <li class="dropdown-item" data-value="tree-sort">Tree Sort</li>
+    <li class="dropdown-item bubble-sort-content" data-value="bubble-sort">Bubble Sort</li>
+<li class="dropdown-item insertion-sort-content" data-value="insertion-sort">Insertion Sort</li>
+<li class="dropdown-item selection-sort-content" data-value="selection-sort">Selection Sort</li>
+<li class="dropdown-item merge-sort-content" data-value="merge-sort">Merge Sort</li>
+<li class="dropdown-item quick-sort-content" data-value="quick-sort">Quick Sort</li>
+<li class="dropdown-item counting-sort-content" data-value="counting-sort">Counting Sort</li>
+<li class="dropdown-item bucket-sort-content" data-value="bucket-sort">Bucket Sort</li>
+<li class="dropdown-item radix-sort-content" data-value="radix-sort">Radix Sort</li>
+<li class="dropdown-item heap-sort-content" data-value="heap-sort">Heap Sort</li>
+<li class="dropdown-item tree-sort-content" data-value="tree-sort">Tree Sort</li>
+
     </ul>
 </div>
         </div>
         <!-- Main Content -->
 
-        <main class="main-content">
+        <main class="main-content bubble-sort" id="bubble-sort" style="display:block;">
             <div class="article-header">
                 <h1>Bubble Sort Algorithm</h1>
                 <div class="breadcrumb">
@@ -258,7 +317,10 @@
     <strong>Note:</strong> Bubble sort is not a practical sorting algorithm when n is large. It will not be efficient in the case of a reverse-ordered collection.
 </div>
             </main>
-
+            <?php include "sorting-content/bucket-sort.php"; ?>
+            <?php include "sorting-content/counting-sort.php"; ?>
+            <?php include "sorting-content/insertion-sort.php"; ?>
+            
         <!-- Sidebar -->
         <?php include "includes/aside.php"; ?>
     </div>

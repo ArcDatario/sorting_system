@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content insertion-sort" id="insertion-sort" style="display:none;">
     <div class="article-header">
         <h1>Insertion Sort Algorithm</h1>
         <div class="breadcrumb">
@@ -19,7 +19,7 @@
 
         <h2>How Insertion Sort Works?</h2>
 
-        <?php include "visualization/insertion-sort-visualization.php"; ?>
+       <!-- include visualization -->
 
         <h3>Step-by-Step Example:</h3>
         <p>Let's sort the array: [12, 11, 13, 5, 6]</p>
@@ -67,7 +67,7 @@
             </ul>
         </div>
 
-        <?php include "includes/insertionsort-ci.php"; ?>
+        <?php include "code-implementation/insertionsort-ci.php"; ?>
 
         <h2>Optimization Techniques</h2>
         <h3>Binary Insertion Sort</h3>

@@ -1,4 +1,4 @@
-<main class="main-content">
+<main class="main-content radix-sort">
     <div class="article-header">
         <h1>Radix Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -13,7 +13,8 @@
         <p class="video-caption">Video: Radix Sort Visualization</p>
 
         <h2>How Radix Sort Works?</h2>
-        <?php include "visualization/radix-sort-visualization.php"; ?>
+        
+        <!-- include visualization -->
 
         <h3>LSD Radix Sort Example (Sorting [170, 45, 75, 90, 802, 24, 2, 66]):</h3>
         
