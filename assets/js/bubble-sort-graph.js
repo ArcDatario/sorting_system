@@ -73,11 +73,13 @@ function generateNewArray(size) {
     state.sorting = false; // Reset sorting state
     state.isPaused = false; // Reset pause state
     state.manualStepMode = false; // Reset manual step mode
-    
+
     adjustBarWidth(size);
-    const newArray = Array.from({ length: size }, () =>
-        Math.floor(Math.random() * (CONFIG.maxValue - CONFIG.minValue + 1)) + CONFIG.minValue
-    );
+
+    // Generate unique random values
+    const range = Array.from({ length: CONFIG.maxValue - CONFIG.minValue + 1 }, (_, i) => i + CONFIG.minValue);
+    const shuffledRange = range.sort(() => Math.random() - 0.5); // Shuffle the range
+    const newArray = shuffledRange.slice(0, size); // Take the first `size` elements
 
     if (state.array.length === 0) {
         state.array = newArray;

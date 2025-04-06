@@ -1,4 +1,4 @@
-<main class="main-content tree-sort">
+<main class="main-content tree-sort" id="tree-sort" style="display:none;">
     <div class="article-header">
         <h1>Tree Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -8,8 +8,8 @@
         <p>Tree Sort is a sorting algorithm that builds a binary search tree from the elements to be sorted, and then performs an in-order traversal of the tree to get the elements in sorted order. Its efficiency depends on the balance of the tree.</p>
 
         <div class="video-container">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/1ue0Oq4q8_s" frameborder="0" allowfullscreen></iframe>
-        </div>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/n2MLjGeK7qA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
         <p class="video-caption">Video: Tree Sort Visualization</p>
 
         <h2>How Tree Sort Works?</h2>
@@ -47,7 +47,7 @@
             </ul>
         </div>
 
-        <?php include "includes/treesort-ci.php"; ?>
+        <?php include "code-implementation/treesort-ci.php"; ?>
 
         <h2>Variations</h2>
         <h3>Balanced Tree Sort</h3>

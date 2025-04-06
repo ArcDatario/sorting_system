@@ -1,16 +1,20 @@
 <!-- Merge Sort -->
 <h2>Merge Sort Implementations</h2>
-<div class="code-tabs">
-    <div class="tab-buttons">
-        <button class="tab-btn active" onclick="openTab(event, 'merge-cpp-tab')">C++</button>
-        <button class="tab-btn" onclick="openTab(event, 'merge-python-tab')">Python</button>
-        <button class="tab-btn" onclick="openTab(event, 'merge-java-tab')">Java</button>
-    </div>
+<div class="merge-sort-implementations">
+    <div class="merge-sort-code-tabs">
+        <div class="tab-buttons">
+            <button class="merge-tab-btn tab-btn active" onclick="openMergeTab(event, 'merge-cpp-tab')">C++</button>
+            <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-python-tab')">Python</button>
+            <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-java-tab')">Java</button>
+            <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-js-tab')">JavaScript</button>
+            <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-csharp-tab')">C#</button>
+            <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-php-tab')">PHP</button>
+        </div>
 
-    <!-- C++ Tab -->
-    <div id="merge-cpp-tab" class="tab-content" style="display:block;">
-        <div class="code-block">
-            <pre><code class="language-cpp">#include &lt;iostream&gt;
+        <!-- C++ Tab -->
+        <div id="merge-cpp-tab" class="merge-tab-content" style="display:block;">
+            <div class="code-block">
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
 #include &lt;vector&gt;
 using namespace std;
 
@@ -65,13 +69,13 @@ using namespace std;
     <span class="code-keyword">for</span> (<span class="code-type">int</span> num : arr) cout &lt;&lt; num &lt;&lt; <span class="code-string">" "</span>;
     <span class="code-keyword">return</span> <span class="code-number">0</span>;
 }</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- Python Tab -->
-    <div id="merge-python-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-python"><span class="code-keyword">def</span> <span class="code-function">merge_sort</span>(arr):
+        <!-- Python Tab -->
+        <div id="merge-python-tab" class="merge-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-python"><span class="code-keyword">def</span> <span class="code-function">merge_sort</span>(arr):
     <span class="code-keyword">if</span> <span class="code-function">len</span>(arr) > <span class="code-number">1</span>:
         mid = <span class="code-function">len</span>(arr) // <span class="code-number">2</span>
         L = arr[:mid]
@@ -104,13 +108,13 @@ using namespace std;
 arr = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>]
 merge_sort(arr)
 <span class="code-function">print</span>(<span class="code-string">"Sorted array:"</span>, arr)</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- Java Tab -->
-    <div id="merge-java-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-java"><span class="code-keyword">public class</span> <span class="code-class">MergeSort</span> {
+        <!-- Java Tab -->
+        <div id="merge-java-tab" class="merge-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-java"><span class="code-keyword">public class</span> <span class="code-class">MergeSort</span> {
     <span class="code-keyword">void</span> <span class="code-function">merge</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> l, <span class="code-type">int</span> m, <span class="code-type">int</span> r) {
         <span class="code-type">int</span> n1 = m - l + <span class="code-number">1</span>;
         <span class="code-type">int</span> n2 = r - m;
@@ -166,6 +170,256 @@ merge_sort(arr)
         <span class="code-keyword">for</span> (<span class="code-type">int</span> num : arr) System.out.print(num + <span class="code-string">" "</span>);
     }
 }</code></pre>
+            </div>
+        </div>
+
+        <!-- JavaScript Tab -->
+        <div id="merge-js-tab" class="merge-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-javascript"><span class="code-keyword">function</span> <span class="code-function">merge</span>(arr, l, m, r) {
+    <span class="code-keyword">let</span> n1 = m - l + <span class="code-number">1</span>;
+    <span class="code-keyword">let</span> n2 = r - m;
+
+    <span class="code-keyword">let</span> L = <span class="code-keyword">new</span> <span class="code-type">Array</span>(n1);
+    <span class="code-keyword">let</span> R = <span class="code-keyword">new</span> <span class="code-type">Array</span>(n2);
+
+    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i &lt; n1; i++)
+        L[i] = arr[l + i];
+    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> j = <span class="code-number">0</span>; j &lt; n2; j++)
+        R[j] = arr[m + <span class="code-number">1</span> + j];
+
+    <span class="code-keyword">let</span> i = <span class="code-number">0</span>, j = <span class="code-number">0</span>, k = l;
+    <span class="code-keyword">while</span> (i &lt; n1 && j &lt; n2) {
+        <span class="code-keyword">if</span> (L[i] &lt;= R[j]) {
+            arr[k] = L[i];
+            i++;
+        } <span class="code-keyword">else</span> {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    <span class="code-keyword">while</span> (i &lt; n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    <span class="code-keyword">while</span> (j &lt; n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+<span class="code-keyword">function</span> <span class="code-function">mergeSort</span>(arr, l, r) {
+    <span class="code-keyword">if</span> (l &lt; r) {
+        <span class="code-keyword">let</span> m = l + Math.floor((r - l) / <span class="code-number">2</span>);
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + <span class="code-number">1</span>, r);
+        merge(arr, l, m, r);
+    }
+}
+
+<span class="code-keyword">let</span> arr = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
+mergeSort(arr, <span class="code-number">0</span>, arr.length - <span class="code-number">1</span>);
+console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
+            </div>
+        </div>
+
+        <!-- C# Tab -->
+        <div id="merge-csharp-tab" class="merge-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
+
+<span class="code-keyword">class</span> <span class="code-class">MergeSort</span> {
+    <span class="code-keyword">static void</span> <span class="code-function">Merge</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> l, <span class="code-type">int</span> m, <span class="code-type">int</span> r) {
+        <span class="code-type">int</span> n1 = m - l + <span class="code-number">1</span>;
+        <span class="code-type">int</span> n2 = r - m;
+
+        <span class="code-type">int</span>[] L = <span class="code-keyword">new</span> <span class="code-type">int</span>[n1];
+        <span class="code-type">int</span>[] R = <span class="code-keyword">new</span> <span class="code-type">int</span>[n2];
+
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n1; ++i)
+            L[i] = arr[l + i];
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = <span class="code-number">0</span>; j &lt; n2; ++j)
+            R[j] = arr[m + <span class="code-number">1</span> + j];
+
+        <span class="code-type">int</span> i = <span class="code-number">0</span>, j = <span class="code-number">0</span>;
+        <span class="code-type">int</span> k = l;
+        <span class="code-keyword">while</span> (i &lt; n1 && j &lt; n2) {
+            <span class="code-keyword">if</span> (L[i] &lt;= R[j]) {
+                arr[k] = L[i];
+                i++;
+            } <span class="code-keyword">else</span> {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+
+        <span class="code-keyword">while</span> (i &lt; n1) {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+
+        <span class="code-keyword">while</span> (j &lt; n2) {
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+    }
+
+    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> l, <span class="code-type">int</span> r) {
+        <span class="code-keyword">if</span> (l &lt; r) {
+            <span class="code-type">int</span> m = l + (r - l) / <span class="code-number">2</span>;
+            Sort(arr, l, m);
+            Sort(arr, m + <span class="code-number">1</span>, r);
+            Merge(arr, l, m, r);
+        }
+    }
+
+    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
+        <span class="code-type">int</span>[] arr = {<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>};
+        Sort(arr, <span class="code-number">0</span>, arr.Length - <span class="code-number">1</span>);
+        Console.Write(<span class="code-string">"Sorted array: "</span>);
+        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) {
+            Console.Write(num + <span class="code-string">" "</span>);
+        }
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- PHP Tab -->
+        <div id="merge-php-tab" class="merge-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">merge</span>(&<span class="code-variable">$arr</span>, <span class="code-variable">$l</span>, <span class="code-variable">$m</span>, <span class="code-variable">$r</span>) {
+    <span class="code-variable">$n1</span> = <span class="code-variable">$m</span> - <span class="code-variable">$l</span> + <span class="code-number">1</span>;
+    <span class="code-variable">$n2</span> = <span class="code-variable">$r</span> - <span class="code-variable">$m</span>;
+
+    <span class="code-variable">$L</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-variable">$n1</span>, <span class="code-number">0</span>);
+    <span class="code-variable">$R</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-variable">$n2</span>, <span class="code-number">0</span>);
+
+    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$i</span> &lt; <span class="code-variable">$n1</span>; <span class="code-variable">$i</span>++)
+        <span class="code-variable">$L</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$l</span> + <span class="code-variable">$i</span>];
+    <span class="code-keyword">for</span> (<span class="code-variable">$j</span> = <span class="code-number">0</span>; <span class="code-variable">$j</span> &lt; <span class="code-variable">$n2</span>; <span class="code-variable">$j</span>++)
+        <span class="code-variable">$R</span>[<span class="code-variable">$j</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$m</span> + <span class="code-number">1</span> + <span class="code-variable">$j</span>];
+
+    <span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$j</span> = <span class="code-number">0</span>; <span class="code-variable">$k</span> = <span class="code-variable">$l</span>;
+    <span class="code-keyword">while</span> (<span class="code-variable">$i</span> &lt; <span class="code-variable">$n1</span> && <span class="code-variable">$j</span> &lt; <span class="code-variable">$n2</span>) {
+        <span class="code-keyword">if</span> (<span class="code-variable">$L</span>[<span class="code-variable">$i</span>] &lt;= <span class="code-variable">$R</span>[<span class="code-variable">$j</span>]) {
+            <span class="code-variable">$arr</span>[<span class="code-variable">$k</span>] = <span class="code-variable">$L</span>[<span class="code-variable">$i</span>];
+            <span class="code-variable">$i</span>++;
+        } <span class="code-keyword">else</span> {
+            <span class="code-variable">$arr</span>[<span class="code-variable">$k</span>] = <span class="code-variable">$R</span>[<span class="code-variable">$j</span>];
+            <span class="code-variable">$j</span>++;
+        }
+        <span class="code-variable">$k</span>++;
+    }
+
+    <span class="code-keyword">while</span> (<span class="code-variable">$i</span> &lt; <span class="code-variable">$n1</span>) {
+        <span class="code-variable">$arr</span>[<span class="code-variable">$k</span>] = <span class="code-variable">$L</span>[<span class="code-variable">$i</span>];
+        <span class="code-variable">$i</span>++;
+        <span class="code-variable">$k</span>++;
+    }
+
+    <span class="code-keyword">while</span> (<span class="code-variable">$j</span> &lt; <span class="code-variable">$n2</span>) {
+        <span class="code-variable">$arr</span>[<span class="code-variable">$k</span>] = <span class="code-variable">$R</span>[<span class="code-variable">$j</span>];
+        <span class="code-variable">$j</span>++;
+        <span class="code-variable">$k</span>++;
+    }
+}
+
+<span class="code-keyword">function</span> <span class="code-function">mergeSort</span>(&<span class="code-variable">$arr</span>, <span class="code-variable">$l</span>, <span class="code-variable">$r</span>) {
+    <span class="code-keyword">if</span> (<span class="code-variable">$l</span> &lt; <span class="code-variable">$r</span>) {
+        <span class="code-variable">$m</span> = <span class="code-variable">$l</span> + <span class="code-function">intval</span>((<span class="code-variable">$r</span> - <span class="code-variable">$l</span>) / <span class="code-number">2</span>);
+        mergeSort(<span class="code-variable">$arr</span>, <span class="code-variable">$l</span>, <span class="code-variable">$m</span>);
+        mergeSort(<span class="code-variable">$arr</span>, <span class="code-variable">$m</span> + <span class="code-number">1</span>, <span class="code-variable">$r</span>);
+        merge(<span class="code-variable">$arr</span>, <span class="code-variable">$l</span>, <span class="code-variable">$m</span>, <span class="code-variable">$r</span>);
+    }
+}
+
+<span class="code-variable">$arr</span> = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
+mergeSort(<span class="code-variable">$arr</span>, <span class="code-number">0</span>, <span class="code-function">count</span>(<span class="code-variable">$arr</span>) - <span class="code-number">1</span>);
+echo <span class="code-string">"Sorted array: "</span> . <span class="code-function">implode</span>(<span class="code-string">" "</span>, <span class="code-variable">$arr</span>);</code></pre>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+function openMergeTab(evt, tabName) {
+    // Prevent default behavior if it's a click event
+    if (evt) {
+        evt.preventDefault();
+    }
+
+    // Get all merge sort tab contents
+    const tabContents = document.querySelectorAll('.merge-tab-content');
+    tabContents.forEach(tab => {
+        tab.style.display = "none";
+    });
+    
+    // Remove active class from all merge tab buttons
+    const tabButtons = document.querySelectorAll('.merge-tab-btn');
+    tabButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+    
+    // Show current tab and mark button as active
+    const activeTab = document.getElementById(tabName);
+    if (activeTab) {
+        activeTab.style.display = "block";
+    }
+    
+    if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add("active");
+    }
+    
+    // Store the selected tab in localStorage with merge-specific key
+    localStorage.setItem('lastActiveMergeTab', tabName);
+}
+
+// Load last active merge tab if available
+document.addEventListener('DOMContentLoaded', function() {
+    // First hide all merge tab contents
+    const tabContents = document.querySelectorAll('.merge-tab-content');
+    tabContents.forEach(tab => {
+        tab.style.display = "none";
+    });
+
+    // Remove active class from all buttons initially
+    const tabButtons = document.querySelectorAll('.merge-tab-btn');
+    tabButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    const lastActiveTab = localStorage.getItem('lastActiveMergeTab');
+    if (lastActiveTab && document.getElementById(lastActiveTab)) {
+        // Show the saved tab
+        document.getElementById(lastActiveTab).style.display = "block";
+        
+        // Activate the corresponding button
+        tabButtons.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(lastActiveTab)) {
+                btn.classList.add('active');
+            }
+        });
+    } else {
+        // Default to showing the first tab and activating first button
+        const firstTab = document.querySelector('.merge-tab-content');
+        const firstButton = document.querySelector('.merge-tab-btn');
+        
+        if (firstTab) firstTab.style.display = "block";
+        if (firstButton) firstButton.classList.add("active");
+        
+        // Store the default tab if nothing is stored
+        if (firstTab) {
+            localStorage.setItem('lastActiveMergeTab', firstTab.id);
+        }
+    }
+});
+</script>

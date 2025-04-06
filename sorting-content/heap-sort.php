@@ -1,4 +1,4 @@
-<main class="main-content heap-sort">
+<main class="main-content heap-sort" id="heap-sort" style="display:none;">
     <div class="article-header">
         <h1>Heap Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -46,7 +46,7 @@
             </ul>
         </div>
 
-        <?php include "includes/heapsort-ci.php"; ?>
+        <?php include "code-implementation/heapsort-ci.php"; ?>
 
         <h2>Optimization Techniques</h2>
         <h3>Bottom-Up Heap Construction</h3>

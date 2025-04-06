@@ -1,4 +1,4 @@
-<main class="main-content merge-sort">
+<main class="main-content merge-sort" id="merge-sort" style="display:none;">
     <div class="article-header">
         <h1>Merge Sort Algorithm</h1>
         <div class="breadcrumb">
@@ -51,7 +51,7 @@
             </ul>
         </div>
 
-        <?php include "includes/mergesort-ci.php"; ?>
+        <?php include "code-implementation/mergesort-ci.php"; ?>
 
         <h2>Optimization Techniques</h2>
         <h3>Hybrid Merge Sort</h3>

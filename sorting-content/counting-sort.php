@@ -1,4 +1,4 @@
-<main class="main-content counting-sort">
+<main class="main-content counting-sort" id="counting-sort" style="display:none;">
     <div class="article-header">
         <h1>Counting Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -57,7 +57,7 @@
             </ul>
         </div>
 
-        <?php include "includes/countingsort-ci.php"; ?>
+        <?php include "code-implementation/countingsort-ci.php"; ?>
 
         <h2>Variations</h2>
         <h3>Negative Number Handling</h3>

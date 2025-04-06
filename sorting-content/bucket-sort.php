@@ -59,7 +59,7 @@
             </ul>
         </div>
 
-        <?php include "includes/bucketsort-ci.php"; ?>
+        <?php include "code-implementation/bucketsort-ci.php"; ?>
 
         <h2>Optimization Techniques</h2>
         <h3>Bucket Size Selection</h3>

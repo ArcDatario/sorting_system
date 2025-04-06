@@ -1,16 +1,19 @@
-<!-- Counting Sort -->
 <h2>Counting Sort Implementations</h2>
-<div class="code-tabs">
-    <div class="tab-buttons">
-        <button class="tab-btn active" onclick="openTab(event, 'counting-cpp-tab')">C++</button>
-        <button class="tab-btn" onclick="openTab(event, 'counting-python-tab')">Python</button>
-        <button class="tab-btn" onclick="openTab(event, 'counting-java-tab')">Java</button>
-    </div>
+<div class="counting-sort-implementations">
+    <div class="counting-sort-code-tabs">
+        <div class="tab-buttons">
+            <button class="counting-tab-btn tab-btn active" onclick="openCountingTab(event, 'counting-cpp-tab')">C++</button>
+            <button class="counting-tab-btn tab-btn" onclick="openCountingTab(event, 'counting-python-tab')">Python</button>
+            <button class="counting-tab-btn tab-btn" onclick="openCountingTab(event, 'counting-java-tab')">Java</button>
+            <button class="counting-tab-btn tab-btn" onclick="openCountingTab(event, 'counting-js-tab')">JavaScript</button>
+            <button class="counting-tab-btn tab-btn" onclick="openCountingTab(event, 'counting-csharp-tab')">C#</button>
+            <button class="counting-tab-btn tab-btn" onclick="openCountingTab(event, 'counting-php-tab')">PHP</button>
+        </div>
 
-    <!-- C++ Tab -->
-    <div id="counting-cpp-tab" class="tab-content" style="display:block;">
-        <div class="code-block">
-            <pre><code class="language-cpp">#include &lt;iostream&gt;
+        <!-- C++ Tab -->
+        <div id="counting-cpp-tab" class="counting-tab-content" style="display:block;">
+            <div class="code-block">
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;algorithm&gt;
 using namespace std;
@@ -43,13 +46,13 @@ using namespace std;
     <span class="code-keyword">for</span> (<span class="code-type">int</span> num : arr) cout &lt;&lt; num &lt;&lt; <span class="code-string">" "</span>;
     <span class="code-keyword">return</span> <span class="code-number">0</span>;
 }</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- Python Tab -->
-    <div id="counting-python-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-python"><span class="code-keyword">def</span> <span class="code-function">counting_sort</span>(arr):
+        <!-- Python Tab -->
+        <div id="counting-python-tab" class="counting-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-python"><span class="code-keyword">def</span> <span class="code-function">counting_sort</span>(arr):
     max_val = <span class="code-function">max</span>(arr)
     min_val = <span class="code-function">min</span>(arr)
     range_size = max_val - min_val + <span class="code-number">1</span>
@@ -73,13 +76,13 @@ using namespace std;
 arr = [-<span class="code-number">5</span>, -<span class="code-number">10</span>, <span class="code-number">0</span>, -<span class="code-number">3</span>, <span class="code-number">8</span>, <span class="code-number">5</span>, -<span class="code-number">1</span>, <span class="code-number">10</span>]
 counting_sort(arr)
 <span class="code-function">print</span>(<span class="code-string">"Sorted array:"</span>, arr)</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- Java Tab -->
-    <div id="counting-java-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-java"><span class="code-keyword">import</span> java.util.Arrays;
+        <!-- Java Tab -->
+        <div id="counting-java-tab" class="counting-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-java"><span class="code-keyword">import</span> java.util.Arrays;
 
 <span class="code-keyword">public class</span> <span class="code-class">CountingSort</span> {
     <span class="code-keyword">static void</span> <span class="code-function">countingSort</span>(<span class="code-type">int</span>[] arr) {
@@ -111,6 +114,122 @@ counting_sort(arr)
         <span class="code-keyword">for</span> (<span class="code-type">int</span> num : arr) System.out.print(num + <span class="code-string">" "</span>);
     }
 }</code></pre>
+            </div>
+        </div>
+
+        <!-- JavaScript Tab -->
+        <div id="counting-js-tab" class="counting-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-javascript"><span class="code-keyword">function</span> <span class="code-function">countingSort</span>(arr) {
+    <span class="code-keyword">const</span> max = Math.max(...arr);
+    <span class="code-keyword">const</span> min = Math.min(...arr);
+    <span class="code-keyword">const</span> range = max - min + <span class="code-number">1</span>;
+    
+    <span class="code-keyword">const</span> count = <span class="code-keyword">new</span> <span class="code-type">Array</span>(range).fill(<span class="code-number">0</span>);
+    <span class="code-keyword">const</span> output = <span class="code-keyword">new</span> <span class="code-type">Array</span>(arr.length);
+    
+    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i &lt; arr.length; i++) {
+        count[arr[i] - min]++;
+    }
+    
+    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">1</span>; i &lt; count.length; i++) {
+        count[i] += count[i - <span class="code-number">1</span>];
+    }
+    
+    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = arr.length - <span class="code-number">1</span>; i >= <span class="code-number">0</span>; i--) {
+        output[count[arr[i] - min] - <span class="code-number">1</span>] = arr[i];
+        count[arr[i] - min]--;
+    }
+    
+    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i &lt; arr.length; i++) {
+        arr[i] = output[i];
+    }
+}
+
+<span class="code-keyword">let</span> arr = [-<span class="code-number">5</span>, -<span class="code-number">10</span>, <span class="code-number">0</span>, -<span class="code-number">3</span>, <span class="code-number">8</span>, <span class="code-number">5</span>, -<span class="code-number">1</span>, <span class="code-number">10</span>];
+countingSort(arr);
+console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
+            </div>
+        </div>
+
+        <!-- C# Tab -->
+        <div id="counting-csharp-tab" class="counting-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
+<span class="code-keyword">using</span> System.Linq;
+
+<span class="code-keyword">class</span> <span class="code-class">CountingSort</span> {
+    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr) {
+        <span class="code-type">int</span> max = arr.Max();
+        <span class="code-type">int</span> min = arr.Min();
+        <span class="code-type">int</span> range = max - min + <span class="code-number">1</span>;
+        
+        <span class="code-type">int</span>[] count = <span class="code-keyword">new</span> <span class="code-type">int</span>[range];
+        <span class="code-type">int</span>[] output = <span class="code-keyword">new</span> <span class="code-type">int</span>[arr.Length];
+        
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; arr.Length; i++) {
+            count[arr[i] - min]++;
+        }
+        
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">1</span>; i &lt; count.Length; i++) {
+            count[i] += count[i - <span class="code-number">1</span>];
+        }
+        
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = arr.Length - <span class="code-number">1</span>; i >= <span class="code-number">0</span>; i--) {
+            output[count[arr[i] - min] - <span class="code-number">1</span>] = arr[i];
+            count[arr[i] - min]--;
+        }
+        
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; arr.Length; i++) {
+            arr[i] = output[i];
+        }
+    }
+
+    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
+        <span class="code-type">int</span>[] arr = {-<span class="code-number">5</span>, -<span class="code-number">10</span>, <span class="code-number">0</span>, -<span class="code-number">3</span>, <span class="code-number">8</span>, <span class="code-number">5</span>, -<span class="code-number">1</span>, <span class="code-number">10</span>};
+        Sort(arr);
+        Console.Write(<span class="code-string">"Sorted array: "</span>);
+        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) {
+            Console.Write(num + <span class="code-string">" "</span>);
+        }
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- PHP Tab -->
+        <div id="counting-php-tab" class="counting-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">countingSort</span>(&<span class="code-variable">$arr</span>) {
+    <span class="code-variable">$max</span> = <span class="code-function">max</span>(<span class="code-variable">$arr</span>);
+    <span class="code-variable">$min</span> = <span class="code-function">min</span>(<span class="code-variable">$arr</span>);
+    <span class="code-variable">$range</span> = <span class="code-variable">$max</span> - <span class="code-variable">$min</span> + <span class="code-number">1</span>;
+    
+    <span class="code-variable">$count</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-variable">$range</span>, <span class="code-number">0</span>);
+    <span class="code-variable">$output</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-function">count</span>(<span class="code-variable">$arr</span>), <span class="code-number">0</span>);
+    
+    <span class="code-keyword">foreach</span> (<span class="code-variable">$arr</span> <span class="code-keyword">as</span> <span class="code-variable">$num</span>) {
+        <span class="code-variable">$count</span>[<span class="code-variable">$num</span> - <span class="code-variable">$min</span>]++;
+    }
+    
+    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">1</span>; <span class="code-variable">$i</span> &lt; <span class="code-function">count</span>(<span class="code-variable">$count</span>); <span class="code-variable">$i</span>++) {
+        <span class="code-variable">$count</span>[<span class="code-variable">$i</span>] += <span class="code-variable">$count</span>[<span class="code-variable">$i</span> - <span class="code-number">1</span>];
+    }
+    
+    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-function">count</span>(<span class="code-variable">$arr</span>) - <span class="code-number">1</span>; <span class="code-variable">$i</span> >= <span class="code-number">0</span>; <span class="code-variable">$i</span>--) {
+        <span class="code-variable">$output</span>[<span class="code-variable">$count</span>[<span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] - <span class="code-variable">$min</span>] - <span class="code-number">1</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>];
+        <span class="code-variable">$count</span>[<span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] - <span class="code-variable">$min</span>]--;
+    }
+    
+    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$i</span> &lt; <span class="code-function">count</span>(<span class="code-variable">$arr</span>); <span class="code-variable">$i</span>++) {
+        <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$output</span>[<span class="code-variable">$i</span>];
+    }
+}
+
+<span class="code-variable">$arr</span> = [<span class="code-number">-5</span>, <span class="code-number">-10</span>, <span class="code-number">0</span>, <span class="code-number">-3</span>, <span class="code-number">8</span>, <span class="code-number">5</span>, <span class="code-number">-1</span>, <span class="code-number">10</span>];
+countingSort(<span class="code-variable">$arr</span>);
+echo <span class="code-string">"Sorted array: "</span> . <span class="code-function">implode</span>(<span class="code-string">" "</span>, <span class="code-variable">$arr</span>);</code></pre>
+            </div>
         </div>
     </div>
 </div>

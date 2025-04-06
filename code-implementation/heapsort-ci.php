@@ -1,18 +1,21 @@
 <h1>Sorting Algorithm Implementations</h1>
 
 <h2>Heap Sort Implementations</h2>
-<div class="code-tabs">
-    <div class="tab-buttons">
-        <button class="tab-btn active" onclick="openTab(event, 'heap-cpp-tab')">C++</button>
-        <button class="tab-btn" onclick="openTab(event, 'heap-python-tab')">Python</button>
-        <button class="tab-btn" onclick="openTab(event, 'heap-java-tab')">Java</button>
-        <button class="tab-btn" onclick="openTab(event, 'heap-js-tab')">JavaScript</button>
-    </div>
+<div class="heap-sort-implementations">
+    <div class="heap-sort-code-tabs">
+        <div class="tab-buttons">
+            <button class="heap-tab-btn tab-btn active" onclick="openHeapTab(event, 'heap-cpp-tab')">C++</button>
+            <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-python-tab')">Python</button>
+            <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-java-tab')">Java</button>
+            <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-js-tab')">JavaScript</button>
+            <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-csharp-tab')">C#</button>
+            <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-php-tab')">PHP</button>
+        </div>
 
-    <!-- C++ Tab -->
-    <div id="heap-cpp-tab" class="tab-content" style="display:block;">
-        <div class="code-block">
-            <pre><code class="language-cpp">#include &lt;iostream&gt;
+        <!-- C++ Tab -->
+        <div id="heap-cpp-tab" class="heap-tab-content" style="display:block;">
+            <div class="code-block">
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
 #include &lt;vector&gt;
 using namespace std;
 
@@ -52,13 +55,13 @@ using namespace std;
     <span class="code-keyword">for</span> (<span class="code-type">int</span> num : arr) cout &lt;&lt; num &lt;&lt; <span class="code-string">" "</span>;
     <span class="code-keyword">return</span> <span class="code-number">0</span>;
 }</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- Python Tab -->
-    <div id="heap-python-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-python"><span class="code-keyword">def</span> <span class="code-function">heapify</span>(arr, n, i):
+        <!-- Python Tab -->
+        <div id="heap-python-tab" class="heap-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-python"><span class="code-keyword">def</span> <span class="code-function">heapify</span>(arr, n, i):
     largest = i
     left = <span class="code-number">2</span> * i + <span class="code-number">1</span>
     right = <span class="code-number">2</span> * i + <span class="code-number">2</span>
@@ -86,13 +89,13 @@ using namespace std;
 arr = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>]
 heap_sort(arr)
 <span class="code-function">print</span>(<span class="code-string">"Sorted array:"</span>, arr)</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- Java Tab -->
-    <div id="heap-java-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-java"><span class="code-keyword">public class</span> <span class="code-class">HeapSort</span> {
+        <!-- Java Tab -->
+        <div id="heap-java-tab" class="heap-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-java"><span class="code-keyword">public class</span> <span class="code-class">HeapSort</span> {
     <span class="code-keyword">public void</span> <span class="code-function">sort</span>(<span class="code-type">int</span>[] arr) {
         <span class="code-type">int</span> n = arr.length;
 
@@ -136,13 +139,13 @@ heap_sort(arr)
         <span class="code-keyword">for</span> (<span class="code-type">int</span> num : arr) System.out.print(num + <span class="code-string">" "</span>);
     }
 }</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- JavaScript Tab -->
-    <div id="heap-js-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-javascript"><span class="code-keyword">function</span> <span class="code-function">heapify</span>(arr, n, i) {
+        <!-- JavaScript Tab -->
+        <div id="heap-js-tab" class="heap-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-javascript"><span class="code-keyword">function</span> <span class="code-function">heapify</span>(arr, n, i) {
     <span class="code-keyword">let</span> largest = i;
     <span class="code-keyword">let</span> left = <span class="code-number">2</span> * i + <span class="code-number">1</span>;
     <span class="code-keyword">let</span> right = <span class="code-number">2</span> * i + <span class="code-number">2</span>;
@@ -174,11 +177,181 @@ heap_sort(arr)
 <span class="code-keyword">let</span> arr = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
 heapSort(arr);
 console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
+            </div>
+        </div>
+
+        <!-- C# Tab -->
+        <div id="heap-csharp-tab" class="heap-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
+
+<span class="code-keyword">class</span> <span class="code-class">HeapSort</span> {
+    <span class="code-keyword">static void</span> <span class="code-function">Heapify</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> n, <span class="code-type">int</span> i) {
+        <span class="code-type">int</span> largest = i;
+        <span class="code-type">int</span> left = <span class="code-number">2</span> * i + <span class="code-number">1</span>;
+        <span class="code-type">int</span> right = <span class="code-number">2</span> * i + <span class="code-number">2</span>;
+
+        <span class="code-keyword">if</span> (left &lt; n && arr[left] > arr[largest])
+            largest = left;
+
+        <span class="code-keyword">if</span> (right &lt; n && arr[right] > arr[largest])
+            largest = right;
+
+        <span class="code-keyword">if</span> (largest != i) {
+            <span class="code-type">int</span> swap = arr[i];
+            arr[i] = arr[largest];
+            arr[largest] = swap;
+
+            Heapify(arr, n, largest);
+        }
+    }
+
+    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr) {
+        <span class="code-type">int</span> n = arr.Length;
+
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n / <span class="code-number">2</span> - <span class="code-number">1</span>; i >= <span class="code-number">0</span>; i--)
+            Heapify(arr, n, i);
+
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n - <span class="code-number">1</span>; i > <span class="code-number">0</span>; i--) {
+            <span class="code-type">int</span> temp = arr[<span class="code-number">0</span>];
+            arr[<span class="code-number">0</span>] = arr[i];
+            arr[i] = temp;
+
+            Heapify(arr, i, <span class="code-number">0</span>);
+        }
+    }
+
+    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
+        <span class="code-type">int</span>[] arr = {<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>};
+        Sort(arr);
+        Console.Write(<span class="code-string">"Sorted array: "</span>);
+        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) {
+            Console.Write(num + <span class="code-string">" "</span>);
+        }
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- PHP Tab -->
+        <div id="heap-php-tab" class="heap-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">heapify</span>(&<span class="code-variable">$arr</span>, <span class="code-variable">$n</span>, <span class="code-variable">$i</span>) {
+    <span class="code-variable">$largest</span> = <span class="code-variable">$i</span>;
+    <span class="code-variable">$left</span> = <span class="code-number">2</span> * <span class="code-variable">$i</span> + <span class="code-number">1</span>;
+    <span class="code-variable">$right</span> = <span class="code-number">2</span> * <span class="code-variable">$i</span> + <span class="code-number">2</span>;
+
+    <span class="code-keyword">if</span> (<span class="code-variable">$left</span> &lt; <span class="code-variable">$n</span> && <span class="code-variable">$arr</span>[<span class="code-variable">$left</span>] > <span class="code-variable">$arr</span>[<span class="code-variable">$largest</span>]) {
+        <span class="code-variable">$largest</span> = <span class="code-variable">$left</span>;
+    }
+
+    <span class="code-keyword">if</span> (<span class="code-variable">$right</span> &lt; <span class="code-variable">$n</span> && <span class="code-variable">$arr</span>[<span class="code-variable">$right</span>] > <span class="code-variable">$arr</span>[<span class="code-variable">$largest</span>]) {
+        <span class="code-variable">$largest</span> = <span class="code-variable">$right</span>;
+    }
+
+    <span class="code-keyword">if</span> (<span class="code-variable">$largest</span> != <span class="code-variable">$i</span>) {
+        <span class="code-variable">$temp</span> = <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>];
+        <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$largest</span>];
+        <span class="code-variable">$arr</span>[<span class="code-variable">$largest</span>] = <span class="code-variable">$temp</span>;
+
+        heapify(<span class="code-variable">$arr</span>, <span class="code-variable">$n</span>, <span class="code-variable">$largest</span>);
+    }
+}
+
+<span class="code-keyword">function</span> <span class="code-function">heapSort</span>(&<span class="code-variable">$arr</span>) {
+    <span class="code-variable">$n</span> = <span class="code-function">count</span>(<span class="code-variable">$arr</span>);
+
+    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-function">intval</span>(<span class="code-variable">$n</span> / <span class="code-number">2</span>) - <span class="code-number">1</span>; <span class="code-variable">$i</span> >= <span class="code-number">0</span>; <span class="code-variable">$i</span>--) {
+        heapify(<span class="code-variable">$arr</span>, <span class="code-variable">$n</span>, <span class="code-variable">$i</span>);
+    }
+
+    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-variable">$n</span> - <span class="code-number">1</span>; <span class="code-variable">$i</span> > <span class="code-number">0</span>; <span class="code-variable">$i</span>--) {
+        <span class="code-variable">$temp</span> = <span class="code-variable">$arr</span>[<span class="code-number">0</span>];
+        <span class="code-variable">$arr</span>[<span class="code-number">0</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>];
+        <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$temp</span>;
+
+        heapify(<span class="code-variable">$arr</span>, <span class="code-variable">$i</span>, <span class="code-number">0</span>);
+    }
+}
+
+<span class="code-variable">$arr</span> = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
+heapSort(<span class="code-variable">$arr</span>);
+echo <span class="code-string">"Sorted array: "</span> . <span class="code-function">implode</span>(<span class="code-string">" "</span>, <span class="code-variable">$arr</span>);</code></pre>
+            </div>
         </div>
     </div>
 </div>
 
+<script>
+function openHeapTab(evt, tabName) {
+    // Prevent default behavior if it's a click event
+    if (evt) {
+        evt.preventDefault();
+    }
 
+    // Get all heap sort tab contents
+    const tabContents = document.querySelectorAll('.heap-tab-content');
+    tabContents.forEach(tab => {
+        tab.style.display = "none";
+    });
+    
+    // Remove active class from all heap tab buttons
+    const tabButtons = document.querySelectorAll('.heap-tab-btn');
+    tabButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+    
+    // Show current tab and mark button as active
+    const activeTab = document.getElementById(tabName);
+    if (activeTab) {
+        activeTab.style.display = "block";
+    }
+    
+    if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add("active");
+    }
+    
+    // Store the selected tab in localStorage with heap-specific key
+    localStorage.setItem('lastActiveHeapTab', tabName);
+}
 
+// Load last active heap tab if available
+document.addEventListener('DOMContentLoaded', function() {
+    // First hide all heap tab contents
+    const tabContents = document.querySelectorAll('.heap-tab-content');
+    tabContents.forEach(tab => {
+        tab.style.display = "none";
+    });
 
+    // Remove active class from all buttons initially
+    const tabButtons = document.querySelectorAll('.heap-tab-btn');
+    tabButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
 
+    const lastActiveTab = localStorage.getItem('lastActiveHeapTab');
+    if (lastActiveTab && document.getElementById(lastActiveTab)) {
+        // Show the saved tab
+        document.getElementById(lastActiveTab).style.display = "block";
+        
+        // Activate the corresponding button
+        tabButtons.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(lastActiveTab)) {
+                btn.classList.add('active');
+            }
+        });
+    } else {
+        // Default to showing the first tab and activating first button
+        const firstTab = document.querySelector('.heap-tab-content');
+        const firstButton = document.querySelector('.heap-tab-btn');
+        
+        if (firstTab) firstTab.style.display = "block";
+        if (firstButton) firstButton.classList.add("active");
+        
+        // Store the default tab if nothing is stored
+        if (firstTab) {
+            localStorage.setItem('lastActiveHeapTab', firstTab.id);
+        }
+    }
+});
+</script>

@@ -1,18 +1,20 @@
-<h1>Sorting Algorithm Implementations</h1>
-
+<!-- Quick Sort -->
 <h2>Quick Sort Implementations</h2>
-<div class="code-tabs">
-    <div class="tab-buttons">
-        <button class="tab-btn active" onclick="openTab(event, 'quick-cpp-tab')">C++</button>
-        <button class="tab-btn" onclick="openTab(event, 'quick-python-tab')">Python</button>
-        <button class="tab-btn" onclick="openTab(event, 'quick-java-tab')">Java</button>
-        <button class="tab-btn" onclick="openTab(event, 'quick-js-tab')">JavaScript</button>
-    </div>
+<div class="quick-sort-implementations">
+    <div class="quick-sort-code-tabs">
+        <div class="tab-buttons">
+            <button class="quick-tab-btn tab-btn active" onclick="openQuickTab(event, 'quick-cpp-tab')">C++</button>
+            <button class="quick-tab-btn tab-btn" onclick="openQuickTab(event, 'quick-python-tab')">Python</button>
+            <button class="quick-tab-btn tab-btn" onclick="openQuickTab(event, 'quick-java-tab')">Java</button>
+            <button class="quick-tab-btn tab-btn" onclick="openQuickTab(event, 'quick-js-tab')">JavaScript</button>
+            <button class="quick-tab-btn tab-btn" onclick="openQuickTab(event, 'quick-csharp-tab')">C#</button>
+            <button class="quick-tab-btn tab-btn" onclick="openQuickTab(event, 'quick-php-tab')">PHP</button>
+        </div>
 
-    <!-- C++ Tab -->
-    <div id="quick-cpp-tab" class="tab-content" style="display:block;">
-        <div class="code-block">
-            <pre><code class="language-cpp">#include &lt;iostream&gt;
+        <!-- C++ Tab -->
+        <div id="quick-cpp-tab" class="quick-tab-content" style="display:block;">
+            <div class="code-block">
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
 #include &lt;vector&gt;
 using namespace std;
 
@@ -46,13 +48,13 @@ using namespace std;
     <span class="code-keyword">for</span> (<span class="code-type">int</span> num : arr) cout &lt;&lt; num &lt;&lt; <span class="code-string">" "</span>;
     <span class="code-keyword">return</span> <span class="code-number">0</span>;
 }</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- Python Tab -->
-    <div id="quick-python-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-python"><span class="code-keyword">def</span> <span class="code-function">partition</span>(arr, low, high):
+        <!-- Python Tab -->
+        <div id="quick-python-tab" class="quick-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-python"><span class="code-keyword">def</span> <span class="code-function">partition</span>(arr, low, high):
     i = low - <span class="code-number">1</span>
     pivot = arr[high]
 
@@ -74,13 +76,13 @@ arr = [<span class="code-number">10</span>, <span class="code-number">7</span>, 
 n = <span class="code-function">len</span>(arr)
 quick_sort(arr, <span class="code-number">0</span>, n-<span class="code-number">1</span>)
 <span class="code-function">print</span>(<span class="code-string">"Sorted array:"</span>, arr)</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- Java Tab -->
-    <div id="quick-java-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-java"><span class="code-keyword">public class</span> <span class="code-class">QuickSort</span> {
+        <!-- Java Tab -->
+        <div id="quick-java-tab" class="quick-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-java"><span class="code-keyword">public class</span> <span class="code-class">QuickSort</span> {
     <span class="code-keyword">int</span> <span class="code-function">partition</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> low, <span class="code-type">int</span> high) {
         <span class="code-type">int</span> pivot = arr[high];
         <span class="code-type">int</span> i = low - <span class="code-number">1</span>;
@@ -120,13 +122,13 @@ quick_sort(arr, <span class="code-number">0</span>, n-<span class="code-number">
         <span class="code-keyword">for</span> (<span class="code-type">int</span> num : arr) System.out.print(num + <span class="code-string">" "</span>);
     }
 }</code></pre>
+            </div>
         </div>
-    </div>
 
-    <!-- JavaScript Tab -->
-    <div id="quick-js-tab" class="tab-content">
-        <div class="code-block">
-            <pre><code class="language-javascript"><span class="code-keyword">function</span> <span class="code-function">partition</span>(arr, low, high) {
+        <!-- JavaScript Tab -->
+        <div id="quick-js-tab" class="quick-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-javascript"><span class="code-keyword">function</span> <span class="code-function">partition</span>(arr, low, high) {
     <span class="code-keyword">let</span> pivot = arr[high];
     <span class="code-keyword">let</span> i = low - <span class="code-number">1</span>;
 
@@ -152,6 +154,161 @@ quick_sort(arr, <span class="code-number">0</span>, n-<span class="code-number">
 <span class="code-keyword">let</span> n = arr.length;
 quickSort(arr, <span class="code-number">0</span>, n - <span class="code-number">1</span>);
 console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
+            </div>
+        </div>
+
+        <!-- C# Tab -->
+        <div id="quick-csharp-tab" class="quick-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
+
+<span class="code-keyword">class</span> <span class="code-class">QuickSort</span> {
+    <span class="code-keyword">static int</span> <span class="code-function">Partition</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> low, <span class="code-type">int</span> high) {
+        <span class="code-type">int</span> pivot = arr[high];
+        <span class="code-type">int</span> i = low - <span class="code-number">1</span>;
+        
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = low; j < high; j++) {
+            <span class="code-keyword">if</span> (arr[j] < pivot) {
+                i++;
+                <span class="code-keyword">int</span> temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        
+        <span class="code-keyword">int</span> temp2 = arr[i + <span class="code-number">1</span>];
+        arr[i + <span class="code-number">1</span>] = arr[high];
+        arr[high] = temp2;
+        
+        <span class="code-keyword">return</span> i + <span class="code-number">1</span>;
+    }
+    
+    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> low, <span class="code-type">int</span> high) {
+        <span class="code-keyword">if</span> (low < high) {
+            <span class="code-type">int</span> pi = Partition(arr, low, high);
+            Sort(arr, low, pi - <span class="code-number">1</span>);
+            Sort(arr, pi + <span class="code-number">1</span>, high);
+        }
+    }
+    
+    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
+        <span class="code-type">int</span>[] arr = {<span class="code-number">10</span>, <span class="code-number">7</span>, <span class="code-number">8</span>, <span class="code-number">9</span>, <span class="code-number">1</span>, <span class="code-number">5</span>};
+        
+        Console.WriteLine(<span class="code-string">"Original array: "</span> + string.Join(<span class="code-string">" "</span>, arr));
+        Sort(arr, <span class="code-number">0</span>, arr.Length - <span class="code-number">1</span>);
+        Console.WriteLine(<span class="code-string">"Sorted array: "</span> + string.Join(<span class="code-string">" "</span>, arr));
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- PHP Tab -->
+        <div id="quick-php-tab" class="quick-tab-content" style="display:none;">
+            <div class="code-block">
+                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">partition</span>(&<span class="code-var">$arr</span>, <span class="code-var">$low</span>, <span class="code-var">$high</span>) {
+    <span class="code-var">$pivot</span> = <span class="code-var">$arr</span>[<span class="code-var">$high</span>];
+    <span class="code-var">$i</span> = <span class="code-var">$low</span> - <span class="code-number">1</span>;
+
+    <span class="code-keyword">for</span> (<span class="code-var">$j</span> = <span class="code-var">$low</span>; <span class="code-var">$j</span> < <span class="code-var">$high</span>; <span class="code-var">$j</span>++) {
+        <span class="code-keyword">if</span> (<span class="code-var">$arr</span>[<span class="code-var">$j</span>] < <span class="code-var">$pivot</span>) {
+            <span class="code-var">$i</span>++;
+            [<span class="code-var">$arr</span>[<span class="code-var">$i</span>], <span class="code-var">$arr</span>[<span class="code-var">$j</span>]] = [<span class="code-var">$arr</span>[<span class="code-var">$j</span>], <span class="code-var">$arr</span>[<span class="code-var">$i</span>]];
+        }
+    }
+    
+    [<span class="code-var">$arr</span>[<span class="code-var">$i</span> + <span class="code-number">1</span>], <span class="code-var">$arr</span>[<span class="code-var">$high</span>]] = [<span class="code-var">$arr</span>[<span class="code-var">$high</span>], <span class="code-var">$arr</span>[<span class="code-var">$i</span> + <span class="code-number">1</span>]];
+    <span class="code-keyword">return</span> <span class="code-var">$i</span> + <span class="code-number">1</span>;
+}
+
+<span class="code-keyword">function</span> <span class="code-function">quickSort</span>(&<span class="code-var">$arr</span>, <span class="code-var">$low</span>, <span class="code-var">$high</span>) {
+    <span class="code-keyword">if</span> (<span class="code-var">$low</span> < <span class="code-var">$high</span>) {
+        <span class="code-var">$pi</span> = partition(<span class="code-var">$arr</span>, <span class="code-var">$low</span>, <span class="code-var">$high</span>);
+        quickSort(<span class="code-var">$arr</span>, <span class="code-var">$low</span>, <span class="code-var">$pi</span> - <span class="code-number">1</span>);
+        quickSort(<span class="code-var">$arr</span>, <span class="code-var">$pi</span> + <span class="code-number">1</span>, <span class="code-var">$high</span>);
+    }
+}
+
+<span class="code-var">$arr</span> = [<span class="code-number">10</span>, <span class="code-number">7</span>, <span class="code-number">8</span>, <span class="code-number">9</span>, <span class="code-number">1</span>, <span class="code-number">5</span>];
+<span class="code-var">$n</span> = count(<span class="code-var">$arr</span>);
+
+echo <span class="code-string">"Original array: "</span> . implode(<span class="code-string">" "</span>, <span class="code-var">$arr</span>) . PHP_EOL;
+quickSort(<span class="code-var">$arr</span>, <span class="code-number">0</span>, <span class="code-var">$n</span> - <span class="code-number">1</span>);
+echo <span class="code-string">"Sorted array: "</span> . implode(<span class="code-string">" "</span>, <span class="code-var">$arr</span>) . PHP_EOL;</code></pre>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+function openQuickTab(evt, tabName) {
+    // Prevent default behavior if it's a click event
+    if (evt) {
+        evt.preventDefault();
+    }
+
+    // Get all quick sort tab contents
+    const tabContents = document.querySelectorAll('.quick-tab-content');
+    tabContents.forEach(tab => {
+        tab.style.display = "none";
+    });
+    
+    // Remove active class from all quick tab buttons
+    const tabButtons = document.querySelectorAll('.quick-tab-btn');
+    tabButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+    
+    // Show current tab and mark button as active
+    const activeTab = document.getElementById(tabName);
+    if (activeTab) {
+        activeTab.style.display = "block";
+    }
+    
+    if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add("active");
+    }
+    
+    // Store the selected tab in localStorage with quick-specific key
+    localStorage.setItem('lastActiveQuickTab', tabName);
+}
+
+// Load last active quick tab if available
+document.addEventListener('DOMContentLoaded', function() {
+    // First hide all quick tab contents
+    const tabContents = document.querySelectorAll('.quick-tab-content');
+    tabContents.forEach(tab => {
+        tab.style.display = "none";
+    });
+
+    // Remove active class from all buttons initially
+    const tabButtons = document.querySelectorAll('.quick-tab-btn');
+    tabButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    const lastActiveTab = localStorage.getItem('lastActiveQuickTab');
+    if (lastActiveTab && document.getElementById(lastActiveTab)) {
+        // Show the saved tab
+        document.getElementById(lastActiveTab).style.display = "block";
+        
+        // Activate the corresponding button
+        tabButtons.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(lastActiveTab)) {
+                btn.classList.add('active');
+            }
+        });
+    } else {
+        // Default to showing the first tab and activating first button
+        const firstTab = document.querySelector('.quick-tab-content');
+        const firstButton = document.querySelector('.quick-tab-btn');
+        
+        if (firstTab) firstTab.style.display = "block";
+        if (firstButton) firstButton.classList.add("active");
+        
+        // Store the default tab if nothing is stored
+        if (firstTab) {
+            localStorage.setItem('lastActiveQuickTab', firstTab.id);
+        }
+    }
+});
+</script>

@@ -1,4 +1,4 @@
-<main class="main-content radix-sort">
+<main class="main-content radix-sort" id="radix-sort" style="display:none;">
     <div class="article-header">
         <h1>Radix Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -46,7 +46,7 @@
             </ul>
         </div>
 
-        <?php include "includes/radixsort-ci.php"; ?>
+        <?php include "code-implementation/radixsort-ci.php"; ?>
 
         <h2>Variations</h2>
         <h3>MSD Radix Sort</h3>

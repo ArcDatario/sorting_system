@@ -319,7 +319,13 @@
             </main>
             <?php include "sorting-content/bucket-sort.php"; ?>
             <?php include "sorting-content/counting-sort.php"; ?>
+            <?php include "sorting-content/heap-sort.php"; ?>
             <?php include "sorting-content/insertion-sort.php"; ?>
+            <?php include "sorting-content/merge-sort.php"; ?>
+            <?php include "sorting-content/quick-sort.php"; ?>
+            <?php include "sorting-content/radix-sort.php"; ?>
+            <?php include "sorting-content/selection-sort.php"; ?>
+            <?php include "sorting-content/tree-sort.php"; ?>
             
         <!-- Sidebar -->
         <?php include "includes/aside.php"; ?>

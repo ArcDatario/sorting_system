@@ -1,4 +1,4 @@
-<main class="main-content quick-sort">
+<main class="main-content quick-sort" id="quick-sort" style="display:none;">
     <div class="article-header">
         <h1>Quick Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
@@ -48,7 +48,7 @@
             </ul>
         </div>
 
-        <?php include "includes/quicksort-ci.php"; ?>
+        <?php include "code-implementation/quicksort-ci.php"; ?>
 
         <h2>Optimization Techniques</h2>
         <h3>Pivot Selection Strategies</h3>

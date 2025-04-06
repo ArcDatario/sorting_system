@@ -1,4 +1,4 @@
-<main class="main-content  selection-sort">
+<main class="main-content  selection-sort" id="selection-sort" style="display:none;">
     <div class="article-header">
         <h1>Selection Sort Algorithm</h1>
         <!-- breadcrumb same as above -->
