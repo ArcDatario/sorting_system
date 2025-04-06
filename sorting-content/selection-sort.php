@@ -60,7 +60,7 @@
             </ul>
         </div>
 
-        <?php include "includes/selectionsort-ci.php"; ?>
+        <?php include "code-implementation/selectionsort-ci.php"; ?>
 
         <h2>Variations</h2>
         <h3>Double Selection Sort</h3>

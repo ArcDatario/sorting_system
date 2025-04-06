@@ -14,7 +14,7 @@
 
         <h2>How Counting Sort Works?</h2>
         
-       <!-- include visualization -->
+       <?php include "visualization/counting-sort-visualization.php";?>
 
         <h3>Step-by-Step Example (Sorting [4, 2, 2, 8, 3, 3, 1]):</h3>
         
