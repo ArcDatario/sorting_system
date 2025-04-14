@@ -113,7 +113,7 @@ function generateNewArray(size) {
 }
 
 function renderGraph(highlight = {}, sortedUpTo = -1) {
-    const container = document.getElementById('selection-graph-container');
+    const container = document.getElementById('bubble-graph-container');
     container.innerHTML = '';
     adjustBarWidth(state.array.length);
     container.style.width = `${calculateGraphWidth(state.array.length)}px`;
@@ -159,28 +159,28 @@ function calculateGraphWidth(elementCount) {
 // Setup event listeners
 function setupEventListeners() {
     // Toggle button
-    document.getElementById('toggle-mode-btn').addEventListener('click', function() {
+    document.getElementById('bubble-toggle-mode-btn').addEventListener('click', function() {
         state.interactiveMode = !state.interactiveMode;
         if (state.interactiveMode) {
             this.textContent = '🟢 ON';
             this.classList.add('active');
-            document.getElementById('elements-count').disabled = true;
-            document.getElementById('selection-reset-btn').disabled = true;
-            document.getElementById('selection-start-btn').disabled = false;
+            document.getElementById('bubble-elements-count').disabled = true;
+            document.getElementById('bubble-reset-btn').disabled = true;
+            document.getElementById('bubble-start-btn').disabled = false;
             updateControls();
         } else {
             this.textContent = '🔴 OFF';
             this.classList.remove('active');
-            document.getElementById('elements-count').disabled = false;
-            document.getElementById('selection-reset-btn').disabled = false;
-            document.getElementById('selection-start-btn').disabled = true;
-            document.getElementById('selection-prev-btn').disabled = true;
-            document.getElementById('selection-next-btn').disabled = true;
+            document.getElementById('bubble-elements-count').disabled = false;
+            document.getElementById('bubble-reset-btn').disabled = false;
+            document.getElementById('bubble-start-btn').disabled = true;
+            document.getElementById('bubble-prev-btn').disabled = true;
+            document.getElementById('bubble-next-btn').disabled = true;
             state.manualStepMode = false;
         }
     });
 
-    document.getElementById('selection-speed').addEventListener('input', function() {
+    document.getElementById('bubble-speed').addEventListener('input', function() {
         state.speed = 1600 - this.value;
         CONFIG.animationDuration = state.speed / 1600;
         document.getElementById('speed-value').textContent =
@@ -188,20 +188,20 @@ function setupEventListeners() {
             this.value < 1000 ? 'Medium' : 'Fast';
     });
 
-    document.getElementById('elements-count').addEventListener('input', function() {
+    document.getElementById('bubble-elements-count').addEventListener('input', function() {
         state.maxElements = parseInt(this.value);
         document.getElementById('elements-value').textContent = state.maxElements;
         if (!state.sorting) generateNewArray(state.maxElements);
     });
 
-    document.getElementById('selection-reset-btn').addEventListener('click', function() {
+    document.getElementById('bubble-reset-btn').addEventListener('click', function() {
         if (!state.sorting) {
             generateNewArray(state.maxElements);
             updateStatus('New array generated! Ready to sort');
         }
     });
 
-    document.getElementById('selection-start-btn').addEventListener('click', function() {
+    document.getElementById('bubble-start-btn').addEventListener('click', function() {
         if (!state.interactiveMode) return;
         
         if (state.completed) {
@@ -225,7 +225,7 @@ function setupEventListeners() {
         }
     });
 
-    document.getElementById('selection-prev-btn').addEventListener('click', function() {
+    document.getElementById('bubble-prev-btn').addEventListener('click', function() {
         if (!state.interactiveMode) return;
         if (state.currentStep > 0) {
             state.currentStep--;
@@ -233,7 +233,7 @@ function setupEventListeners() {
         }
     });
 
-    document.getElementById('selection-next-btn').addEventListener('click', async function() {
+    document.getElementById('bubble-next-btn').addEventListener('click', async function() {
         if (!state.interactiveMode) return;
         if (state.completed) return;
         
@@ -351,7 +351,7 @@ async function executeNextStep() {
 
     if (state.completed) {
         state.sorting = false;
-        document.getElementById('selection-start-btn').textContent = '🎬 Start Sorting';
+        document.getElementById('bubble-start-btn').textContent = '🎬 Start Sorting';
     }
 }
 
@@ -371,7 +371,7 @@ async function selectionSortVisualization() {
     state.algorithmState = createAlgorithmState();
     state.steps = [];
     state.currentStep = 0;
-    document.getElementById('selection-start-btn').textContent = '⏸️ Pause';
+    document.getElementById('bubble-start-btn').textContent = '⏸️ Pause';
     updateControls();
 
     while (!state.completed && !state.isPaused) {  // Changed condition to check !state.completed
@@ -380,7 +380,7 @@ async function selectionSortVisualization() {
 
     if (state.completed) {
         state.sorting = false;
-        document.getElementById('selection-start-btn').textContent = '🎬 Start Sorting';
+        document.getElementById('bubble-start-btn').textContent = '🎬 Start Sorting';
     }
     updateControls();
 }
@@ -394,7 +394,7 @@ async function continueSorting() {
     }
     if (state.completed) {
         state.sorting = false;
-        document.getElementById('selection-start-btn').textContent = '🎬 Start Sorting';
+        document.getElementById('bubble-start-btn').textContent = '🎬 Start Sorting';
     }
     updateControls();
 }
@@ -410,15 +410,15 @@ function updateStatus(text) {
 
 function updateControls() {
     if (!state.interactiveMode) {
-        document.getElementById('selection-start-btn').disabled = true;
-        document.getElementById('selection-prev-btn').disabled = true;
-        document.getElementById('selection-next-btn').disabled = true;
+        document.getElementById('bubble-start-btn').disabled = true;
+        document.getElementById('bubble-prev-btn').disabled = true;
+        document.getElementById('bubble-next-btn').disabled = true;
         return;
     }
 
-    const startBtn = document.getElementById('selection-start-btn');
-    const prevBtn = document.getElementById('selection-prev-btn');
-    const nextBtn = document.getElementById('selection-next-btn');
+    const startBtn = document.getElementById('bubble-start-btn');
+    const prevBtn = document.getElementById('bubble-prev-btn');
+    const nextBtn = document.getElementById('bubble-next-btn');
     
     startBtn.disabled = false;
     
@@ -443,14 +443,14 @@ function updateControls() {
 // Initialize
 function init() {
     // Set default elements to 10
-    document.getElementById('elements-count').value = 10;
+    document.getElementById('bubble-elements-count').value = 10;
     document.getElementById('elements-value').textContent = 10;
     
     generateNewArray(10);
     setupEventListeners();
-    document.getElementById('selection-start-btn').disabled = true;
-    document.getElementById('selection-prev-btn').disabled = true;
-    document.getElementById('selection-next-btn').disabled = true;
+    document.getElementById('bubble-start-btn').disabled = true;
+    document.getElementById('bubble-prev-btn').disabled = true;
+    document.getElementById('bubble-next-btn').disabled = true;
 }
 
 init();

@@ -18,7 +18,7 @@
 
         <h2>How Merge Sort Works?</h2>
         
-        <!-- include visualization -->
+        <?php include "visualization/merge-sort-visualization.php";?>
 
         <h3>Step-by-Step Example (Sorting [38, 27, 43, 3, 9, 82, 10]):</h3>
         

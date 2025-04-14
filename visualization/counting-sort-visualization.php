@@ -1,543 +1,666 @@
 <div class="algorithm-description">
-    <p>Watch Counting Sort in action with these colorful, animated bars!</p>
+    <p>Watch Counting Sort in action with this step-by-step visualization!</p>
 </div>
 
 <!-- Visualization -->
 <div class="visualization">
-    <div class="graph-scroll-container">
-        <div class="graph-container" id="counting-graph-container"></div>
+    <div class="counting-container" id="counting-sort-container">
+        <div class="input-section">
+            <h3>Input Array</h3>
+            <div class="input-array" id="counting-input-array"></div>
+        </div>
+        <div class="counting-section">
+            <h3>Counting Process</h3>
+            <div class="count-array" id="counting-count-array"></div>
+        </div>
+        <div class="output-section">
+            <h3>Output Array</h3>
+            <div class="output-array" id="counting-output-array"></div>
+        </div>
     </div>
-    <p id="counting-status" style="font-size: 12.5px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Ready to sort! Click start to begin</p>
+    
+    <p id="counting-sort-status" style="font-size: 12.5px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Ready to sort! Click start to begin</p>
+    
     <div class="controls">
-        <button class="btn toggle-btn" id="toggle-mode-btn">🔴 OFF</button>
-        <button class="btn" id="counting-start-btn" disabled>🎬 Start Sorting</button>
-        <button class="btn btn-secondary" id="counting-reset-btn">🔄 New Array</button>
-        <button class="btn btn-secondary" id="counting-prev-btn" disabled>⏮️</button>
-        <button class="btn btn-secondary" id="counting-next-btn" disabled>⏭️</button>
+        <button class="btn toggle-btn" id="counting-sort-toggle-btn">🔴 OFF</button>
+        <button class="btn" id="counting-sort-start-btn" disabled>🎬 Start Sorting</button>
+        <button class="btn btn-secondary" id="counting-sort-reset-btn">🔄 New Array</button>
+        <button class="btn btn-secondary" id="counting-sort-prev-btn" disabled>⏮️</button>
+        <button class="btn btn-secondary" id="counting-sort-next-btn" disabled>⏭️</button>
         
         <div class="control-group">
             <span class="speed-control">
-                <label>⏱️ Speed: <span id="speed-value">Medium</span></label>
-                <input type="range" id="counting-speed" min="100" max="1500" value="800">
+                <label>⏱️ Speed: <span id="counting-sort-speed-value">Medium</span></label>
+                <input type="range" id="counting-sort-speed" min="100" max="1500" value="800">
             </span>
         </div>
         
         <div class="control-group">
             <span class="elements-control">
-                <label>📊 Elements: <span id="elements-value">10</span></label>
-                <input type="range" id="elements-count" min="5" max="20" value="10">
+                <label>📊 Elements: <span id="counting-sort-elements-value">5</span></label>
+                <input type="range" id="counting-sort-elements-count" min="5" max="10" value="5">
             </span>
         </div>
     </div>
 </div>
 
+<style>
+.counting-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.input-section, .counting-section, .output-section {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.input-array, .count-array, .output-array {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    min-height: 60px;
+    align-items: center;
+}
+
+.array-element {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background: #3a86ff;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.array-element.active {
+    background: #ff006e;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 0, 110, 0.7);
+    z-index: 1;
+}
+
+.array-element.sorted {
+    background: #06d6a0;
+}
+
+.array-element.count {
+    background: #8338ec;
+}
+
+.array-element.index {
+    font-size: 0.7em;
+    position: absolute;
+    top: -15px;
+    color: #333;
+}
+
+.count-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.count-value {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background: #8338ec;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.count-value.active {
+    background: #ff006e;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 0, 110, 0.7);
+}
+
+.count-label {
+    font-size: 0.7em;
+    color: #555;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background: #3a86ff;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: #2667d5;
+}
+
+.btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.toggle-btn.active {
+    background: #28a745;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.speed-control, .elements-control {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+input[type="range"] {
+    width: 100px;
+}
+
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+    }
+    
+    .array-element {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8em;
+    }
+    
+    .count-value {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8em;
+    }
+}
+</style>
+
 <script>
-    // Configuration - Responsive settings
-const CONFIG = {
-    mobileBreakpoint: 768,
-    desktopBarWidth: 30,
-    mobileBarWidth: 18,
-    barGap: 6,
-    maxBars: 50,
-    minValue: 1,  // Counting sort works better with positive integers starting from 1
-    maxValue: 20, // Smaller range for better visualization of counting array
-    heightScale: 2.2,
+// Counting Sort Configuration
+const COUNTING_SORT_CONFIG = {
+    minValue: 1,
+    maxValue: 10, // Values will range from 1 to 10
     animationDuration: 0.5
 };
 
-// State management
-let state = {
+// Counting Sort State management
+let countingSortState = {
     array: [],
+    countingArray: [],
+    outputArray: [],
     sorting: false,
     speed: 800,
-    maxElements: 10,
+    maxElements: 5, // Default to 5 elements
     currentStep: 0,
     steps: [],
     isPaused: false,
     algorithmState: null,
     completed: false,
     interactiveMode: false,
-    manualStepMode: false,
-    countingArray: [],  // For counting sort visualization
-    outputArray: [],    // For counting sort visualization
-    currentPhase: 'counting' // 'counting', 'accumulating', 'placing'
+    manualStepMode: false
 };
 
 // Algorithm state structure
-function createAlgorithmState() {
+function createCountingSortState() {
     return {
-        i: 0,
-        j: 0,
-        k: 0,
-        count: new Array(CONFIG.maxValue + 1).fill(0),
-        output: new Array(state.array.length).fill(0),
-        comparisons: 0,
-        operations: 0,
-        n: state.array.length,
-        arr: [...state.array],
         phase: 'counting',
-        maxValue: CONFIG.maxValue
+        currentIndex: 0,
+        currentValue: 0,
+        count: Array(COUNTING_SORT_CONFIG.maxValue + 1).fill(0), // Array from 0 to maxValue
+        output: Array(countingSortState.array.length).fill(null),
+        comparisons: 0,
+        placements: 0
     };
 }
 
 // Helper functions
-function isMobileView() {
-    return window.innerWidth <= CONFIG.mobileBreakpoint;
-}
-
-function getCurrentBarWidth(elementCount) {
-    const baseWidth = isMobileView() ? CONFIG.mobileBarWidth : CONFIG.desktopBarWidth;
-    const maxBarWidth = isMobileView() ? 25 : 35;
-    const minBarWidth = isMobileView() ? 8 : 10;
-    return Math.max(minBarWidth, maxBarWidth - (elementCount - 10));
-}
-
-const COLORS = {
-    default: '#3a86ff',
-    active: '#ff006e',
-    counting: '#8338ec',
-    sorted: '#06d6a0',
-    processed: '#ffbe0b',
-    output: '#118ab2'
-};
-
-function adjustBarWidth(elementCount) {
-    CONFIG.barWidth = getCurrentBarWidth(elementCount);
-}
-
-function generateNewArray(size) {
-    state.completed = false;
-    state.steps = []; // Clear previous steps
-    state.currentStep = 0; // Reset step counter
-    state.algorithmState = null; // Clear previous algorithm state
-    state.sorting = false; // Reset sorting state
-    state.isPaused = false; // Reset pause state
-    state.manualStepMode = false; // Reset manual step mode
-    state.currentPhase = 'counting'; // Reset phase
-
-    adjustBarWidth(size);
-
-    // Generate random values within our range (1 to maxValue)
-    const newArray = Array.from({length: size}, () => 
-        Math.floor(Math.random() * CONFIG.maxValue) + 1
-    );
-
-    if (state.array.length === 0) {
-        state.array = newArray;
-        renderGraph();
-        return;
-    }
-
-    const startArray = [...state.array];
-    const startTime = performance.now();
-
-    function animate(timestamp) {
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / (state.speed * 2), 1);
-
-        state.array = newArray.map((val, i) => {
-            const startVal = i < startArray.length ? startArray[i] : CONFIG.minValue;
-            return startVal + (val - startVal) * progress;
-        });
-
-        renderGraph();
-
-        if (progress < 1) {
-            requestAnimationFrame(animate);
-        } else {
-            state.array = newArray;
-            renderGraph();
-        }
-    }
-
-    requestAnimationFrame(animate);
-}
-
-function renderGraph(highlight = {}, phase = 'counting') {
-    const container = document.getElementById('counting-graph-container');
-    container.innerHTML = '';
-    adjustBarWidth(state.array.length);
-    container.style.width = `${calculateGraphWidth(state.array.length)}px`;
-    container.style.transition = `width ${CONFIG.animationDuration}s ease-out`;
-
-    // Render main array
-    state.array.forEach((value, index) => {
-        const bar = document.createElement('div');
-        bar.className = 'graph-bar';
-        bar.style.width = `${CONFIG.barWidth}px`;
-        bar.style.height = `${value * CONFIG.heightScale}px`;
-        bar.style.transition = `all ${CONFIG.animationDuration}s cubic-bezier(0.65, 0, 0.35, 1)`;
-        bar.style.backgroundColor = state.completed ? COLORS.sorted : COLORS.default;
-
-        if (!state.completed) {
-            if (phase === 'placing' && index < state.algorithmState?.output.length) {
-                bar.style.backgroundColor = COLORS.output;
-            }
-            if (index === highlight.currentIndex) {
-                bar.style.backgroundColor = COLORS.active;
-                bar.style.transform = 'translateY(-5px)';
-            }
-            if (highlight.processedIndices?.includes(index)) {
-                bar.style.backgroundColor = COLORS.processed;
-            }
-        }
-
-        const label = document.createElement('div');
-        label.className = 'bar-label';
-        label.textContent = Math.round(value);
-        bar.appendChild(label);
-
-        container.appendChild(bar);
-    });
-
-    // If we're in the counting phase and have algorithm state, show counting array
-    if (state.algorithmState && phase === 'counting') {
-        const countContainer = document.createElement('div');
-        countContainer.className = 'count-array-container';
-        countContainer.style.marginTop = '20px';
-        countContainer.style.display = 'flex';
-        countContainer.style.justifyContent = 'center';
-        countContainer.style.gap = '10px';
-
-        for (let i = 1; i <= CONFIG.maxValue; i++) {
-            const countBar = document.createElement('div');
-            countBar.className = 'count-bar';
-            countBar.style.width = `${CONFIG.barWidth}px`;
-            countBar.style.height = `${state.algorithmState.count[i] * 20}px`;
-            countBar.style.backgroundColor = i === highlight.currentValue ? COLORS.counting : '#888';
-            
-            const countLabel = document.createElement('div');
-            countLabel.className = 'count-label';
-            countLabel.textContent = i;
-            countBar.appendChild(countLabel);
-            
-            const countValue = document.createElement('div');
-            countValue.className = 'count-value';
-            countValue.textContent = state.algorithmState.count[i];
-            countBar.appendChild(countValue);
-            
-            countContainer.appendChild(countBar);
-        }
-
-        container.appendChild(countContainer);
-    }
-}
-
-function calculateGraphWidth(elementCount) {
-    return (CONFIG.barWidth * elementCount) + (CONFIG.barGap * (elementCount - 1));
-}
-
-// Setup event listeners
-function setupEventListeners() {
-    // Toggle button
-    document.getElementById('toggle-mode-btn').addEventListener('click', function() {
-        state.interactiveMode = !state.interactiveMode;
-        if (state.interactiveMode) {
-            this.textContent = '🟢 ON';
-            this.classList.add('active');
-            document.getElementById('elements-count').disabled = true;
-            document.getElementById('counting-reset-btn').disabled = true;
-            document.getElementById('counting-start-btn').disabled = false;
-            updateControls();
-        } else {
-            this.textContent = '🔴 OFF';
-            this.classList.remove('active');
-            document.getElementById('elements-count').disabled = false;
-            document.getElementById('counting-reset-btn').disabled = false;
-            document.getElementById('counting-start-btn').disabled = true;
-            document.getElementById('counting-prev-btn').disabled = true;
-            document.getElementById('counting-next-btn').disabled = true;
-            state.manualStepMode = false;
-        }
-    });
-
-    document.getElementById('counting-speed').addEventListener('input', function() {
-        state.speed = 1600 - this.value;
-        CONFIG.animationDuration = state.speed / 1600;
-        document.getElementById('speed-value').textContent =
-            this.value < 500 ? 'Slow' :
-            this.value < 1000 ? 'Medium' : 'Fast';
-    });
-
-    document.getElementById('elements-count').addEventListener('input', function() {
-        state.maxElements = parseInt(this.value);
-        document.getElementById('elements-value').textContent = state.maxElements;
-        if (!state.sorting) generateNewArray(state.maxElements);
-    });
-
-    document.getElementById('counting-reset-btn').addEventListener('click', function() {
-        if (!state.sorting) {
-            generateNewArray(state.maxElements);
-            updateStatus('New array generated! Ready to sort');
-        }
-    });
-
-    document.getElementById('counting-start-btn').addEventListener('click', function() {
-        if (!state.interactiveMode) return;
-        
-        if (state.completed) {
-            countingSortVisualization();
-            return;
-        }
-        
-        if (state.sorting && !state.isPaused) {
-            state.isPaused = true;
-            this.textContent = '▶️ Resume';
-            updateStatus('⏸️ Sorting paused');
-            updateControls();
-        } else if (state.sorting && state.isPaused) {
-            state.isPaused = false;
-            state.manualStepMode = false;
-            this.textContent = '⏸️ Pause';
-            updateStatus('▶️ Resuming sorting...');
-            continueSorting();
-        } else {
-            countingSortVisualization();
-        }
-    });
-
-    document.getElementById('counting-prev-btn').addEventListener('click', function() {
-        if (!state.interactiveMode) return;
-        if (state.currentStep > 0) {
-            state.currentStep--;
-            loadStep(state.currentStep);
-        }
-    });
-
-    document.getElementById('counting-next-btn').addEventListener('click', async function() {
-        if (!state.interactiveMode) return;
-        if (state.completed) return;
-        
-        // Enable manual step mode
-        state.manualStepMode = true;
-        state.isPaused = true;
-        
-        if (!state.algorithmState || state.steps.length === 0) {
-            // First click - initialize sorting
-            state.sorting = true;
-            state.algorithmState = createAlgorithmState();
-            state.steps = [];
-            state.currentStep = 0;
-            updateControls();
-        }
-        
-        await executeNextStep();
-        updateControls();
-    });
-}
-
-// Step management with animations
-function saveCurrentStep(highlight, phase, status) {
-    state.steps.push({
-        array: [...state.array],
-        highlight: {...highlight},
-        phase,
-        status,
-        algorithmState: {...state.algorithmState}
-    });
-    state.currentStep = state.steps.length - 1;
-}
-
-async function loadStep(stepIndex) {
-    const step = state.steps[stepIndex];
-    state.array = [...step.array];
-    state.algorithmState = {...step.algorithmState};
-    state.completed = (state.algorithmState.phase === 'done');
-    state.currentPhase = step.phase || 'counting';
-    renderGraph(step.highlight, state.currentPhase);
-    updateStatus(step.status || `Step ${stepIndex + 1}/${state.steps.length}`);
-    updateControls();
-    await delay(state.speed / 2);
-}
-
-// Counting sort implementation
-async function executeNextStep() {
-    if (!state.algorithmState || state.completed) return;
-    
-    const s = state.algorithmState;
-    let highlight = {};
-    let status = '';
-    let stepCompleted = false;
-    let currentPhase = state.currentPhase;
-
-    switch (s.phase) {
-        case 'counting':
-            if (s.i < s.n) {
-                const value = s.arr[s.i];
-                s.count[value]++;
-                s.operations++;
-                status = `Counting value ${value} (Count[${value}] = ${s.count[value]})`;
-                highlight = { currentIndex: s.i, currentValue: value };
-                s.i++;
-                
-                if (s.i >= s.n) {
-                    s.phase = 'accumulating';
-                    currentPhase = 'accumulating';
-                    status = 'Counting phase complete. Starting accumulation...';
-                }
-            }
-            break;
-
-        case 'accumulating':
-            if (s.j <= s.maxValue) {
-                if (s.j > 1) {
-                    s.count[s.j] += s.count[s.j - 1];
-                }
-                s.operations++;
-                status = `Accumulating counts (Count[${s.j}] = ${s.count[s.j]})`;
-                highlight = { currentValue: s.j };
-                s.j++;
-                
-                if (s.j > s.maxValue) {
-                    s.phase = 'placing';
-                    currentPhase = 'placing';
-                    s.i = s.n - 1; // Start from the end for stable sort
-                    status = 'Accumulation complete. Starting placement...';
-                }
-            }
-            break;
-
-        case 'placing':
-            if (s.i >= 0) {
-                const value = s.arr[s.i];
-                s.output[s.count[value] - 1] = value;
-                s.count[value]--;
-                s.operations++;
-                status = `Placing ${value} at position ${s.count[value]}`;
-                highlight = { currentIndex: s.i, processedIndices: [s.count[value]] };
-                s.i--;
-                
-                if (s.i < 0) {
-                    s.phase = 'done';
-                    status = `Sorting complete! Total operations: ${s.operations}`;
-                    stepCompleted = true;
-                }
-            }
-            break;
-
-        case 'done':
-            // Update the main array with the sorted output
-            for (let i = 0; i < s.n; i++) {
-                s.arr[i] = s.output[i];
-            }
-            state.array = [...s.arr];
-            state.completed = true;
-            stepCompleted = true;
-            status = `Sorting complete! Total operations: ${s.operations}`;
-            break;
-    }
-
-    state.currentPhase = currentPhase;
-    saveCurrentStep(highlight, currentPhase, status);
-    renderGraph(highlight, currentPhase);
-    updateStatus(status);
-    updateControls();
-    await delay(state.speed);
-
-    if (state.completed) {
-        state.sorting = false;
-        document.getElementById('counting-start-btn').textContent = '🎬 Start Sorting';
-    }
-}
-
-// Sorting functions with animations
-async function countingSortVisualization() {
-    if (!state.interactiveMode) return;
-    
-    if (state.completed) {
-        state.completed = false;
-        generateNewArray(state.maxElements);
-        await delay(state.speed);
-    }
-    
-    state.sorting = true;
-    state.isPaused = false;
-    state.manualStepMode = false;
-    state.algorithmState = createAlgorithmState();
-    state.steps = [];
-    state.currentStep = 0;
-    state.currentPhase = 'counting';
-    document.getElementById('counting-start-btn').textContent = '⏸️ Pause';
-    updateControls();
-
-    while (!state.completed && !state.isPaused) {
-        await executeNextStep();
-    }
-
-    if (state.completed) {
-        state.sorting = false;
-        document.getElementById('counting-start-btn').textContent = '🎬 Start Sorting';
-    }
-    updateControls();
-}
-
-async function continueSorting() {
-    state.isPaused = false;
-    state.manualStepMode = false;
-    updateControls();
-    while (!state.completed && !state.isPaused) {
-        await executeNextStep();
-    }
-    if (state.completed) {
-        state.sorting = false;
-        document.getElementById('counting-start-btn').textContent = '🎬 Start Sorting';
-    }
-    updateControls();
-}
-
-// Helper functions
-function delay(ms) {
+function countingSortDelay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function updateStatus(text) {
-    document.getElementById('counting-status').innerHTML = text;
+function generateCountingSortArray(size) {
+    if (size <= 0) {
+        updateCountingSortStatus('Array size must be greater than 0.');
+        return;
+    }
+    countingSortState.completed = false;
+    countingSortState.steps = [];
+    countingSortState.currentStep = 0;
+    countingSortState.algorithmState = null;
+    countingSortState.sorting = false;
+    countingSortState.isPaused = false;
+    countingSortState.manualStepMode = false;
+
+    // Generate array with random values strictly between 1 and 10
+    countingSortState.array = Array.from({ length: size }, () => Math.floor(Math.random() * 10) + 1);
+
+    // Initialize counting array (indices 0 to maxValue)
+    countingSortState.countingArray = Array(COUNTING_SORT_CONFIG.maxValue + 1).fill(0);
+    countingSortState.outputArray = Array(countingSortState.array.length).fill(null);
+
+    renderCountingSortVisualization();
+    updateCountingSortStatus('New array generated! Ready to sort');
 }
 
-function updateControls() {
-    if (!state.interactiveMode) {
-        document.getElementById('counting-start-btn').disabled = true;
-        document.getElementById('counting-prev-btn').disabled = true;
-        document.getElementById('counting-next-btn').disabled = true;
+function resetCountingSortState() {
+    countingSortState = {
+        array: [],
+        countingArray: [],
+        outputArray: [],
+        sorting: false,
+        speed: 800,
+        maxElements: 5,
+        currentStep: 0,
+        steps: [],
+        isPaused: false,
+        algorithmState: null,
+        completed: false,
+        interactiveMode: false,
+        manualStepMode: false
+    };
+    renderCountingSortVisualization();
+    updateCountingSortStatus('State reset. Ready to sort.');
+}
+
+function renderCountingSortVisualization(highlight = {}) {
+    const inputContainer = document.getElementById('counting-input-array');
+    const countContainer = document.getElementById('counting-count-array');
+    const outputContainer = document.getElementById('counting-output-array');
+    
+    // Render input array
+    inputContainer.innerHTML = '';
+    countingSortState.array.forEach((value, index) => {
+        const element = document.createElement('div');
+        element.className = 'array-element';
+        if (highlight.inputIndex === index) element.classList.add('active');
+        if (highlight.sortedIndices && highlight.sortedIndices.includes(index)) element.classList.add('sorted');
+        element.textContent = value;
+        
+        const indexLabel = document.createElement('div');
+        indexLabel.className = 'index';
+        indexLabel.textContent = index;
+        element.appendChild(indexLabel);
+        
+        inputContainer.appendChild(element);
+    });
+    
+    // Render counting array (only show indices from minValue to maxValue)
+    countContainer.innerHTML = '';
+    for (let i = COUNTING_SORT_CONFIG.minValue; i <= COUNTING_SORT_CONFIG.maxValue; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'count-cell';
+        
+        const valueElement = document.createElement('div');
+        valueElement.className = 'count-value';
+        if (highlight.countIndex === i) valueElement.classList.add('active');
+        valueElement.textContent = countingSortState.countingArray[i];
+        
+        const label = document.createElement('div');
+        label.className = 'count-label';
+        label.textContent = i;
+        
+        cell.appendChild(valueElement);
+        cell.appendChild(label);
+        countContainer.appendChild(cell);
+    }
+    
+    // Render output array
+    outputContainer.innerHTML = '';
+    countingSortState.outputArray.forEach((value, index) => {
+        const element = document.createElement('div');
+        element.className = 'array-element';
+        if (value !== null) element.classList.add('sorted');
+        if (highlight.outputIndex === index) element.classList.add('active');
+        element.textContent = value !== null ? value : '';
+        
+        const indexLabel = document.createElement('div');
+        indexLabel.className = 'index';
+        indexLabel.textContent = index;
+        element.appendChild(indexLabel);
+        
+        outputContainer.appendChild(element);
+    });
+}
+
+function updateCountingSortStatus(text) {
+    document.getElementById('counting-sort-status').innerHTML = text;
+}
+
+function saveCountingSortStep(highlight, status) {
+    countingSortState.steps.push({
+        array: [...countingSortState.array],
+        countingArray: [...countingSortState.countingArray],
+        outputArray: [...countingSortState.outputArray],
+        highlight: {...highlight},
+        status,
+        algorithmState: {...countingSortState.algorithmState}
+    });
+    countingSortState.currentStep = countingSortState.steps.length - 1;
+}
+
+async function loadCountingSortStep(stepIndex) {
+    const step = countingSortState.steps[stepIndex];
+    countingSortState.array = [...step.array];
+    countingSortState.countingArray = [...step.countingArray];
+    countingSortState.outputArray = [...step.outputArray];
+    countingSortState.algorithmState = {...step.algorithmState};
+    countingSortState.completed = (countingSortState.algorithmState.phase === 'done');
+    renderCountingSortVisualization(step.highlight);
+    updateCountingSortStatus(step.status || `Step ${stepIndex + 1}/${countingSortState.steps.length}`);
+    updateCountingSortControls();
+    await countingSortDelay(countingSortState.speed / 2);
+}
+
+// Counting sort implementation
+async function executeCountingSortStep() {
+    if (!countingSortState.algorithmState || countingSortState.completed) return;
+    
+    const s = countingSortState.algorithmState;
+    let highlight = {};
+    let status = '';
+    let stepCompleted = false;
+
+    switch (s.phase) {
+        case 'counting':
+            if (s.currentIndex < countingSortState.array.length) {
+                const value = countingSortState.array[s.currentIndex];
+                s.count[value]++;
+                countingSortState.countingArray = [...s.count];
+                
+                status = `Counting occurrence of ${value} (Index ${s.currentIndex})`;
+                highlight = {
+                    inputIndex: s.currentIndex,
+                    countIndex: value
+                };
+                
+                s.currentIndex++;
+                if (s.currentIndex >= countingSortState.array.length) {
+                    s.phase = 'cumulative';
+                    s.currentIndex = COUNTING_SORT_CONFIG.minValue; // Start from minValue
+                    status = 'Counting phase complete. Moving to cumulative sum.';
+                }
+            }
+            break;
+            
+        case 'cumulative':
+            if (s.currentIndex <= COUNTING_SORT_CONFIG.maxValue) {
+                if (s.currentIndex > COUNTING_SORT_CONFIG.minValue) {
+                    s.count[s.currentIndex] += s.count[s.currentIndex - 1];
+                    countingSortState.countingArray = [...s.count];
+                }
+                
+                status = `Calculating cumulative count for value ${s.currentIndex}`;
+                highlight = {
+                    countIndex: s.currentIndex
+                };
+                
+                s.currentIndex++;
+                if (s.currentIndex > COUNTING_SORT_CONFIG.maxValue) {
+                    s.phase = 'placing';
+                    s.currentIndex = countingSortState.array.length - 1;
+                    status = 'Cumulative phase complete. Starting placement.';
+                }
+            }
+            break;
+            
+        case 'placing':
+            if (s.currentIndex >= 0) {
+                const value = countingSortState.array[s.currentIndex];
+                const outputIndex = s.count[value] - 1;
+                s.output[outputIndex] = value;
+                s.count[value]--;
+                countingSortState.outputArray = [...s.output];
+                countingSortState.countingArray = [...s.count];
+                s.placements++;
+                
+                status = `Placing ${value} at position ${outputIndex} in output array`;
+                highlight = {
+                    inputIndex: s.currentIndex,
+                    countIndex: value,
+                    outputIndex: outputIndex
+                };
+                
+                s.currentIndex--;
+                if (s.currentIndex < 0) {
+                    s.phase = 'done';
+                    countingSortState.array = [...s.output];
+                    status = `Sorting complete! ${s.placements} placements made.`;
+                }
+            }
+            break;
+            
+        case 'done':
+            countingSortState.completed = true;
+            stepCompleted = true;
+            highlight = {
+                sortedIndices: Array.from({length: countingSortState.array.length}, (_, i) => i)
+            };
+            break;
+    }
+
+    saveCountingSortStep(highlight, status);
+    renderCountingSortVisualization(highlight);
+    updateCountingSortStatus(status);
+    updateCountingSortControls();
+    await countingSortDelay(countingSortState.speed);
+
+    if (countingSortState.completed) {
+        countingSortState.sorting = false;
+        document.getElementById('counting-sort-start-btn').textContent = '🎬 Start Sorting';
+    }
+}
+
+// Sorting control functions
+async function countingSortVisualization() {
+    if (!countingSortState.interactiveMode) return;
+    
+    if (countingSortState.completed) {
+        countingSortState.completed = false;
+        generateCountingSortArray(countingSortState.maxElements);
+        await countingSortDelay(countingSortState.speed);
+    }
+    
+    countingSortState.sorting = true;
+    countingSortState.isPaused = false;
+    countingSortState.manualStepMode = false;
+    countingSortState.algorithmState = createCountingSortState();
+    countingSortState.steps = [];
+    countingSortState.currentStep = 0;
+    document.getElementById('counting-sort-start-btn').textContent = '⏸️ Pause';
+    updateCountingSortControls();
+
+    while (!countingSortState.completed && !countingSortState.isPaused) {
+        await executeCountingSortStep();
+    }
+
+    if (countingSortState.completed) {
+        countingSortState.sorting = false;
+        document.getElementById('counting-sort-start-btn').textContent = '🎬 Start Sorting';
+    }
+    updateCountingSortControls();
+}
+
+async function continueCountingSort() {
+    countingSortState.isPaused = false;
+    countingSortState.manualStepMode = false;
+    updateCountingSortControls();
+    while (!countingSortState.completed && !countingSortState.isPaused) {
+        await executeCountingSortStep();
+    }
+    if (countingSortState.completed) {
+        countingSortState.sorting = false;
+        document.getElementById('counting-sort-start-btn').textContent = '🎬 Start Sorting';
+    }
+    updateCountingSortControls();
+}
+
+function updateCountingSortControls() {
+    if (!countingSortState.interactiveMode) {
+        document.getElementById('counting-sort-start-btn').disabled = true;
+        document.getElementById('counting-sort-prev-btn').disabled = true;
+        document.getElementById('counting-sort-next-btn').disabled = true;
         return;
     }
 
-    const startBtn = document.getElementById('counting-start-btn');
-    const prevBtn = document.getElementById('counting-prev-btn');
-    const nextBtn = document.getElementById('counting-next-btn');
+    const startBtn = document.getElementById('counting-sort-start-btn');
+    const prevBtn = document.getElementById('counting-sort-prev-btn');
+    const nextBtn = document.getElementById('counting-sort-next-btn');
     
     startBtn.disabled = false;
+    prevBtn.disabled = countingSortState.currentStep <= 0 || countingSortState.steps.length === 0;
+    nextBtn.disabled = countingSortState.completed || (countingSortState.sorting && !countingSortState.isPaused);
     
-    // Enable prev button if there are previous steps
-    prevBtn.disabled = state.currentStep <= 0 || state.steps.length === 0;
-    
-    // Enable next button unless sorting is running automatically
-    nextBtn.disabled = state.completed || (state.sorting && !state.isPaused);
-    
-    if (state.completed) {
+    if (countingSortState.completed) {
         startBtn.textContent = '🎬 Start Sorting';
-    } else if (state.isPaused) {
+    } else if (countingSortState.isPaused) {
         startBtn.textContent = '▶️ Resume';
-        if (state.manualStepMode) {
+        if (countingSortState.manualStepMode) {
             startBtn.textContent = '▶️ Continue Auto';
         }
-    } else if (state.sorting) {
+    } else if (countingSortState.sorting) {
         startBtn.textContent = '⏸️ Pause';
     }
 }
 
-// Initialize
-function init() {
-    // Set default elements to 10
-    document.getElementById('elements-count').value = 10;
-    document.getElementById('elements-value').textContent = 10;
-    
-    generateNewArray(10);
-    setupEventListeners();
-    document.getElementById('counting-start-btn').disabled = true;
-    document.getElementById('counting-prev-btn').disabled = true;
-    document.getElementById('counting-next-btn').disabled = true;
+// Setup event listeners
+function setupCountingSortEventListeners() {
+    // Toggle button
+    document.getElementById('counting-sort-toggle-btn').addEventListener('click', function() {
+        countingSortState.interactiveMode = !countingSortState.interactiveMode;
+        if (countingSortState.interactiveMode) {
+            this.textContent = '🟢 ON';
+            this.classList.add('active');
+            document.getElementById('counting-sort-elements-count').disabled = true;
+            document.getElementById('counting-sort-reset-btn').disabled = true;
+            document.getElementById('counting-sort-start-btn').disabled = false;
+            updateCountingSortControls();
+        } else {
+            this.textContent = '🔴 OFF';
+            this.classList.remove('active');
+            document.getElementById('counting-sort-elements-count').disabled = false;
+            document.getElementById('counting-sort-reset-btn').disabled = false;
+            document.getElementById('counting-sort-start-btn').disabled = true;
+            document.getElementById('counting-sort-prev-btn').disabled = true;
+            document.getElementById('counting-sort-next-btn').disabled = true;
+            countingSortState.manualStepMode = false;
+        }
+    });
+
+    document.getElementById('counting-sort-speed').addEventListener('input', function() {
+        countingSortState.speed = 1600 - this.value;
+        COUNTING_SORT_CONFIG.animationDuration = countingSortState.speed / 1600;
+        document.getElementById('counting-sort-speed-value').textContent =
+            this.value < 500 ? 'Slow' :
+            this.value < 1000 ? 'Medium' : 'Fast';
+    });
+
+    document.getElementById('counting-sort-elements-count').addEventListener('input', function() {
+        countingSortState.maxElements = parseInt(this.value);
+        document.getElementById('counting-sort-elements-value').textContent = countingSortState.maxElements;
+        if (!countingSortState.sorting) generateCountingSortArray(countingSortState.maxElements);
+    });
+
+    document.getElementById('counting-sort-reset-btn').addEventListener('click', function() {
+        if (!countingSortState.sorting) {
+            generateCountingSortArray(countingSortState.maxElements);
+        }
+    });
+
+    document.getElementById('counting-sort-start-btn').addEventListener('click', function() {
+        if (!countingSortState.interactiveMode) return;
+        
+        if (countingSortState.completed) {
+            countingSortVisualization();
+            return;
+        }
+        
+        if (countingSortState.sorting && !countingSortState.isPaused) {
+            countingSortState.isPaused = true;
+            this.textContent = '▶️ Resume';
+            updateCountingSortStatus('⏸️ Sorting paused');
+            updateCountingSortControls();
+        } else if (countingSortState.sorting && countingSortState.isPaused) {
+            countingSortState.isPaused = false;
+        } else {
+            countingSortVisualization();
+        }
+    });
+
+    document.getElementById('counting-sort-prev-btn').addEventListener('click', function() {
+        if (!countingSortState.interactiveMode) return;
+        if (countingSortState.currentStep > 0) {
+            countingSortState.currentStep--;
+            loadCountingSortStep(countingSortState.currentStep);
+        }
+    });
+
+    document.getElementById('counting-sort-next-btn').addEventListener('click', async function() {
+        if (!countingSortState.interactiveMode) return;
+        if (countingSortState.completed) return;
+        
+        countingSortState.manualStepMode = true;
+        countingSortState.isPaused = true;
+        
+        if (!countingSortState.algorithmState || countingSortState.steps.length === 0) {
+            countingSortState.sorting = true;
+            countingSortState.algorithmState = createCountingSortState();
+            countingSortState.steps = [];
+            countingSortState.currentStep = 0;
+            updateCountingSortControls();
+        }
+        
+        await executeCountingSortStep();
+        updateCountingSortControls();
+    });
 }
 
-init();
+// Initialize
+function initCountingSort() {
+    document.getElementById('counting-sort-elements-count').value = 5;
+    document.getElementById('counting-sort-elements-value').textContent = 5;
+    
+    generateCountingSortArray(5);
+    setupCountingSortEventListeners();
+    document.getElementById('counting-sort-start-btn').disabled = true;
+    document.getElementById('counting-sort-prev-btn').disabled = true;
+    document.getElementById('counting-sort-next-btn').disabled = true;
+}
+
+initCountingSort();
 </script>

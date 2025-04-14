@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorting Algorithms Quiz | SortArtOnline</title>
     <link rel="stylesheet" href="assets/css/styles.css">
-
     <style>
         :root {
            
@@ -416,12 +415,6 @@
     </style>
 </head>
 <body>
-<div class="loader-container">
-  <div class="loader-spinner">
-    <div class="sorting-bars"></div>
-    <div class="loader-text">Loading</div>
-  </div>
-</div>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-brand">
@@ -476,152 +469,150 @@
         </div>
     </div>
 
-    <button class="dark-mode-toggle" id="darkModeToggle">🌓</button>
-    
-     
-        <script src="assets/js/spinner.js"></script>
-
     <script>
-     const quizData = [
-    {
-        question: "Which sorting algorithm works by repeatedly selecting the smallest element from the unsorted portion and moving it to the sorted portion?",
-        options: ["Bubble Sort", "Insertion Sort", "Selection Sort", "Quick Sort"],
-        answer: "Selection Sort",
-        interactive: false
-    },
-    {
-        question: "Arrange these bars in ascending order using the Selection Sort method:",
-        interactive: true,
-        type: "bars",
-        data: [5, 2, 9, 3, 7],
-        answer: [2, 3, 5, 7, 9],
-        algorithm: "Selection Sort"
-    },
-    {
-        question: "Which sorting algorithm has an average time complexity of O(n log n) and works by dividing the array into two halves, sorting them recursively, and then merging them?",
-        options: ["Quick Sort", "Heap Sort", "Radix Sort", "Merge Sort"],
-        answer: "Merge Sort",
-        interactive: false
-    },
-    {
-        question: "Sort these numbers using Merge Sort (drag to arrange):",
-        interactive: true,
-        type: "boxes",
-        data: [8, 3, 5, 1, 9],
-        answer: [1, 3, 5, 8, 9],
-        algorithm: "Merge Sort"
-    },
-    {
-        question: "Which sorting algorithm is known for its partitioning process and average-case time complexity of O(n log n)?",
-        options: ["Bubble Sort", "Quick Sort", "Insertion Sort", "Counting Sort"],
-        answer: "Quick Sort",
-        interactive: false
-    },
-    {
-        question: "Arrange these numbers in order as Quick Sort would (select pivot and partition):",
-        interactive: true,
-        type: "numbers",
-        data: [6, 2, 8, 4, 5],
-        answer: [2, 4, 5, 6, 8],
-        algorithm: "Quick Sort"
-    },
-    {
-        question: "Which sorting algorithm is not comparison-based and works by counting the number of objects that have distinct key values?",
-        options: ["Radix Sort", "Tree Sort", "Bucket Sort", "Counting Sort"],
-        answer: "Counting Sort",
-        interactive: false
-    },
-    {
-        question: "Sort these bars using Bubble Sort (click adjacent bars to swap):",
-        interactive: true,
-        type: "bubble-bars",
-        data: [4, 1, 6, 3, 8],
-        answer: [1, 3, 4, 6, 8],
-        algorithm: "Bubble Sort"
-    },
-    {
-        question: "Which sorting algorithm is particularly efficient for sorting linked lists?",
-        options: ["Heap Sort", "Bubble Sort", "Merge Sort", "Quick Sort"],
-        answer: "Merge Sort",
-        interactive: false
-    },
-    {
-        question: "Arrange these boxes in ascending order using Insertion Sort:",
-        interactive: true,
-        type: "insertion-boxes",
-        data: [7, 2, 5, 9, 3],
-        answer: [2, 3, 5, 7, 9],
-        algorithm: "Insertion Sort"
-    },
-    {
-        question: "Which sorting algorithm builds a binary heap and then repeatedly extracts the maximum element from the heap?",
-        options: ["Tree Sort", "Heap Sort", "Quick Sort", "Merge Sort"],
-        answer: "Heap Sort",
-        interactive: false
-    },
-    {
-        question: "Which sorting algorithm builds a binary heap and then repeatedly extracts the maximum element from the heap?",
-        options: ["Merge Sort", "Selection Sort", "Heap Sort", "Quick Sort"],
-        answer: "Heap Sort",
-        interactive: false
-    },
-    {
-        question: "Which sorting algorithm works by distributing elements into buckets and then sorting the buckets individually?",
-        options: ["Radix Sort", "Tree Sort", "Bucket Sort", "Counting Sort"],
-        answer: "Bucket Sort",
-        interactive: false
-    },
-    {
-        question: "Arrange these bars in ascending order (simulating Bucket Sort):",
-        interactive: true,
-        type: "bucket-bars",
-        data: [12, 6, 18, 3, 9],
-        answer: [3, 6, 9, 12, 18],
-        algorithm: "Bucket Sort"
-    },
-    {
-        question: "Which sorting algorithm is particularly efficient for sorting numbers with a fixed number of digits?",
-        options: ["Counting Sort", "Quick Sort", "Radix Sort", "Merge Sort"],
-        answer: "Radix Sort",
-        interactive: false
-    },
-    {
-        question: "Sort these numbers using Radix Sort (sort by digits from right to left):",
-        interactive: true,
-        type: "radix-numbers",
-        data: [170, 45, 75, 90, 802, 24, 2, 66],
-        answer: [2, 24, 45, 66, 75, 90, 170, 802],
-        algorithm: "Radix Sort"
-    },
-    {
-        question: "Which sorting algorithm works by building a binary search tree from the elements and then performing an in-order traversal?",
-        options: ["Heap Sort", "Tree Sort", "Quick Sort", "Merge Sort"],
-        answer: "Tree Sort",
-        interactive: false
-    },
-    {
-        question: "Arrange these boxes to simulate building a binary search tree:",
-        interactive: true,
-        type: "tree-boxes",
-        data: [6, 2, 8, 1, 4, 7, 9],
-        answer: [1, 2, 4, 6, 7, 8, 9],
-        algorithm: "Tree Sort"
-    },
-    {
-        question: "Which sorting algorithm is often used as the base case for smaller subarrays in more complex algorithms like Quick Sort?",
-        options: ["Bubble Sort", "Counting Sort", "Selection Sort", "Insertion Sort"],
-        answer: "Insertion Sort",
-        interactive: false
-    },
-    {
-        question: "Sort these bars using Insertion Sort (click to insert in correct position):",
-        interactive: true,
-        type: "insertion-bars",
-        data: [5, 2, 9, 1, 6],
-        answer: [1, 2, 5, 6, 9],
-        algorithm: "Insertion Sort"
-    }
-];
+        // Quiz Data
+        const quizData = [
+            {
+                question: "Which sorting algorithm works by repeatedly selecting the smallest element from the unsorted portion and moving it to the sorted portion?",
+                options: ["Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort"],
+                answer: "Selection Sort",
+                interactive: false
+            },
+            {
+                question: "Arrange these bars in ascending order using the Selection Sort method:",
+                interactive: true,
+                type: "bars",
+                data: [5, 2, 9, 3, 7],
+                answer: [2, 3, 5, 7, 9],
+                algorithm: "Selection Sort"
+            },
+            {
+                question: "Which sorting algorithm has an average time complexity of O(n log n) and works by dividing the array into two halves, sorting them recursively, and then merging them?",
+                options: ["Heap Sort", "Merge Sort", "Quick Sort", "Radix Sort"],
+                answer: "Merge Sort",
+                interactive: false
+            },
+            {
+                question: "Sort these numbers using Merge Sort (drag to arrange):",
+                interactive: true,
+                type: "boxes",
+                data: [8, 3, 5, 1, 9],
+                answer: [1, 3, 5, 8, 9],
+                algorithm: "Merge Sort"
+            },
+            {
+                question: "Which sorting algorithm is known for its partitioning process and average-case time complexity of O(n log n)?",
+                options: ["Quick Sort", "Bubble Sort", "Insertion Sort", "Counting Sort"],
+                answer: "Quick Sort",
+                interactive: false
+            },
+            {
+                question: "Arrange these numbers in order as Quick Sort would (select pivot and partition):",
+                interactive: true,
+                type: "numbers",
+                data: [6, 2, 8, 4, 5],
+                answer: [2, 4, 5, 6, 8],
+                algorithm: "Quick Sort"
+            },
+            {
+                question: "Which sorting algorithm is not comparison-based and works by counting the number of objects that have distinct key values?",
+                options: ["Radix Sort", "Counting Sort", "Bucket Sort", "Tree Sort"],
+                answer: "Counting Sort",
+                interactive: false
+            },
+            {
+                question: "Sort these bars using Bubble Sort (click adjacent bars to swap):",
+                interactive: true,
+                type: "bubble-bars",
+                data: [4, 1, 6, 3, 8],
+                answer: [1, 3, 4, 6, 8],
+                algorithm: "Bubble Sort"
+            },
+            {
+                question: "Which sorting algorithm is particularly efficient for sorting linked lists?",
+                options: ["Merge Sort", "Heap Sort", "Quick Sort", "Bubble Sort"],
+                answer: "Merge Sort",
+                interactive: false
+            },
+            {
+                question: "Arrange these boxes in ascending order using Insertion Sort:",
+                interactive: true,
+                type: "insertion-boxes",
+                data: [7, 2, 5, 9, 3],
+                answer: [2, 3, 5, 7, 9],
+                algorithm: "Insertion Sort"
+            },
+            {
+                question: "Which sorting algorithm builds a binary heap and then repeatedly extracts the maximum element from the heap?",
+                options: ["Heap Sort", "Tree Sort", "Quick Sort", "Merge Sort"],
+                answer: "Heap Sort",
+                interactive: false
+            },
+            {
+                question: "Sort these numbers using Heap Sort (click to build max heap):",
+                interactive: true,
+                type: "heap-numbers",
+                data: [4, 10, 3, 5, 1],
+                answer: [1, 3, 4, 5, 10],
+                algorithm: "Heap Sort"
+            },
+            {
+                question: "Which sorting algorithm works by distributing elements into buckets and then sorting the buckets individually?",
+                options: ["Bucket Sort", "Radix Sort", "Counting Sort", "Tree Sort"],
+                answer: "Bucket Sort",
+                interactive: false
+            },
+            {
+                question: "Arrange these bars in ascending order (simulating Bucket Sort):",
+                interactive: true,
+                type: "bucket-bars",
+                data: [12, 6, 18, 3, 9],
+                answer: [3, 6, 9, 12, 18],
+                algorithm: "Bucket Sort"
+            },
+            {
+                question: "Which sorting algorithm is particularly efficient for sorting numbers with a fixed number of digits?",
+                options: ["Radix Sort", "Counting Sort", "Quick Sort", "Merge Sort"],
+                answer: "Radix Sort",
+                interactive: false
+            },
+            {
+                question: "Sort these numbers using Radix Sort (sort by digits from right to left):",
+                interactive: true,
+                type: "radix-numbers",
+                data: [170, 45, 75, 90, 802, 24, 2, 66],
+                answer: [2, 24, 45, 66, 75, 90, 170, 802],
+                algorithm: "Radix Sort"
+            },
+            {
+                question: "Which sorting algorithm works by building a binary search tree from the elements and then performing an in-order traversal?",
+                options: ["Tree Sort", "Heap Sort", "Quick Sort", "Merge Sort"],
+                answer: "Tree Sort",
+                interactive: false
+            },
+            {
+                question: "Arrange these boxes to simulate building a binary search tree:",
+                interactive: true,
+                type: "tree-boxes",
+                data: [6, 2, 8, 1, 4, 7, 9],
+                answer: [1, 2, 4, 6, 7, 8, 9],
+                algorithm: "Tree Sort"
+            },
+            {
+                question: "Which sorting algorithm is often used as the base case for smaller subarrays in more complex algorithms like Quick Sort?",
+                options: ["Insertion Sort", "Bubble Sort", "Selection Sort", "Counting Sort"],
+                answer: "Insertion Sort",
+                interactive: false
+            },
+            {
+                question: "Sort these bars using Insertion Sort (click to insert in correct position):",
+                interactive: true,
+                type: "insertion-bars",
+                data: [5, 2, 9, 1, 6],
+                answer: [1, 2, 5, 6, 9],
+                algorithm: "Insertion Sort"
+            }
+        ];
 
         // DOM Elements
       const quizSetup = document.getElementById('quizSetup');
@@ -652,8 +643,6 @@ let currentInteractiveData = [];
 let isSortingComplete = false;
 
 // Event Listeners
-let quizInProgress = false;
-
 startQuizBtn.addEventListener('click', startQuiz);
 nextQuestionBtn.addEventListener('click', nextQuestion);
 restartQuizBtn.addEventListener('click', restartQuiz);
@@ -681,17 +670,6 @@ function startQuiz() {
         alert('Please select the number of questions first!');
         return;
     }
-
-    // Mark quiz as in progress
-    quizInProgress = true;
-
-    // Add a warning before the user refreshes or leaves the page
-    window.addEventListener('beforeunload', function(event) {
-        if (quizInProgress) {
-            event.preventDefault();
-            event.returnValue = "Are you sure you want to reload the page? This quiz will not be saved.";
-        }
-    });
 
     // Select random questions
     selectedQuestions = [...quizData].sort(() => 0.5 - Math.random()).slice(0, totalQuestions);
@@ -791,6 +769,7 @@ function renderBarSorting(container, question) {
 
         bar.addEventListener('dragend', () => {
             bar.classList.remove('dragging');
+            updateBarDataArray(sortingContainer, question); // Update data after drag ends
         });
     });
 
@@ -840,25 +819,39 @@ function getDragAfterElement(container, x) {
     }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
-// Check if the array is sorted (for interactive questions)
-function checkIfSorted(question) {
-    const bars = document.querySelectorAll('.bar');
-    const sortedData = Array.from(bars).map(bar => parseInt(bar.dataset.value));
-    const isCorrect = JSON.stringify(sortedData) === JSON.stringify(question.answer);
+// Helper function to update the data array after bar rearrangement
+function updateBarDataArray(sortingContainer, question) {
+    const bars = Array.from(sortingContainer.children);
+    currentInteractiveData = bars.map(bar => parseInt(bar.dataset.value));
+}
+
+// Check interactive answer
+function checkInteractiveAnswer(question) {
+    const isCorrect = JSON.stringify(currentInteractiveData) === JSON.stringify(question.answer);
 
     const feedback = document.getElementById('sortFeedback');
     if (isCorrect) {
-        isSortingComplete = true;
-        nextQuestionBtn.disabled = false;
-
         feedback.className = 'sort-feedback correct-feedback';
         feedback.textContent = 'Correct! The items are properly sorted.';
-        feedback.style.display = 'block';
+        score++;
     } else {
         feedback.className = 'sort-feedback incorrect-feedback';
-        feedback.textContent = 'Not quite right. Keep trying!';
-        feedback.style.display = 'block';
+        feedback.textContent = `Incorrect. The correct order should be: ${question.answer.join(', ')}`;
+
+        // Highlight incorrect bars
+        const bars = document.querySelectorAll('.bar');
+        bars.forEach((bar, index) => {
+            if (parseInt(bar.dataset.value) !== question.answer[index]) {
+                bar.style.backgroundColor = '#f44336';
+            } else {
+                bar.style.backgroundColor = '#4CAF50';
+            }
+        });
     }
+
+    feedback.style.display = 'block';
+    nextQuestionBtn.disabled = false;
+    isSortingComplete = true;
 }
 
 // Render box sorting interactive
@@ -1174,32 +1167,6 @@ function restartQuiz() {
     });
     totalQuestions = 0;
 }
-
-
-
     </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    // Check saved preference
-    const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-    
-    // Apply saved mode
-    if (darkModeEnabled) {
-        document.body.classList.add('dark-mode');
-    }
-    
-    // Set up toggle button
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener('click', function() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', isDark);
-        });
-    }
-});
-    </script>
-
-
 </body>
 </html>
