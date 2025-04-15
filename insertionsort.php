@@ -1,5 +1,29 @@
-<style>
-      h1 {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertion Sort Visualization</title>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .insertion-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
             text-align: center;
             color: #2c3e50;
             margin-bottom: 20px;
@@ -80,50 +104,20 @@
 
         .insertion-bar-label {
             position: absolute;
-        top: 50%; /* Center vertically */
-        left: 50%; /* Center horizontally */
-        transform: translate(-50%, -50%); /* Adjust for centering */
-        width: 100%;
-        text-align: center;
-        font-size: 12px;
-        font-weight: bold;
-        color: white; /* Ensure visibility inside the bar */
-        pointer-events: none; /* Prevent interaction */
-    }
-        
+            top: -25px;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
 
         #insertion-steps-container {
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    border-left: 4px solid #3498db;
-    max-height: 200px;
-    overflow-y: auto;
-    
-    /* Modern scrollbar styling */
-    scrollbar-width: thin;
-    scrollbar-color: #4ec9b0 #f8f9fa;
-}
-
-/* For WebKit browsers (Chrome, Safari, Edge) */
-#insertion-steps-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-#insertion-steps-container::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-}
-
-#insertion-steps-container::-webkit-scrollbar-thumb {
-    background-color: #4ec9b0;
-    border-radius: 10px;
-    border: 2px solid transparent;
-}
-
-#insertion-steps-container::-webkit-scrollbar-thumb:hover {
-    background-color: #3ab8a0;
-}
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
 
         .insertion-step {
             margin-bottom: 8px;
@@ -176,19 +170,12 @@
         .insertion-color-box.current {
             background-color: #9b59b6;
         }
+    </style>
 
-
-        body.dark-mode #insertion-array-container {
-        background-color: #333;
-    }
-    body.dark-mode #insertion-steps-container {
-        background-color: var(--background);
-        color: white;
-    }
-</style>
-
-<main class="main-content insertion-sort" id="insertion-sort" style="display:block;">
-<h1>Insertion Sort Visualization</h1>
+</head>
+<body>
+    <div class="insertion-container">
+        <h1>Insertion Sort Visualization</h1>
         <div class="insertion-controls">
             <button id="insertion-generate-btn">Generate New Array</button>
             <button id="insertion-sort-btn">Insertion Sort</button>
@@ -225,10 +212,10 @@
                 <span>Current Element</span>
             </div>
         </div>
-</main>
-
-<script>
-   document.addEventListener('DOMContentLoaded', function() {
+    </div>
+   
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
             // DOM elements
             const insertionArrayContainer = document.getElementById('insertion-array-container');
             const insertionStepsContainer = document.getElementById('insertion-steps-container');
@@ -441,4 +428,6 @@
                 await new Promise(resolve => setTimeout(resolve, insertionAnimationSpeed));
             }
         });
-</script>
+    </script>
+</body>
+</html>
