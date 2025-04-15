@@ -110,6 +110,7 @@
     }
 
     #tree-steps-container {
+        width: 100% !important; 
         padding: 15px;
         background-color: #f8f9fa;
         border-radius: 5px;
@@ -230,7 +231,7 @@
     </div>
     <div id="tree-visualization">
         <div id="tree-array-container"></div>
-        <svg id="tree-canvas" width="600" height="300"></svg>
+        <svg id="tree-canvas" width="600" height="250"></svg>
         <div id="tree-steps-container"></div>
     </div>
     <div class="tree-legend">

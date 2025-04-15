@@ -33,6 +33,7 @@
     <?php include "visualization/selection-sort-visualization.php"; ?>
     <?php include "visualization/radix-sort-visualization.php"; ?>
     <?php include "visualization/tree-sort-visualization.php"; ?>
+    <?php include "visualization/counting-sort-visualization.php"; ?>
     
     </div>
    
