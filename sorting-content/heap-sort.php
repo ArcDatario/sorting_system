@@ -14,7 +14,10 @@
 
         <h2>How Heap Sort Works?</h2>
 
-     
+        <br><br>
+                <?php include "button.php";?>
+
+<br><br>
         
         <h3>Step-by-Step Example (Sorting [4, 10, 3, 5, 1]):</h3>
         

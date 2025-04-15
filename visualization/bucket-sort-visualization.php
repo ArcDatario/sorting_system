@@ -163,7 +163,9 @@
     }
 </style>
 
-<div class="bucket-sort-container">
+<main class="main-content  bucket-sort" id="bucket-sort" style="display:none;">
+    
+
     <h1>Bucket Sort Visualization</h1>
     
     <div class="controls">
@@ -223,7 +225,8 @@
             <span>Sorted</span>
         </div>
     </div>
-</div>
+
+</main>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

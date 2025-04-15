@@ -13,8 +13,10 @@
         <p class="video-caption">Video: Bucket Sort Visualization</p>
 
         <h2>How Bucket Sort Works?</h2>
+<br><br>
+                <?php include "button.php";?>
 
-       <!-- include visualization -->
+<br><br>
 
         <h3>Step-by-Step Example (Sorting [0.42, 0.32, 0.75, 0.12, 0.89, 0.63]):</h3>
         

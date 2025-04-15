@@ -16,8 +16,11 @@
         
       
         <!-- include visualization -->
+        <br><br>
+                <?php include "button.php";?>
 
-        
+<br><br>
+
 
         <h3>Step-by-Step Example (Sorting [7, 4, 9, 2, 5]):</h3>
         

@@ -12,6 +12,12 @@
 
 </head>
 <body>
+<div class="loader-container">
+  <div class="loader-spinner">
+    <div class="sorting-bars"></div>
+    <div class="loader-text">Loading</div>
+  </div>
+</div>
 <nav class="navbar">
         <div class="navbar-brand">
             Sort<span>Art</span>Online

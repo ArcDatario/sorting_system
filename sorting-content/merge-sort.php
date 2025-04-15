@@ -18,7 +18,10 @@
 
         <h2>How Merge Sort Works?</h2>
         
-       
+        <br><br>
+                <?php include "button.php";?>
+
+<br><br>
 
         <h3>Step-by-Step Example (Sorting [38, 27, 43, 3, 9, 82, 10]):</h3>
         
