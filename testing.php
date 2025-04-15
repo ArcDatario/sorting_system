@@ -34,6 +34,8 @@
     <?php include "visualization/radix-sort-visualization.php"; ?>
     <?php include "visualization/tree-sort-visualization.php"; ?>
     <?php include "visualization/counting-sort-visualization.php"; ?>
+    <?php include "visualization/bubble-sort-visualization.php"; ?>
+    <?php include "visualization/bucket-sort-visualization.php"; ?>
     
     </div>
    
