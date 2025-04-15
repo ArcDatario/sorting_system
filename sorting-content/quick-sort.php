@@ -15,6 +15,7 @@
         <h2>How Quick Sort Works?</h2>
         
         <!-- include visualization -->
+         
 
         <h3>Detailed Example (Sorting [10, 80, 30, 90, 40, 50, 70]):</h3>
         

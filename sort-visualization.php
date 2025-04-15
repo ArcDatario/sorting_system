@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heap Sort Visualization</title>
+    <title>Visualization</title>
+    <link rel="icon" href="assets/images/sort-icon.png" type="image/png">
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
     
@@ -19,6 +20,7 @@
         <ul class="nav-links" id="navLinks">
             <li><a href="home">Home</a></li>
             <li><a href="learn">Learn</a></li>
+            <li><a href="sort-visualization">Visualize</a></li>
             <li><a href="quiz">Quiz</a></li>
             <li><a href="#">Offline</a></li>
         </ul>

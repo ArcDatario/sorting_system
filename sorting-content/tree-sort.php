@@ -17,6 +17,8 @@
       
         <!-- include visualization -->
 
+        
+
         <h3>Step-by-Step Example (Sorting [7, 4, 9, 2, 5]):</h3>
         
         <h4>Step 1: Build Binary Search Tree</h4>

@@ -16,6 +16,8 @@
 
         <!-- include visualization -->
 
+        
+
         <h3>Detailed Step-by-Step Example:</h3>
         <p>Sorting the array: [64, 25, 12, 22, 11]</p>
 

@@ -19,7 +19,7 @@
 
         <h2>How Insertion Sort Works?</h2>
 
-       <?php include "visualization/insertion-sort-visualization.php";?>
+      
 
         <h3>Step-by-Step Example:</h3>
         <p>Let's sort the array: [12, 11, 13, 5, 6]</p>

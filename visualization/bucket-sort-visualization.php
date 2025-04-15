@@ -1,10 +1,15 @@
 <style>
+    .bucket-sort-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        font-family: Arial, sans-serif;
+    }
     h1 {
         text-align: center;
         color: #2c3e50;
         margin-bottom: 20px;
     }
-    .bucket-sort-controls {
+    .controls {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
@@ -12,7 +17,7 @@
         justify-content: center;
         align-items: center;
     }
-    .bucket-sort-button {
+    button {
         padding: 8px 16px;
         background-color: #3498db;
         color: white;
@@ -22,42 +27,41 @@
         font-size: 14px;
         transition: background-color 0.3s;
     }
-    .bucket-sort-button:hover {
+    button:hover {
         background-color: #2980b9;
     }
-    .bucket-sort-button:disabled {
+    button:disabled {
         background-color: #95a5a6;
         cursor: not-allowed;
     }
-    .bucket-sort-slider-container {
+    .slider-container {
         display: flex;
         align-items: center;
         gap: 8px;
         font-size: 14px;
     }
-    .bucket-sort-visualization {
+    .visualization {
         display: flex;
         flex-direction: column;
-        gap: 20px;
-        margin-top: 20px;
+        gap: 15px;
     }
-    .bucket-sort-array-container {
+    .phase {
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    .array {
         display: flex;
-        flex-direction: column;
         gap: 5px;
-        padding: 15px;
+        flex-wrap: wrap;
+        padding: 10px;
         background-color: #ecf0f1;
         border-radius: 4px;
+        min-height: 50px;
     }
-    .bucket-sort-array-row {
-        display: flex;
-        justify-content: center;
-        gap: 5px;
-        margin-bottom: 5px;
-    }
-    .bucket-sort-array-element {
-        width: 60px;
-        height: 60px;
+    .element {
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -65,306 +69,283 @@
         font-weight: bold;
         transition: all 0.3s;
         color: white;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         position: relative;
     }
-    .bucket-sort-normal { background-color: #3498db; }
-    .bucket-sort-current { background-color: #e74c3c; transform: scale(1.1); }
-    .bucket-sort-in-bucket { background-color: #f39c12; }
-    .bucket-sort-sorted { background-color: #2ecc71; }
-    .bucket-sort-bucket { background-color: #9b59b6; }
-    .bucket-sort-array-label {
+    .normal { background-color: #3498db; }
+    .current { background-color: #e74c3c; transform: scale(1.1); }
+    .in-bucket { background-color: #f39c12; }
+    .sorted { background-color: #2ecc71; }
+    .bucket { background-color: #9b59b6; }
+    .index {
         position: absolute;
-        top: -20px;
-        width: 100%;
-        text-align: center;
-        font-size: 11px;
+        top: -15px;
+        font-size: 10px;
         color: #7f8c8d;
     }
-    .bucket-sort-info-panel {
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        border-left: 4px solid #3498db;
-        max-height: 200px;
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: #4ec9b0 #f8f9fa;
-    }
-    .bucket-sort-info-panel::-webkit-scrollbar {
-        width: 8px;
-    }
-    .bucket-sort-info-panel::-webkit-scrollbar-track {
-        background: transparent;
-        border-radius: 10px;
-    }
-    .bucket-sort-info-panel::-webkit-scrollbar-thumb {
-        background-color: #4ec9b0;
-        border-radius: 10px;
-        border: 2px solid transparent;
-    }
-    .bucket-sort-info-panel::-webkit-scrollbar-thumb:hover {
-        background-color: #3ab8a0;
-    }
-    .bucket-sort-step {
-        margin-bottom: 8px;
-        font-size: 14px;
-        line-height: 1.4;
-    }
-    .bucket-sort-step.active {
-        font-weight: bold;
-        color: #2c3e50;
-    }
-    .bucket-sort-step.completed {
-        color: #27ae60;
-    }
-    .bucket-sort-legend {
+    .buckets-container {
         display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 20px;
+        gap: 15px;
         flex-wrap: wrap;
-    }
-    .bucket-sort-legend-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 14px;
-    }
-    .bucket-sort-color-box {
-        width: 20px;
-        height: 20px;
-        border-radius: 4px;
-    }
-    .bucket-sort-status-text {
-        text-align: center;
-        margin: 10px 0;
-        font-weight: bold;
-        color: #4ec9b0;
-        min-height: 24px;
-    }
-    .bucket-sort-buckets-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
         margin-top: 10px;
     }
-    .bucket-sort-bucket-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
+    .bucket-group {
+        flex: 1;
+        min-width: 150px;
     }
-    .bucket-sort-bucket-title {
+    .bucket-title {
         font-weight: bold;
-        color: #2c3e50;
         margin-bottom: 5px;
+        color: #2c3e50;
     }
-    .bucket-sort-bucket-elements {
+    .bucket-elements {
         display: flex;
         flex-wrap: wrap;
         gap: 5px;
-        min-height: 70px;
         padding: 10px;
         background-color: #f8f9fa;
         border-radius: 4px;
-        border: 2px dashed #9b59b6;
+        min-height: 50px;
+        border: 1px dashed #9b59b6;
     }
-    .bucket-sort-phase-title {
-        text-align: center;
+    .info-panel {
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        border-left: 3px solid #3498db;
+        max-height: 150px;
+        overflow-y: auto;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    .step {
+        margin-bottom: 5px;
+        padding: 3px 0;
+    }
+    .step.active {
         font-weight: bold;
-        margin: 10px 0;
         color: #2c3e50;
+        background-color: #e3f2fd;
     }
-    .bucket-sort-visual-row {
+    .step.completed {
+        color: #27ae60;
+    }
+    .status {
+        text-align: center;
+        margin: 10px 0;
+        font-weight: bold;
+        color: #3498db;
+        min-height: 20px;
+    }
+    .legend {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+    .legend-item {
+        display: flex;
         align-items: center;
+        gap: 5px;
+        font-size: 13px;
     }
-    .bucket-sort-arrow {
-        font-size: 24px;
+    .color-box {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+    }
+    .arrow {
+        text-align: center;
+        font-size: 20px;
         color: #7f8c8d;
-        padding: 0 10px;
-    }
-
-    body.dark-mode .bucket-sort-array-container {
-        background-color: #333;
-    }
-    body.dark-mode .bucket-sort-info-panel {
-        background-color: var(--background);
-        color: white;
-    }
-    body.dark-mode .bucket-sort-bucket-elements {
-        background-color: #444;
+        margin: 5px 0;
     }
 </style>
 
-<main class="main-content bucket-sort" id="bucket-sort" style="display:block;">
+<div class="bucket-sort-container">
     <h1>Bucket Sort Visualization</h1>
-    <div class="bucket-sort-controls">
-        <button id="bucket-sort-generate-btn" class="bucket-sort-button">Generate New Array</button>
-        <button id="bucket-sort-sort-btn" class="bucket-sort-button">Start Bucket Sort</button>
-        <div class="bucket-sort-slider-container">
-            <label for="bucket-sort-size-slider">Array Size:</label>
-            <input type="range" id="bucket-sort-size-slider" min="5" max="15" value="10">
-            <span id="bucket-sort-size-value">10</span>
+    
+    <div class="controls">
+        <button id="generate-btn">New Array</button>
+        <button id="sort-btn">Start Sort</button>
+        <div class="slider-container">
+            <label for="size-slider">Size:</label>
+            <input type="range" id="size-slider" min="5" max="10" value="6">
+            <span id="size-value">10</span>
         </div>
-        <div class="bucket-sort-slider-container">
-            <label for="bucket-sort-speed-slider">Speed:</label>
-            <input type="range" id="bucket-sort-speed-slider" min="1" max="10" value="5">
-            <span id="bucket-sort-speed-value">5</span>
+        <div class="slider-container">
+            <label for="speed-slider">Speed:</label>
+            <input type="range" id="speed-slider" min="1" max="10" value="2">
+            <span id="speed-value">2</span>
         </div>
     </div>
-    <div class="bucket-sort-visualization">
-        <div id="bucket-sort-status-text" class="bucket-sort-status-text"></div>
+    
+    <div class="status" id="status"></div>
+    
+    <div class="visualization">
+        <div class="phase">Input Array</div>
+        <div id="input-array" class="array"></div>
         
-        <div class="bucket-sort-phase-title">Input Array</div>
-        <div id="bucket-sort-input-array" class="bucket-sort-array-container"></div>
+        <div class="arrow">↓</div>
         
-        <div class="bucket-sort-phase-title">Buckets (Before Sorting)</div>
-        <div id="bucket-sort-buckets" class="bucket-sort-buckets-container"></div>
+        <div class="phase">Scatter: Distribute to Buckets</div>
+        <div id="buckets" class="buckets-container"></div>
         
-        <div class="bucket-sort-phase-title">Buckets (After Sorting)</div>
-        <div id="bucket-sort-sorted-buckets" class="bucket-sort-buckets-container"></div>
+        <div class="arrow">↓</div>
         
-        <div class="bucket-sort-phase-title">Output Array</div>
-        <div id="bucket-sort-output-array" class="bucket-sort-array-container"></div>
+        <div class="phase">Sort Individual Buckets</div>
+        <div id="sorted-buckets" class="buckets-container"></div>
         
-        <div id="bucket-sort-info-panel" class="bucket-sort-info-panel"></div>
+        <div class="arrow">↓</div>
+        
+        <div class="phase">Gather: Final Sorted Array</div>
+        <div id="output-array" class="array"></div>
+        
+        <div class="info-panel" id="info-panel"></div>
     </div>
-    <div class="bucket-sort-legend">
-        <div class="bucket-sort-legend-item">
-            <div class="bucket-sort-color-box bucket-sort-current"></div>
-            <span>Current Element</span>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <div class="color-box current"></div>
+            <span>Current</span>
         </div>
-        <div class="bucket-sort-legend-item">
-            <div class="bucket-sort-color-box bucket-sort-in-bucket"></div>
+        <div class="legend-item">
+            <div class="color-box in-bucket"></div>
             <span>In Bucket</span>
         </div>
-        <div class="bucket-sort-legend-item">
-            <div class="bucket-sort-color-box bucket-sort-bucket"></div>
+        <div class="legend-item">
+            <div class="color-box bucket"></div>
             <span>Bucket</span>
         </div>
-        <div class="bucket-sort-legend-item">
-            <div class="bucket-sort-color-box bucket-sort-sorted"></div>
+        <div class="legend-item">
+            <div class="color-box sorted"></div>
             <span>Sorted</span>
         </div>
     </div>
-</main>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // DOM elements
-        const bucketSortSizeSlider = document.getElementById('bucket-sort-size-slider');
-        const bucketSortSizeValue = document.getElementById('bucket-sort-size-value');
-        const bucketSortInputArray = document.getElementById('bucket-sort-input-array');
-        const bucketSortBuckets = document.getElementById('bucket-sort-buckets');
-        const bucketSortSortedBuckets = document.getElementById('bucket-sort-sorted-buckets');
-        const bucketSortOutputArray = document.getElementById('bucket-sort-output-array');
-        const bucketSortGenerateBtn = document.getElementById('bucket-sort-generate-btn');
-        const bucketSortSortBtn = document.getElementById('bucket-sort-sort-btn');
-        const bucketSortSpeedSlider = document.getElementById('bucket-sort-speed-slider');
-        const bucketSortSpeedValue = document.getElementById('bucket-sort-speed-value');
-        const bucketSortStatusText = document.getElementById('bucket-sort-status-text');
-        const bucketSortInfoPanel = document.getElementById('bucket-sort-info-panel');
+        const sizeSlider = document.getElementById('size-slider');
+        const sizeValue = document.getElementById('size-value');
+        const inputArray = document.getElementById('input-array');
+        const buckets = document.getElementById('buckets');
+        const sortedBuckets = document.getElementById('sorted-buckets');
+        const outputArray = document.getElementById('output-array');
+        const generateBtn = document.getElementById('generate-btn');
+        const sortBtn = document.getElementById('sort-btn');
+        const speedSlider = document.getElementById('speed-slider');
+        const speedValue = document.getElementById('speed-value');
+        const status = document.getElementById('status');
+        const infoPanel = document.getElementById('info-panel');
 
         // Variables
-        let bucketSortArray = [];
-        let bucketSortArraySize = parseInt(bucketSortSizeSlider.value);
-        let bucketSortSpeed = parseInt(bucketSortSpeedSlider.value);
-        let bucketSortAnimationSpeed = 1000 / bucketSortSpeed;
-        let bucketSortIsSorting = false;
-        let bucketSortSteps = [];
-        let bucketSortCurrentStep = 0;
-        let bucketSortMaxValue = 100; // Maximum value in the array
-        let buckets = [];
-        let sortedBuckets = [];
-        let outputArray = [];
-        const numBuckets = 5; // Number of buckets to use
+        let array = [];
+        let arraySize = parseInt(sizeSlider.value);
+        let speed = parseInt(speedSlider.value);
+        let animationSpeed = 1000 / speed;
+        let isSorting = false;
+        let steps = [];
+        let currentStep = 0;
+        const maxValue = 100;
+        const numBuckets = 5;
+        const bucketSize = maxValue / numBuckets;
 
         // Initialize
-        updateBucketSortSizeValue();
-        updateBucketSortSpeedValue();
-        generateBucketSortNewArray();
+        updateSizeValue();
+        updateSpeedValue();
+        generateNewArray();
 
         // Event listeners
-        bucketSortGenerateBtn.addEventListener('click', generateBucketSortNewArray);
-        bucketSortSortBtn.addEventListener('click', startBucketSort);
-        bucketSortSizeSlider.addEventListener('input', updateBucketSortSizeValue);
-        bucketSortSpeedSlider.addEventListener('input', updateBucketSortSpeedValue);
+        generateBtn.addEventListener('click', generateNewArray);
+        sortBtn.addEventListener('click', startSort);
+        sizeSlider.addEventListener('input', updateSizeValue);
+        speedSlider.addEventListener('input', updateSpeedValue);
 
         // Functions
-        function updateBucketSortSizeValue() {
-            bucketSortArraySize = parseInt(bucketSortSizeSlider.value);
-            bucketSortSizeValue.textContent = bucketSortArraySize;
-            generateBucketSortNewArray();
+        function updateSizeValue() {
+            arraySize = parseInt(sizeSlider.value);
+            sizeValue.textContent = arraySize;
+            generateNewArray();
         }
 
-        function updateBucketSortSpeedValue() {
-            bucketSortSpeed = parseInt(bucketSortSpeedSlider.value);
-            bucketSortSpeedValue.textContent = bucketSortSpeed;
-            bucketSortAnimationSpeed = 1000 / bucketSortSpeed;
+        function updateSpeedValue() {
+            speed = parseInt(speedSlider.value);
+            speedValue.textContent = speed;
+            animationSpeed = 1000 / speed;
         }
 
-        function generateBucketSortNewArray() {
-            if (bucketSortIsSorting) return;
+        function generateNewArray() {
+            if (isSorting) return;
 
-            bucketSortArray = [];
-            for (let i = 0; i < bucketSortArraySize; i++) {
-                bucketSortArray.push(Math.floor(Math.random() * bucketSortMaxValue) + 1); // Values between 1-bucketSortMaxValue
+            array = [];
+            for (let i = 0; i < arraySize; i++) {
+                array.push(Math.floor(Math.random() * maxValue) + 1);
             }
 
-            renderBucketSortInputArray();
-            bucketSortBuckets.innerHTML = '';
-            bucketSortSortedBuckets.innerHTML = '';
-            bucketSortOutputArray.innerHTML = '';
-            bucketSortInfoPanel.innerHTML = '';
-            bucketSortSteps = [];
-            bucketSortCurrentStep = 0;
-            bucketSortStatusText.textContent = '';
+            renderInputArray();
+            buckets.innerHTML = '';
+            sortedBuckets.innerHTML = '';
+            outputArray.innerHTML = '';
+            infoPanel.innerHTML = '';
+            steps = [];
+            currentStep = 0;
+            status.textContent = '';
         }
 
-        function renderBucketSortInputArray(highlightIndex = -1) {
-            bucketSortInputArray.innerHTML = '';
+        function renderInputArray(highlightIndex = -1) {
+            inputArray.innerHTML = '';
 
-            const row = document.createElement('div');
-            row.className = 'bucket-sort-array-row';
-
-            bucketSortArray.forEach((value, index) => {
+            array.forEach((value, index) => {
                 const element = document.createElement('div');
-                element.className = `bucket-sort-array-element ${index === highlightIndex ? 'bucket-sort-current' : 'bucket-sort-normal'}`;
+                element.className = `element ${index === highlightIndex ? 'current' : 'normal'}`;
                 element.textContent = value;
-                element.dataset.index = index;
                 
-                const label = document.createElement('div');
-                label.className = 'bucket-sort-array-label';
-                label.textContent = `[${index}]`;
-                element.appendChild(label);
+                const indexLabel = document.createElement('div');
+                indexLabel.className = 'index';
+                indexLabel.textContent = index;
+                element.appendChild(indexLabel);
                 
-                row.appendChild(element);
+                inputArray.appendChild(element);
             });
-
-            bucketSortInputArray.appendChild(row);
         }
 
-        function renderBucketSortBuckets(buckets, highlightValue = null) {
-            bucketSortBuckets.innerHTML = '';
+        function getBucketRangeText(bucketIndex) {
+            const lower = Math.floor(bucketIndex * bucketSize);
+            const upper = Math.floor((bucketIndex + 1) * bucketSize);
+            // Special case for last bucket to include maxValue
+            if (bucketIndex === numBuckets - 1) {
+                return `Bucket ${bucketIndex} (${lower}-${upper})`;
+            }
+            return `Bucket ${bucketIndex} (${lower}-${upper - 1})`;
+        }
 
-            for (let i = 0; i < buckets.length; i++) {
-                const bucketContainer = document.createElement('div');
-                bucketContainer.className = 'bucket-sort-bucket-container';
+        function getBucketIndex(value) {
+            // Special case for max value to go in last bucket
+            if (value === maxValue) return numBuckets - 1;
+            return Math.floor((value - 1) / bucketSize);
+        }
+
+        function renderBuckets(bucketsData, highlightValue = null) {
+            buckets.innerHTML = '';
+
+            for (let i = 0; i < numBuckets; i++) {
+                const bucketGroup = document.createElement('div');
+                bucketGroup.className = 'bucket-group';
                 
                 const title = document.createElement('div');
-                title.className = 'bucket-sort-bucket-title';
-                title.textContent = `Bucket ${i} (Range: ${Math.floor(i * (bucketSortMaxValue / numBuckets))}-${Math.floor((i + 1) * (bucketSortMaxValue / numBuckets))})`;
+                title.className = 'bucket-title';
+                title.textContent = getBucketRangeText(i);
                 
                 const elements = document.createElement('div');
-                elements.className = 'bucket-sort-bucket-elements';
+                elements.className = 'bucket-elements';
                 
-                if (buckets[i] && buckets[i].length > 0) {
-                    buckets[i].forEach(value => {
+                if (bucketsData[i] && bucketsData[i].length > 0) {
+                    bucketsData[i].forEach(value => {
                         const element = document.createElement('div');
-                        element.className = `bucket-sort-array-element ${value === highlightValue ? 'bucket-sort-current' : 'bucket-sort-in-bucket'}`;
+                        element.className = `element ${value === highlightValue ? 'current' : 'in-bucket'}`;
                         element.textContent = value;
                         elements.appendChild(element);
                     });
@@ -375,30 +356,30 @@
                     elements.appendChild(emptyText);
                 }
                 
-                bucketContainer.appendChild(title);
-                bucketContainer.appendChild(elements);
-                bucketSortBuckets.appendChild(bucketContainer);
+                bucketGroup.appendChild(title);
+                bucketGroup.appendChild(elements);
+                buckets.appendChild(bucketGroup);
             }
         }
 
-        function renderBucketSortSortedBuckets(sortedBuckets) {
-            bucketSortSortedBuckets.innerHTML = '';
+        function renderSortedBuckets(sortedBucketsData) {
+            sortedBuckets.innerHTML = '';
 
-            for (let i = 0; i < sortedBuckets.length; i++) {
-                const bucketContainer = document.createElement('div');
-                bucketContainer.className = 'bucket-sort-bucket-container';
+            for (let i = 0; i < numBuckets; i++) {
+                const bucketGroup = document.createElement('div');
+                bucketGroup.className = 'bucket-group';
                 
                 const title = document.createElement('div');
-                title.className = 'bucket-sort-bucket-title';
+                title.className = 'bucket-title';
                 title.textContent = `Bucket ${i} (Sorted)`;
                 
                 const elements = document.createElement('div');
-                elements.className = 'bucket-sort-bucket-elements';
+                elements.className = 'bucket-elements';
                 
-                if (sortedBuckets[i] && sortedBuckets[i].length > 0) {
-                    sortedBuckets[i].forEach(value => {
+                if (sortedBucketsData[i] && sortedBucketsData[i].length > 0) {
+                    sortedBucketsData[i].forEach(value => {
                         const element = document.createElement('div');
-                        element.className = 'bucket-sort-array-element bucket-sort-sorted';
+                        element.className = 'element sorted';
                         element.textContent = value;
                         elements.appendChild(element);
                     });
@@ -409,137 +390,125 @@
                     elements.appendChild(emptyText);
                 }
                 
-                bucketContainer.appendChild(title);
-                bucketContainer.appendChild(elements);
-                bucketSortSortedBuckets.appendChild(bucketContainer);
+                bucketGroup.appendChild(title);
+                bucketGroup.appendChild(elements);
+                sortedBuckets.appendChild(bucketGroup);
             }
         }
 
-        function renderBucketSortOutputArray(outputArray, highlightIndex = -1) {
-            bucketSortOutputArray.innerHTML = '';
+        function renderOutputArray(outputArrayData, highlightIndex = -1) {
+            outputArray.innerHTML = '';
 
-            const row = document.createElement('div');
-            row.className = 'bucket-sort-array-row';
-
-            outputArray.forEach((value, index) => {
+            outputArrayData.forEach((value, index) => {
                 const element = document.createElement('div');
-                element.className = `bucket-sort-array-element ${index === highlightIndex ? 'bucket-sort-current' : 'bucket-sort-sorted'}`;
+                element.className = `element ${index === highlightIndex ? 'current' : 'sorted'}`;
                 element.textContent = value;
-                element.dataset.index = index;
                 
-                const label = document.createElement('div');
-                label.className = 'bucket-sort-array-label';
-                label.textContent = `[${index}]`;
-                element.appendChild(label);
+                const indexLabel = document.createElement('div');
+                indexLabel.className = 'index';
+                indexLabel.textContent = index;
+                element.appendChild(indexLabel);
                 
-                row.appendChild(element);
+                outputArray.appendChild(element);
             });
-
-            bucketSortOutputArray.appendChild(row);
         }
 
-        function addBucketSortStep(description, isActive = false) {
+        function addStep(description, isActive = false) {
             const step = document.createElement('div');
-            step.className = `bucket-sort-step ${isActive ? 'active' : ''}`;
+            step.className = `step ${isActive ? 'active' : ''}`;
             step.textContent = description;
-            bucketSortInfoPanel.appendChild(step);
-            bucketSortSteps.push(step);
-
-            // Auto-scroll to the latest step
-            bucketSortInfoPanel.scrollTop = bucketSortInfoPanel.scrollHeight;
+            infoPanel.appendChild(step);
+            steps.push(step);
+            infoPanel.scrollTop = infoPanel.scrollHeight;
         }
 
-        function updateBucketSortSteps(currentIndex) {
-            bucketSortSteps.forEach((step, index) => {
-                step.className = 'bucket-sort-step';
+        function updateSteps(currentIndex) {
+            steps.forEach((step, index) => {
+                step.className = 'step';
                 if (index < currentIndex) step.classList.add('completed');
                 if (index === currentIndex) step.classList.add('active');
             });
         }
 
-        function updateBucketSortStatus(text) {
-            bucketSortStatusText.textContent = text;
+        function updateStatus(text) {
+            status.textContent = text;
         }
 
-        async function startBucketSort() {
-            if (bucketSortIsSorting) return;
+        async function startSort() {
+            if (isSorting) return;
 
-            bucketSortIsSorting = true;
-            bucketSortGenerateBtn.disabled = true;
-            bucketSortSortBtn.disabled = true;
-            bucketSortInfoPanel.innerHTML = '';
-            bucketSortSteps = [];
-            bucketSortCurrentStep = 0;
+            isSorting = true;
+            generateBtn.disabled = true;
+            sortBtn.disabled = true;
+            infoPanel.innerHTML = '';
+            steps = [];
+            currentStep = 0;
 
             // Initialize buckets
-            buckets = Array.from({ length: numBuckets }, () => []);
-            sortedBuckets = Array.from({ length: numBuckets }, () => []);
-            outputArray = [];
+            const bucketsData = Array.from({ length: numBuckets }, () => []);
+            const sortedBucketsData = Array.from({ length: numBuckets }, () => []);
+            const finalArray = [];
 
             // Initial steps
-            addBucketSortStep("Starting Bucket Sort Algorithm", true);
-            addBucketSortStep("Step 1: Create empty buckets", false);
-            addBucketSortStep("Step 2: Scatter: Distribute elements into buckets based on their range", false);
-            addBucketSortStep("Step 3: Sort each bucket individually", false);
-            addBucketSortStep("Step 4: Gather: Concatenate all sorted buckets", false);
+            addStep("Starting Bucket Sort", true);
+            addStep("1. Create empty buckets", false);
+            addStep("2. Scatter: Distribute elements into buckets", false);
+            addStep("3. Sort each bucket", false);
+            addStep("4. Gather: Concatenate sorted buckets", false);
 
             // Step 1: Show empty buckets
-            addBucketSortStep(`Created ${numBuckets} empty buckets`, true);
-            updateBucketSortSteps(1);
-            renderBucketSortBuckets(buckets);
-            await new Promise(resolve => setTimeout(resolve, bucketSortAnimationSpeed));
+            addStep(`Created ${numBuckets} empty buckets`, true);
+            updateSteps(1);
+            renderBuckets(bucketsData);
+            await new Promise(resolve => setTimeout(resolve, animationSpeed));
 
             // Step 2: Distribute elements into buckets
-            addBucketSortStep("Distributing elements into appropriate buckets", true);
-            updateBucketSortSteps(2);
+            addStep("Distributing elements into buckets", true);
+            updateSteps(2);
             
-            for (let i = 0; i < bucketSortArray.length; i++) {
-                const value = bucketSortArray[i];
-                const bucketIndex = Math.floor((value / bucketSortMaxValue) * (numBuckets - 1));
+            for (let i = 0; i < array.length; i++) {
+                const value = array[i];
+                const bucketIndex = getBucketIndex(value);
                 
-                addBucketSortStep(`Placing ${value} into Bucket ${bucketIndex}`, true);
+                addStep(`Placing ${value} into ${getBucketRangeText(bucketIndex)}`, true);
                 
-                // Highlight current element in input array
-                renderBucketSortInputArray(i);
+                renderInputArray(i);
+                bucketsData[bucketIndex].push(value);
+                renderBuckets(bucketsData, value);
                 
-                // Add to bucket
-                buckets[bucketIndex].push(value);
-                renderBucketSortBuckets(buckets, value);
-                
-                await new Promise(resolve => setTimeout(resolve, bucketSortAnimationSpeed));
+                await new Promise(resolve => setTimeout(resolve, animationSpeed));
             }
 
             // Step 3: Sort each bucket
-            addBucketSortStep("Sorting each bucket individually", true);
-            updateBucketSortSteps(3);
+            addStep("Sorting each bucket", true);
+            updateSteps(3);
             
-            for (let i = 0; i < buckets.length; i++) {
-                if (buckets[i].length > 0) {
-                    addBucketSortStep(`Sorting Bucket ${i} (${buckets[i].length} elements)`, true);
+            for (let i = 0; i < bucketsData.length; i++) {
+                if (bucketsData[i].length > 0) {
+                    addStep(`Sorting Bucket ${i} (${bucketsData[i].length} elements)`, true);
                     
-                    // Copy the bucket and sort it
-                    sortedBuckets[i] = [...buckets[i]].sort((a, b) => a - b);
-                    renderBucketSortSortedBuckets(sortedBuckets);
+                    sortedBucketsData[i] = [...bucketsData[i]].sort((a, b) => a - b);
+                    renderSortedBuckets(sortedBucketsData);
                     
-                    await new Promise(resolve => setTimeout(resolve, bucketSortAnimationSpeed * 2));
+                    await new Promise(resolve => setTimeout(resolve, animationSpeed * 2));
                 }
             }
 
             // Step 4: Concatenate all sorted buckets
-            addBucketSortStep("Concatenating all sorted buckets into final array", true);
-            updateBucketSortSteps(4);
+            addStep("Building final sorted array", true);
+            updateSteps(4);
             
             let outputIndex = 0;
-            for (let i = 0; i < sortedBuckets.length; i++) {
-                if (sortedBuckets[i].length > 0) {
-                    for (let j = 0; j < sortedBuckets[i].length; j++) {
-                        const value = sortedBuckets[i][j];
-                        outputArray.push(value);
+            for (let i = 0; i < sortedBucketsData.length; i++) {
+                if (sortedBucketsData[i].length > 0) {
+                    for (let j = 0; j < sortedBucketsData[i].length; j++) {
+                        const value = sortedBucketsData[i][j];
+                        finalArray.push(value);
                         
-                        addBucketSortStep(`Adding ${value} from Bucket ${i} to output array at position ${outputIndex}`, true);
+                        addStep(`Added ${value} from Bucket ${i} to position ${outputIndex}`, true);
                         
-                        renderBucketSortOutputArray(outputArray, outputIndex);
-                        await new Promise(resolve => setTimeout(resolve, bucketSortAnimationSpeed));
+                        renderOutputArray(finalArray, outputIndex);
+                        await new Promise(resolve => setTimeout(resolve, animationSpeed));
                         
                         outputIndex++;
                     }
@@ -547,16 +516,15 @@
             }
 
             // Final step
-            addBucketSortStep("Bucket Sort completed! Array is now sorted", true);
-            updateBucketSortSteps(5);
-            updateBucketSortStatus("Sorting completed!");
+            addStep("Bucket Sort completed!", true);
+            updateSteps(5);
+            updateStatus("Sorting completed!");
             
-            // Show final sorted array
-            renderBucketSortOutputArray(outputArray);
+            renderOutputArray(finalArray);
 
-            bucketSortIsSorting = false;
-            bucketSortGenerateBtn.disabled = false;
-            bucketSortSortBtn.disabled = false;
+            isSorting = false;
+            generateBtn.disabled = false;
+            sortBtn.disabled = false;
         }
     });
 </script>

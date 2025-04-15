@@ -14,7 +14,7 @@
 
         <h2>How Heap Sort Works?</h2>
 
-       <?php include "visualization/heap-sort-visualization.php";?>
+     
         
         <h3>Step-by-Step Example (Sorting [4, 10, 3, 5, 1]):</h3>
         
