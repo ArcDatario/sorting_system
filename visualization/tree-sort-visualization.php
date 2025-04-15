@@ -219,12 +219,12 @@
         <button id="tree-sort-btn">Tree Sort</button>
         <div class="tree-slider-container">
             <label for="tree-size-slider">Array Size:</label>
-            <input type="range" id="tree-size-slider" min="3" max="3" value="3">
+            <input type="range" id="tree-size-slider" min="3" max="5" value="3">
             <span id="tree-size-value">3</span>
         </div>
         <div class="tree-slider-container">
             <label for="tree-speed-slider">Speed:</label>
-            <input type="range" id="tree-speed-slider" min="1" max="10" value="2">
+            <input type="range" id="tree-speed-slider" min="1" max="10" value="3">
             <span id="tree-speed-value">3</span>
         </div>
     </div>
@@ -271,6 +271,8 @@
         let treeSteps = [];
         let currentTreeStep = 0;
         let sortedArray = [];
+        let bstRoot = null;
+        let visitedNodes = [];
 
         // Initialize
         updateTreeSizeValue();
@@ -310,6 +312,8 @@
             treeSteps = [];
             currentTreeStep = 0;
             sortedArray = [];
+            bstRoot = null;
+            visitedNodes = [];
         }
 
         function renderTreeArray() {
@@ -334,13 +338,13 @@
             treeCanvas.innerHTML = '';
         }
 
-        function drawTreeNode(node, x, y, level, isHighlighted = false) {
+        function drawTreeNode(node, x, y, level, isHighlighted = false, isVisited = false) {
             const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
             circle.setAttribute("cx", x);
             circle.setAttribute("cy", y);
             circle.setAttribute("r", 20);
-            circle.setAttribute("fill", isHighlighted ? "#9b59b6" : "#3498db");
-            circle.setAttribute("class", isHighlighted ? "tree-node highlight" : "tree-node");
+            circle.setAttribute("fill", isHighlighted ? "#9b59b6" : (isVisited ? "#2ecc71" : "#3498db"));
+            circle.setAttribute("class", isHighlighted ? "tree-node highlight" : (isVisited ? "tree-node visited" : "tree-node"));
             
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text.setAttribute("x", x);
@@ -372,6 +376,7 @@
             if (!root) return;
 
             const isHighlighted = highlightPath.includes(root.value);
+            const isVisited = visitedNodes.includes(root.value);
             
             // Draw connection to parent first (so it's behind the node)
             if (parentX !== null && parentY !== null) {
@@ -379,7 +384,7 @@
             }
             
             // Draw the node
-            const nodePos = drawTreeNode(root, x, y, level, isHighlighted);
+            const nodePos = drawTreeNode(root, x, y, level, isHighlighted, isVisited);
             
             // Calculate horizontal spacing based on level
             const horizontalSpacing = 200 / (level + 1);
@@ -422,6 +427,7 @@
             treeSteps = [];
             currentTreeStep = 0;
             sortedArray = [];
+            visitedNodes = [];
             
             // Initial steps
             addTreeStep("Starting Tree Sort Algorithm", true);
@@ -433,6 +439,10 @@
             
             // Perform tree sort with visualization
             await treeSort(sortingArray);
+            
+            // After sort is complete, show the final tree with all visited nodes highlighted
+            clearTreeCanvas();
+            visualizeTree(bstRoot);
             
             addTreeStep("Tree Sort completed! Sorted array: " + sortedArray.join(', '), false);
             updateTreeSteps(treeSteps.length);
@@ -474,6 +484,7 @@
                 
                 // Insert into BST
                 root = await insertIntoBST(root, num, highlightPath);
+                bstRoot = root; // Store the root for final visualization
                 
                 // Visualize the BST with highlight path
                 clearTreeCanvas();
@@ -526,26 +537,21 @@
         async function inOrderTraversal(node) {
             if (!node) return;
             
-            // Highlight current node
-            addTreeStep(`Visiting node ${node.value} (in-order traversal)`, true);
-            updateTreeSteps(2);
-            
-            // Visualize the node being visited
-            clearTreeCanvas();
-            visualizeTree(node, 300, 50, 0, null, null, [node.value]);
-            
-            await new Promise(resolve => setTimeout(resolve, treeAnimationSpeed));
-            
             // Traverse left subtree
             await inOrderTraversal(node.left);
             
             // Process current node (add to sorted array)
+            visitedNodes.push(node.value);
             sortedArray.push(node.value);
             addTreeStep(`Adding ${node.value} to sorted array: [${sortedArray.join(', ')}]`, true);
             updateTreeSteps(2);
             
             // Update array visualization
             updateSortedArrayVisualization(sortedArray);
+            
+            // Visualize the tree with current visited nodes
+            clearTreeCanvas();
+            visualizeTree(bstRoot, 300, 50, 0, null, null, [node.value]);
             
             await new Promise(resolve => setTimeout(resolve, treeAnimationSpeed));
             
