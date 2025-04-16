@@ -433,7 +433,7 @@
             <li><a href="learn">Learn</a></li>
             <li><a href="sort-visualization">Visualize</a></li>
             <li><a href="quiz">Quiz</a></li>
-            <li><a href="#">Offline</a></li>
+            <li><a href="offline">Offline</a></li>
         </ul>
     </nav>
 
@@ -615,11 +615,11 @@
         interactive: false
     },
     {
-        question: "Sort these bars using Insertion Sort (click to insert in correct position):",
+        question: "Arrange these boxes in ascending order using Insertion Sort:",
         interactive: true,
-        type: "insertion-bars",
-        data: [5, 2, 9, 1, 6],
-        answer: [1, 2, 5, 6, 9],
+        type: "insertion-boxes",
+        data: [7, 2, 5, 9, 3],
+        answer: [2, 3, 5, 7, 9],
         algorithm: "Insertion Sort"
     }
 ];
@@ -1042,13 +1042,38 @@ function checkIfSorted(question) {
 
 // Check interactive answer
 function checkInteractiveAnswer(question) {
-    const isCorrect = JSON.stringify(currentInteractiveData) === JSON.stringify(question.answer);
+    // Get the current order of elements
+    let currentOrder;
+    if (question.type.includes('bars')) {
+        const bars = document.querySelectorAll('.bar');
+        currentOrder = Array.from(bars).map(bar => parseInt(bar.dataset.value));
+    } else if (question.type.includes('boxes')) {
+        const boxes = document.querySelectorAll('.sortable-box');
+        currentOrder = Array.from(boxes).map(box => parseInt(box.dataset.value));
+    } else if (question.type.includes('numbers')) {
+        currentOrder = [...currentInteractiveData];
+    }
+
+    const isCorrect = JSON.stringify(currentOrder) === JSON.stringify(question.answer);
     
     const feedback = document.getElementById('sortFeedback');
     if (isCorrect) {
         feedback.className = 'sort-feedback correct-feedback';
         feedback.textContent = 'Correct! The items are properly sorted.';
         score++;
+        
+        // Highlight correct answer in green
+        if (question.type.includes('bars')) {
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach(bar => {
+                bar.style.backgroundColor = '#4CAF50';
+            });
+        } else if (question.type.includes('boxes')) {
+            const boxes = document.querySelectorAll('.sortable-box');
+            boxes.forEach(box => {
+                box.style.backgroundColor = '#4CAF50';
+            });
+        }
     } else {
         feedback.className = 'sort-feedback incorrect-feedback';
         feedback.textContent = `Incorrect. The correct order should be: ${question.answer.join(', ')}`;
@@ -1057,15 +1082,21 @@ function checkInteractiveAnswer(question) {
         if (question.type.includes('bars')) {
             const bars = document.querySelectorAll('.bar');
             bars.forEach((bar, index) => {
-                if (parseInt(bar.dataset.value) !== question.answer[index]) {
+                const value = parseInt(bar.dataset.value);
+                if (value !== question.answer[index]) {
                     bar.style.backgroundColor = '#f44336';
+                } else {
+                    bar.style.backgroundColor = '#4CAF50';
                 }
             });
         } else if (question.type.includes('boxes')) {
             const boxes = document.querySelectorAll('.sortable-box');
             boxes.forEach((box, index) => {
-                if (parseInt(box.dataset.value) !== question.answer[index]) {
+                const value = parseInt(box.dataset.value);
+                if (value !== question.answer[index]) {
                     box.style.backgroundColor = '#f44336';
+                } else {
+                    box.style.backgroundColor = '#4CAF50';
                 }
             });
         }
@@ -1075,6 +1106,7 @@ function checkInteractiveAnswer(question) {
     nextQuestionBtn.disabled = false;
     isSortingComplete = true;
 }
+
 
 // Select an option (for non-interactive questions)
 function selectOption(selectedAnswer, optionElement) {

@@ -143,7 +143,7 @@
             <li><a href="home">Home</a></li>
             <li><a href="learn">Learn</a></li>
             <li><a href="quiz">Quiz</a></li>
-            <li><a href="#">Offline</a></li>
+            <li><a href="offline">Offline</a></li>
         </ul>
     </nav>
 
