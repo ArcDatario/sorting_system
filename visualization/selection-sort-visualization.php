@@ -205,7 +205,7 @@
     }
 </style>
 
-<main class="main-content selection-sort" id="selection-sort" style="display:block;">
+<main class="main-content selection-sort" id="selection-sort" style="display:none;">
     <h1>Selection Sort Visualization</h1>
     <div class="selection-controls">
         <button id="selection-generate-btn">Generate New Array</button>

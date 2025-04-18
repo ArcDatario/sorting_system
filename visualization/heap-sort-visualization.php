@@ -244,7 +244,7 @@
 </style>
 
 
-<main class="main-content heap-sort" id="heap-sort" style="display:block;">
+<main class="main-content heap-sort" id="heap-sort" style="display:none;">
         <h1>Heap Sort Visualization</h1>
         <div class="controls">
             <button id="heapsort-generate-btn">Generate New Array</button>

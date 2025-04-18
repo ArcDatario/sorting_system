@@ -253,7 +253,7 @@
     }
 </style>
 
-<main class="main-content radix-sort" id="radix-sort" style="display:block;">
+<main class="main-content radix-sort" id="radix-sort" style="display:none;">
     <h1>Radix Sort Visualization</h1>
     <div class="radix-controls">
         <button id="radix-generate-btn">Generate New Array</button>

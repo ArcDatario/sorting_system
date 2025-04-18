@@ -51,7 +51,7 @@
             <?php include "sorting-content/tree-sort.php"; ?>
             
         <!-- Sidebar -->
-        <?php include "includes/aside.php"; ?>
+       
     </div>
 
     <!-- Footer -->

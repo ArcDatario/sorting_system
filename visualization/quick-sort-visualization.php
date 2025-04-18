@@ -183,7 +183,7 @@
     }
 </style>
 
-<main class="main-content quick-sort" id="quick-sort" style="display:block;">
+<main class="main-content quick-sort" id="quick-sort" style="display:none;">
     <h1>Quick Sort Visualization</h1>
     <div class="quick-sort-controls">
         <button id="quick-sort-generate-btn" class="quick-sort-button">Generate New Array</button>

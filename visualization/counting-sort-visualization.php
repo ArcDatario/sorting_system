@@ -195,7 +195,7 @@
     }
 </style>
 
-<main class="main-content counting-sort" id="counting-sort" style="display:block;">
+<main class="main-content counting-sort" id="counting-sort" style="display:none;">
     <h1>Counting Sort Visualization</h1>
     <div class="counting-sort-controls">
         <button id="counting-sort-generate-btn" class="counting-sort-button">Generate New Array</button>

@@ -98,7 +98,7 @@
     }
 </style>
 
-<div class="merge-sort-container">
+<main class="merge-sort-container" id="merge-sort" style="display: none;">
     <h1>Merge Sort Visualization</h1>
     
     <div class="controls">
@@ -144,7 +144,7 @@
             <span>Sorted</span>
         </div>
     </div>
-</div>
+</main>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

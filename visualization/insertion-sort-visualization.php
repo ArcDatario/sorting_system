@@ -187,7 +187,7 @@
     }
 </style>
 
-<main class="main-content insertion-sort" id="insertion-sort" style="display:block;">
+<main class="main-content insertion-sort" id="insertion-sort" style="display:none;">
 <h1>Insertion Sort Visualization</h1>
         <div class="insertion-controls">
             <button id="insertion-generate-btn">Generate New Array</button>

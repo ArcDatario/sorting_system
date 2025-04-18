@@ -213,7 +213,7 @@
     }
 </style>
 
-<main class="main-content tree-sort" id="tree-sort" style="display:block;">
+<main class="main-content tree-sort" id="tree-sort" style="display:none;">
     <h1>Tree Sort Visualization</h1>
     <div class="tree-controls">
         <button id="tree-generate-btn">Generate New Array</button>
