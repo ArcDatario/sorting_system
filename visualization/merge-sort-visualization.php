@@ -1,342 +1,530 @@
 <style>
-    .merge-sort-container {
-        max-width: 800px;
-        margin: 0 auto;
-        font-family: Arial, sans-serif;
+        .merge-sort-visualizer {
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        .merge-sort-title {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .merge-sort-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .merge-sort-btn {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .merge-sort-btn:hover {
+            background-color: #2980b9;
+        }
+        .merge-sort-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .merge-sort-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .merge-sort-visualization {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .merge-sort-tree {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            min-height: 60px;
+        }
+        .merge-sort-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .merge-sort-values {
+            display: flex;
+            gap: 5px;
+        }
+        .merge-sort-bubble {
+            padding: 10px;
+            border-radius: 8px;
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            min-width: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .merge-sort-status {
+            text-align: center;
+            font-weight: bold;
+            color: #2c3e50;
+            min-height: 24px;
+        }
+        .merge-sort-steps {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .merge-sort-children {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        /* State classes */
+        .merge-sort-unsorted { background-color: #3498db; }
+        .merge-sort-divided { background-color: #e74c3c; }
+        .merge-sort-comparing { background-color: #f39c12; }
+        .merge-sort-merging { background-color: #9b59b6; }
+        .merge-sort-sorted { background-color: #2ecc71; }
+        
+        .merge-sort-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .merge-sort-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .merge-sort-color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        body.dark-mode #merge-sort-tree {
+        background-color: #333;
     }
-    h1 {
-        text-align: center;
-        color: #2c3e50;
-    }
-    .controls {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin: 20px 0;
-        flex-wrap: wrap;
-    }
-    button {
-        padding: 8px 16px;
-        background-color: #3498db;
+    body.dark-mode #merge-sort-steps {
+        background-color: var(--background);
         color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
     }
-    button:hover {
-        background-color: #2980b9;
-    }
-    button:disabled {
-        background-color: #95a5a6;
-        cursor: not-allowed;
-    }
-    .slider-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .visualization {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 20px;
-    }
-    .array-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        padding: 15px;
-        background-color: #f5f5f5;
-        border-radius: 4px;
-        min-height: 60px;
-    }
-    .array-element {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 4px;
-        font-weight: bold;
-        transition: all 0.3s;
-    }
-    .unsorted { background-color: #3498db; color: white; }
-    .divided { background-color: #e74c3c; color: white; }
-    .comparing { background-color: #f39c12; color: white; }
-    .merging { background-color: #9b59b6; color: white; }
-    .sorted { background-color: #2ecc71; color: white; }
-    .status {
-        text-align: center;
-        font-weight: bold;
-        color: #2c3e50;
-        min-height: 24px;
-    }
-    .steps {
-        margin-top: 20px;
-        padding: 15px;
-        background-color: #f9f9f9;
-        border-radius: 4px;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-    .legend {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 20px;
-        flex-wrap: wrap;
-    }
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .color-box {
-        width: 20px;
-        height: 20px;
-        border-radius: 4px;
-    }
-</style>
+    </style>
 
-<main class="merge-sort-container" id="merge-sort" style="display: none;">
-    <h1>Merge Sort Visualization</h1>
-    
-    <div class="controls">
-        <button id="generate-btn">Generate New Array</button>
-        <button id="sort-btn">Start Sorting</button>
-        <div class="slider-container">
-            <label for="size-slider">Size:</label>
-            <input type="range" id="size-slider" min="4" max="20" value="8">
-            <span id="size-value">8</span>
+<main class="container merge-sort-container" id="merge-sort" style="display: none;">
+<h1 class="merge-sort-title">Merge Sort Tree Visualization</h1>
+        
+        <div class="merge-sort-controls">
+            <button id="merge-sort-generate-btn" class="merge-sort-btn">Generate New Array</button>
+            <button id="merge-sort-prev-btn" class="merge-sort-btn" disabled>Previous Step</button>
+            <button id="merge-sort-next-btn" class="merge-sort-btn">Next Step</button>
+            <div class="merge-sort-slider-container">
+                <label for="merge-sort-size-slider">Size:</label>
+                <input type="range" id="merge-sort-size-slider" min="4" max="12" value="8">
+                <span id="merge-sort-size-value">8</span>
+            </div>
         </div>
-        <div class="slider-container">
-            <label for="speed-slider">Speed:</label>
-            <input type="range" id="speed-slider" min="1" max="10" value="5">
-            <span id="speed-value">5</span>
+        
+        <div class="merge-sort-visualization">
+            <div id="merge-sort-status" class="merge-sort-status">Ready to start</div>
+            <div id="merge-sort-tree" class="merge-sort-tree"></div>
+            <div id="merge-sort-steps" class="merge-sort-steps"></div>
         </div>
-    </div>
-    
-    <div class="visualization">
-        <div id="status" class="status">Ready to sort</div>
-        <div id="array-display" class="array-container"></div>
-        <div id="steps" class="steps"></div>
-    </div>
-    
-    <div class="legend">
-        <div class="legend-item">
-            <div class="color-box unsorted"></div>
-            <span>Unsorted</span>
+        
+        <div class="merge-sort-legend">
+            <div class="merge-sort-legend-item">
+                <div class="merge-sort-color-box merge-sort-unsorted"></div>
+                <span>Unsorted</span>
+            </div>
+            <div class="merge-sort-legend-item">
+                <div class="merge-sort-color-box merge-sort-divided"></div>
+                <span>Divided</span>
+            </div>
+            <div class="merge-sort-legend-item">
+                <div class="merge-sort-color-box merge-sort-comparing"></div>
+                <span>Comparing</span>
+            </div>
+            <div class="merge-sort-legend-item">
+                <div class="merge-sort-color-box merge-sort-merging"></div>
+                <span>Merging</span>
+            </div>
+            <div class="merge-sort-legend-item">
+                <div class="merge-sort-color-box merge-sort-sorted"></div>
+                <span>Sorted</span>
+            </div>
         </div>
-        <div class="legend-item">
-            <div class="color-box divided"></div>
-            <span>Divided</span>
-        </div>
-        <div class="legend-item">
-            <div class="color-box comparing"></div>
-            <span>Comparing</span>
-        </div>
-        <div class="legend-item">
-            <div class="color-box merging"></div>
-            <span>Merging</span>
-        </div>
-        <div class="legend-item">
-            <div class="color-box sorted"></div>
-            <span>Sorted</span>
-        </div>
-    </div>
 </main>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // DOM elements
-        const sizeSlider = document.getElementById('size-slider');
-        const sizeValue = document.getElementById('size-value');
-        const arrayDisplay = document.getElementById('array-display');
-        const generateBtn = document.getElementById('generate-btn');
-        const sortBtn = document.getElementById('sort-btn');
-        const speedSlider = document.getElementById('speed-slider');
-        const speedValue = document.getElementById('speed-value');
-        const statusElement = document.getElementById('status');
-        const stepsElement = document.getElementById('steps');
-        
-        // Variables
-        let array = [];
-        let arraySize = parseInt(sizeSlider.value);
-        let speed = parseInt(speedSlider.value);
-        let animationSpeed = 1000 / speed;
-        let isSorting = false;
-        
-        // Initialize
-        updateSizeValue();
-        updateSpeedValue();
-        generateNewArray();
-        
-        // Event listeners
-        generateBtn.addEventListener('click', generateNewArray);
-        sortBtn.addEventListener('click', startSort);
-        sizeSlider.addEventListener('input', updateSizeValue);
-        speedSlider.addEventListener('input', updateSpeedValue);
-        
-        // Functions
-        function updateSizeValue() {
-            arraySize = parseInt(sizeSlider.value);
-            sizeValue.textContent = arraySize;
-            generateNewArray();
-        }
-        
-        function updateSpeedValue() {
-            speed = parseInt(speedSlider.value);
-            speedValue.textContent = speed;
-            animationSpeed = 1000 / speed;
-        }
-        
-        function generateNewArray() {
-            if (isSorting) return;
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const mergeSortSizeSlider = document.getElementById('merge-sort-size-slider');
+            const mergeSortSizeValue = document.getElementById('merge-sort-size-value');
+            const mergeSortTreeContainer = document.getElementById('merge-sort-tree');
+            const mergeSortGenerateBtn = document.getElementById('merge-sort-generate-btn');
+            const mergeSortPrevBtn = document.getElementById('merge-sort-prev-btn');
+            const mergeSortNextBtn = document.getElementById('merge-sort-next-btn');
+            const mergeSortStatusElement = document.getElementById('merge-sort-status');
+            const mergeSortStepsElement = document.getElementById('merge-sort-steps');
             
-            array = [];
-            for (let i = 0; i < arraySize; i++) {
-                array.push(Math.floor(Math.random() * 90) + 10); // Values between 10-100
+            // Merge Sort specific variables
+            let mergeSortArray = [];
+            let mergeSortArraySize = parseInt(mergeSortSizeSlider.value);
+            let mergeSortSteps = [];
+            let mergeSortCurrentStep = 0;
+            let mergeSortNodeElements = [];
+            let mergeSortNodeContainers = [];
+            let mergeSortHistory = [];
+            
+            // Initialize
+            updateMergeSortSizeValue();
+            generateNewMergeSortArray();
+            
+            // Event listeners
+            mergeSortGenerateBtn.addEventListener('click', generateNewMergeSortArray);
+            mergeSortPrevBtn.addEventListener('click', previousMergeSortStep);
+            mergeSortNextBtn.addEventListener('click', nextMergeSortStep);
+            mergeSortSizeSlider.addEventListener('input', updateMergeSortSizeValue);
+            
+            // Functions
+            function updateMergeSortSizeValue() {
+                mergeSortArraySize = parseInt(mergeSortSizeSlider.value);
+                mergeSortSizeValue.textContent = mergeSortArraySize;
+                generateNewMergeSortArray();
             }
             
-            renderArray(array, 'unsorted');
-            stepsElement.innerHTML = '';
-            statusElement.textContent = 'Ready to sort';
-        }
-        
-        function renderArray(arr, state, highlights = []) {
-            arrayDisplay.innerHTML = '';
-            
-            arr.forEach((value, index) => {
-                const element = document.createElement('div');
-                element.className = 'array-element';
-                
-                if (highlights.includes(index)) {
-                    element.classList.add('comparing');
-                } else if (state === 'divided') {
-                    element.classList.add('divided');
-                } else if (state === 'merging') {
-                    element.classList.add('merging');
-                } else if (state === 'sorted') {
-                    element.classList.add('sorted');
-                } else {
-                    element.classList.add('unsorted');
+            function generateNewMergeSortArray() {
+                mergeSortArray = [];
+                for (let i = 0; i < mergeSortArraySize; i++) {
+                    mergeSortArray.push(Math.floor(Math.random() * 90) + 10); // Values between 10-100
                 }
                 
-                element.textContent = value;
-                arrayDisplay.appendChild(element);
-            });
-        }
-        
-        function addStep(description) {
-            const step = document.createElement('div');
-            step.textContent = description;
-            stepsElement.appendChild(step);
-            stepsElement.scrollTop = stepsElement.scrollHeight;
-        }
-        
-        function updateStatus(text) {
-            statusElement.textContent = text;
-        }
-        
-        async function startSort() {
-            if (isSorting) return;
-            
-            isSorting = true;
-            generateBtn.disabled = true;
-            sortBtn.disabled = true;
-            stepsElement.innerHTML = '';
-            
-            addStep("Starting Merge Sort");
-            
-            // Create a copy of the array to sort
-            const sortingArray = [...array];
-            
-            // Initial render
-            renderArray(sortingArray, 'unsorted');
-            await delay(animationSpeed);
-            
-            await mergeSort(sortingArray, 0, sortingArray.length - 1);
-            
-            // Final render
-            renderArray(sortingArray, 'sorted');
-            addStep("Merge Sort completed!");
-            updateStatus("Sorting completed!");
-            
-            isSorting = false;
-            generateBtn.disabled = false;
-            sortBtn.disabled = false;
-        }
-        
-        async function mergeSort(arr, left, right) {
-            if (left < right) {
-                const mid = Math.floor((left + right) / 2);
-                
-                // Visualize dividing
-                updateStatus(`Dividing from index ${left} to ${right}`);
-                addStep(`Dividing: [${arr.slice(left, right + 1).join(', ')}]`);
-                renderArray(arr, 'divided');
-                await delay(animationSpeed);
-                
-                // Recursively sort left and right halves
-                await mergeSort(arr, left, mid);
-                await mergeSort(arr, mid + 1, right);
-                
-                // Visualize merging
-                updateStatus(`Merging sorted halves from ${left} to ${right}`);
-                addStep(`Merging: [${arr.slice(left, mid + 1).join(', ')}] and [${arr.slice(mid + 1, right + 1).join(', ')}]`);
-                
-                await merge(arr, left, mid, right);
+                resetMergeSortVisualization();
+                buildMergeSortTreeStructure();
             }
-        }
-        
-        async function merge(arr, left, mid, right) {
-            let i = left;
-            let j = mid + 1;
-            let temp = [];
             
-            // Create a copy of the current subarray for comparison visualization
-            const originalSubarray = arr.slice(left, right + 1);
+            function resetMergeSortVisualization() {
+                mergeSortSteps = [];
+                mergeSortCurrentStep = 0;
+                mergeSortNodeElements = [];
+                mergeSortNodeContainers = [];
+                mergeSortTreeContainer.innerHTML = '';
+                mergeSortStepsElement.innerHTML = '';
+                mergeSortStatusElement.textContent = 'Ready to start';
+                mergeSortNextBtn.disabled = false;
+                mergeSortPrevBtn.disabled = true;
+                mergeSortHistory = [];
+            }
             
-            while (i <= mid && j <= right) {
-                // Highlight the elements being compared
-                updateStatus(`Comparing ${arr[i]} and ${arr[j]}`);
-                addStep(`Comparing: ${arr[i]} and ${arr[j]}`);
-                
-                // Create a new array with highlights for visualization
-                const displayArray = [...arr];
-                renderArray(displayArray, 'merging', [i, j]);
-                await delay(animationSpeed);
-                
-                if (arr[i] <= arr[j]) {
+            function buildMergeSortTreeStructure() {
+                const treeData = buildMergeSortTree(mergeSortArray, 0, mergeSortArray.length - 1);
+                const renderedTree = renderMergeSortTree(treeData, mergeSortNodeContainers);
+                mergeSortTreeContainer.appendChild(renderedTree);
+                generateMergeSortSteps(mergeSortArray.slice(), 0, mergeSortArray.length - 1);
+            }
+            
+            function buildMergeSortTree(arr, start, end) {
+                if (start === end) {
+                    return {
+                        value: [arr[start]],
+                        left: null,
+                        right: null,
+                        range: [start, end],
+                    };
+                }
+                const mid = Math.floor((start + end) / 2);
+                const left = buildMergeSortTree(arr, start, mid);
+                const right = buildMergeSortTree(arr, mid + 1, end);
+                const combined = arr.slice(start, end + 1);
+                return { value: combined, left, right, range: [start, end] };
+            }
+            
+            function renderMergeSortTree(node, nodeList = []) {
+                const div = document.createElement('div');
+                div.className = 'merge-sort-node';
+    
+                const valueContainer = document.createElement('div');
+                valueContainer.className = 'merge-sort-values';
+                valueContainer.dataset.range = node.range.join('-');
+                nodeList.push({ range: node.range, container: valueContainer, node });
+                mergeSortNodeContainers.push({
+                    range: node.range,
+                    container: valueContainer,
+                });
+    
+                node.value.forEach((num) => {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'merge-sort-bubble merge-sort-unsorted';
+                    bubble.textContent = num;
+                    valueContainer.appendChild(bubble);
+                    mergeSortNodeElements.push(bubble);
+                });
+    
+                div.appendChild(valueContainer);
+    
+                if (node.left || node.right) {
+                    const children = document.createElement('div');
+                    children.className = 'merge-sort-children';
+                    if (node.left) children.appendChild(renderMergeSortTree(node.left, nodeList));
+                    if (node.right) children.appendChild(renderMergeSortTree(node.right, nodeList));
+                    div.appendChild(children);
+                }
+    
+                return div;
+            }
+            
+            function findMergeSortContainer(range) {
+                return mergeSortNodeContainers.find(
+                    (r) => r.range[0] === range[0] && r.range[1] === range[1]
+                );
+            }
+            
+            function generateMergeSortSteps(arr, start, end) {
+                if (start === end) return;
+    
+                const mid = Math.floor((start + end) / 2);
+                generateMergeSortSteps(arr, start, mid);
+                generateMergeSortSteps(arr, mid + 1, end);
+    
+                let i = start,
+                    j = mid + 1,
+                    temp = [];
+                const original = arr.slice(start, end + 1);
+                const container = findMergeSortContainer([start, end]);
+    
+                // Add step for dividing
+                mergeSortSteps.push({
+                    type: `Dividing array from index ${start} to ${end}`,
+                    subarrays: [
+                        { container: container.container, start: 0, end: original.length - 1 }
+                    ],
+                    state: 'divided'
+                });
+    
+                while (i <= mid && j <= end) {
+                    const leftContainer = findMergeSortContainer([start, mid]);
+                    const rightContainer = findMergeSortContainer([mid + 1, end]);
+    
+                    let leftIndex = i - leftContainer.range[0];
+                    let rightIndex = j - rightContainer.range[0];
+    
+                    mergeSortSteps.push({
+                        type: `Comparing ${arr[i]} and ${arr[j]}`,
+                        subarrays: [
+                            {
+                                container: leftContainer.container,
+                                start: leftIndex,
+                                end: leftIndex,
+                                state: 'comparing'
+                            },
+                            {
+                                container: rightContainer.container,
+                                start: rightIndex,
+                                end: rightIndex,
+                                state: 'comparing'
+                            }
+                        ]
+                    });
+    
+                    if (arr[i] <= arr[j]) {
+                        temp.push(arr[i++]);
+                    } else {
+                        temp.push(arr[j++]);
+                    }
+    
+                    mergeSortSteps.push({
+                        type: `Placing ${temp[temp.length - 1]} in merged array`,
+                        subarrays: [
+                            {
+                                container: container.container,
+                                start: 0,
+                                end: temp.length - 1,
+                                state: 'merging',
+                                newValues: [...temp]
+                            }
+                        ]
+                    });
+                }
+    
+                while (i <= mid) {
                     temp.push(arr[i++]);
-                } else {
+                    mergeSortSteps.push({
+                        type: `Placing remaining element ${temp[temp.length - 1]}`,
+                        subarrays: [
+                            {
+                                container: container.container,
+                                start: 0,
+                                end: temp.length - 1,
+                                state: 'merging',
+                                newValues: [...temp]
+                            }
+                        ]
+                    });
+                }
+    
+                while (j <= end) {
                     temp.push(arr[j++]);
+                    mergeSortSteps.push({
+                        type: `Placing remaining element ${temp[temp.length - 1]}`,
+                        subarrays: [
+                            {
+                                container: container.container,
+                                start: 0,
+                                end: temp.length - 1,
+                                state: 'merging',
+                                newValues: [...temp]
+                            }
+                        ]
+                    });
+                }
+    
+                for (let k = start; k <= end; k++) {
+                    arr[k] = temp[k - start];
+                }
+    
+                mergeSortSteps.push({
+                    type: `Subarray from ${start} to ${end} is now sorted`,
+                    subarrays: [
+                        { 
+                            container: container.container, 
+                            start: 0, 
+                            end: temp.length - 1,
+                            state: 'sorted',
+                            newValues: [...temp]
+                        }
+                    ]
+                });
+            }
+            
+            function nextMergeSortStep() {
+                if (mergeSortCurrentStep >= mergeSortSteps.length) {
+                    mergeSortStatusElement.textContent = "Merge Sort completed!";
+                    mergeSortNextBtn.disabled = true;
+                    return;
+                }
+                
+                // Save current state to history before moving forward
+                saveMergeSortStateToHistory();
+                
+                applyMergeSortStep(mergeSortSteps[mergeSortCurrentStep]);
+                mergeSortCurrentStep++;
+                
+                // Update button states
+                mergeSortPrevBtn.disabled = mergeSortCurrentStep === 0;
+                mergeSortNextBtn.disabled = mergeSortCurrentStep >= mergeSortSteps.length;
+            }
+            
+            function previousMergeSortStep() {
+                if (mergeSortCurrentStep <= 0) return;
+                
+                mergeSortCurrentStep--;
+                restoreMergeSortStateFromHistory();
+                
+                // Update button states
+                mergeSortPrevBtn.disabled = mergeSortCurrentStep === 0;
+                mergeSortNextBtn.disabled = false;
+            }
+            
+            function saveMergeSortStateToHistory() {
+                const currentState = {
+                    stepIndex: mergeSortCurrentStep,
+                    elements: []
+                };
+                
+                // Save all bubble states and values
+                mergeSortNodeElements.forEach((bubble, index) => {
+                    currentState.elements.push({
+                        className: bubble.className,
+                        textContent: bubble.textContent
+                    });
+                });
+                
+                mergeSortHistory.push(currentState);
+            }
+            
+            function restoreMergeSortStateFromHistory() {
+                if (mergeSortHistory.length === 0) return;
+                
+                // Find the state in history that matches our step index
+                let stateToRestore = null;
+                for (let i = mergeSortHistory.length - 1; i >= 0; i--) {
+                    if (mergeSortHistory[i].stepIndex === mergeSortCurrentStep - 1) {
+                        stateToRestore = mergeSortHistory[i];
+                        break;
+                    }
+                }
+                
+                if (!stateToRestore) return;
+                
+                // Restore bubble states and values
+                stateToRestore.elements.forEach((elementState, index) => {
+                    if (mergeSortNodeElements[index]) {
+                        mergeSortNodeElements[index].className = elementState.className;
+                        mergeSortNodeElements[index].textContent = elementState.textContent;
+                    }
+                });
+                
+                // Restore status and steps
+                if (mergeSortCurrentStep > 0) {
+                    mergeSortStatusElement.textContent = mergeSortSteps[mergeSortCurrentStep - 1].type;
+                } else {
+                    mergeSortStatusElement.textContent = 'Ready to start';
+                }
+                
+                // Rebuild steps list up to current step
+                mergeSortStepsElement.innerHTML = '';
+                for (let i = 0; i < mergeSortCurrentStep; i++) {
+                    addMergeSortStep(mergeSortSteps[i].type);
                 }
             }
             
-            // Copy remaining elements
-            while (i <= mid) temp.push(arr[i++]);
-            while (j <= right) temp.push(arr[j++]);
-            
-            // Copy back to original array
-            for (let k = 0; k < temp.length; k++) {
-                arr[left + k] = temp[k];
-                
-                // Visualize each merge step
-                updateStatus(`Inserting ${temp[k]} at position ${left + k}`);
-                renderArray(arr, 'merging', [left + k]);
-                await delay(animationSpeed / 2);
+            function applyMergeSortStep(step) {
+                // Reset all bubbles to unsorted state first
+                mergeSortNodeElements.forEach(bubble => {
+                    bubble.className = 'merge-sort-bubble merge-sort-unsorted';
+                });
+    
+                mergeSortStatusElement.textContent = step.type;
+                addMergeSortStep(step.type);
+    
+                step.subarrays.forEach(sub => {
+                    if (sub.newValues) {
+                        // Update values if needed
+                        for (let i = sub.start; i <= sub.end; i++) {
+                            if (sub.container.children[i]) {
+                                sub.container.children[i].textContent = sub.newValues[i];
+                            }
+                        }
+                    }
+                    
+                    // Apply state classes
+                    for (let i = sub.start; i <= sub.end; i++) {
+                        if (sub.container.children[i]) {
+                            sub.container.children[i].className = `merge-sort-bubble merge-sort-${sub.state || 'unsorted'}`;
+                        }
+                    }
+                });
             }
             
-            // Show the merged subarray as sorted
-            updateStatus(`Subarray from ${left} to ${right} is now sorted`);
-            addStep(`Merged result: [${arr.slice(left, right + 1).join(', ')}]`);
-            renderArray(arr, 'sorted');
-            await delay(animationSpeed);
-        }
-        
-        function delay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-    });
-</script>
+            function addMergeSortStep(description) {
+                const step = document.createElement('div');
+                step.textContent = description;
+                mergeSortStepsElement.appendChild(step);
+                mergeSortStepsElement.scrollTop = mergeSortStepsElement.scrollHeight;
+            }
+        });
+    </script>
