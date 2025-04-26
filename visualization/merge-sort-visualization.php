@@ -127,7 +127,6 @@
         color: white;
     }
     </style>
-
 <main class="main-content  merge-sort" id="merge-sort" style="display:none;">
 <h1 class="merge-sort-title">Merge Sort Tree Visualization</h1>
         
@@ -135,6 +134,7 @@
             <button id="merge-sort-generate-btn" class="merge-sort-btn">Generate New Array</button>
             <button id="merge-sort-prev-btn" class="merge-sort-btn" disabled>Previous Step</button>
             <button id="merge-sort-next-btn" class="merge-sort-btn">Next Step</button>
+            <button id="merge-sort-auto-btn" class="merge-sort-btn">Auto Sort</button>
             <div class="merge-sort-slider-container">
                 <label for="merge-sort-size-slider">Size:</label>
                 <input type="range" id="merge-sort-size-slider" min="4" max="12" value="8">
@@ -180,6 +180,7 @@
             const mergeSortGenerateBtn = document.getElementById('merge-sort-generate-btn');
             const mergeSortPrevBtn = document.getElementById('merge-sort-prev-btn');
             const mergeSortNextBtn = document.getElementById('merge-sort-next-btn');
+            const mergeSortAutoBtn = document.getElementById('merge-sort-auto-btn');
             const mergeSortStatusElement = document.getElementById('merge-sort-status');
             const mergeSortStepsElement = document.getElementById('merge-sort-steps');
             
@@ -191,6 +192,8 @@
             let mergeSortNodeElements = [];
             let mergeSortNodeContainers = [];
             let mergeSortHistory = [];
+            let autoSortInterval = null;
+            let autoSortSpeed = 1000; // Default speed in milliseconds
             
             // Initialize
             updateMergeSortSizeValue();
@@ -200,6 +203,7 @@
             mergeSortGenerateBtn.addEventListener('click', generateNewMergeSortArray);
             mergeSortPrevBtn.addEventListener('click', previousMergeSortStep);
             mergeSortNextBtn.addEventListener('click', nextMergeSortStep);
+            mergeSortAutoBtn.addEventListener('click', toggleAutoSort);
             mergeSortSizeSlider.addEventListener('input', updateMergeSortSizeValue);
             
             // Functions
@@ -210,6 +214,9 @@
             }
             
             function generateNewMergeSortArray() {
+                // Stop auto sort if running
+                stopAutoSort();
+                
                 mergeSortArray = [];
                 for (let i = 0; i < mergeSortArraySize; i++) {
                     mergeSortArray.push(Math.floor(Math.random() * 90) + 10); // Values between 10-100
@@ -220,6 +227,9 @@
             }
             
             function resetMergeSortVisualization() {
+                // Stop auto sort if running
+                stopAutoSort();
+                
                 mergeSortSteps = [];
                 mergeSortCurrentStep = 0;
                 mergeSortNodeElements = [];
@@ -229,6 +239,7 @@
                 mergeSortStatusElement.textContent = 'Ready to start';
                 mergeSortNextBtn.disabled = false;
                 mergeSortPrevBtn.disabled = true;
+                mergeSortAutoBtn.textContent = 'Auto Sort';
                 mergeSortHistory = [];
             }
             
@@ -416,6 +427,7 @@
                 if (mergeSortCurrentStep >= mergeSortSteps.length) {
                     mergeSortStatusElement.textContent = "Merge Sort completed!";
                     mergeSortNextBtn.disabled = true;
+                    stopAutoSort();
                     return;
                 }
                 
@@ -439,6 +451,48 @@
                 // Update button states
                 mergeSortPrevBtn.disabled = mergeSortCurrentStep === 0;
                 mergeSortNextBtn.disabled = false;
+            }
+            
+            function toggleAutoSort() {
+                if (autoSortInterval) {
+                    stopAutoSort();
+                } else {
+                    startAutoSort();
+                }
+            }
+            
+            function startAutoSort() {
+                // If we're at the end, reset to beginning
+                if (mergeSortCurrentStep >= mergeSortSteps.length) {
+                    resetMergeSortVisualization();
+                    buildMergeSortTreeStructure();
+                }
+                
+                mergeSortAutoBtn.textContent = 'Stop Auto Sort';
+                mergeSortNextBtn.disabled = true;
+                mergeSortPrevBtn.disabled = true;
+                mergeSortGenerateBtn.disabled = true;
+                
+                autoSortInterval = setInterval(() => {
+                    nextMergeSortStep();
+                    
+                    // Stop when we reach the end
+                    if (mergeSortCurrentStep >= mergeSortSteps.length) {
+                        stopAutoSort();
+                    }
+                }, autoSortSpeed);
+            }
+            
+            function stopAutoSort() {
+                if (autoSortInterval) {
+                    clearInterval(autoSortInterval);
+                    autoSortInterval = null;
+                }
+                
+                mergeSortAutoBtn.textContent = 'Auto Sort';
+                mergeSortNextBtn.disabled = mergeSortCurrentStep >= mergeSortSteps.length;
+                mergeSortPrevBtn.disabled = mergeSortCurrentStep === 0;
+                mergeSortGenerateBtn.disabled = false;
             }
             
             function saveMergeSortStateToHistory() {
