@@ -42,6 +42,7 @@
             margin-top: 20px;
         }
         .merge-sort-tree {
+           
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -57,6 +58,7 @@
             flex-direction: column;
             align-items: center;
             position: relative;
+           margin: 0 20px;
         }
         .merge-sort-values {
             display: flex;
@@ -126,7 +128,7 @@
     }
     </style>
 
-<main class="container merge-sort-container" id="merge-sort" style="display: none;">
+<main class="main-content  merge-sort" id="merge-sort" style="display:none;">
 <h1 class="merge-sort-title">Merge Sort Tree Visualization</h1>
         
         <div class="merge-sort-controls">
