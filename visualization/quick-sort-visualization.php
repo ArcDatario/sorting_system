@@ -428,7 +428,7 @@
                 updateQuickSortSteps(2);
                 
                 // Mark pivot as sorted
-                await updateQuickSortVisualization(arr, [], [], [pi], -1, {start: low, end: high});
+                await updateQuickSortVisualization(arr, [], [], [pi], pi, {start: low, end: high});
                 
                 // Recursively sort elements before and after partition
                 addQuickSortStep(`Recursively sorting left partition (${low} to ${pi-1})`, true);
@@ -445,7 +445,7 @@
                 // Single element is already sorted
                 addQuickSortStep(`Single element at index ${low} is already sorted`, true);
                 updateQuickSortSteps(1);
-                await updateQuickSortVisualization(arr, [], [], [low], -1);
+                await updateQuickSortVisualization(arr, [], [], [low], low);
             }
         }
 
@@ -501,7 +501,7 @@
             [arr[i+1], arr[high]] = [arr[high], arr[i+1]];
             
             // Show the final swap
-            await updateQuickSortVisualization(arr, [], [i+1, high], [], -1, {start: low, end: high});
+            await updateQuickSortVisualization(arr, [], [i+1, high], [], i+1, {start: low, end: high});
             
             // Return the partition index
             return i + 1;
@@ -548,21 +548,29 @@
                 // Reset classes
                 box.className = 'quick-sort-array-element';
                 
-                // Add appropriate classes
-                if (comparingIndices.includes(index)) {
-                    box.classList.add('quick-sort-comparing');
-                } else if (swappingIndices.includes(index)) {
-                    box.classList.add('quick-sort-swapping');
-                } else if (sortedIndices.includes(index)) {
-                    box.classList.add('quick-sort-sorted');
-                } else if (highlightRange && index >= highlightRange.start && index <= highlightRange.end) {
-                    box.classList.add('quick-sort-partition');
-                } else {
-                    box.classList.add('quick-sort-normal');
-                }
-                
+                // Pivot has highest priority
                 if (index === pivotIndex) {
                     box.classList.add('quick-sort-pivot');
+                } 
+                // Then sorted elements
+                else if (sortedIndices.includes(index)) {
+                    box.classList.add('quick-sort-sorted');
+                }
+                // Then swapping elements
+                else if (swappingIndices.includes(index)) {
+                    box.classList.add('quick-sort-swapping');
+                }
+                // Then comparing elements
+                else if (comparingIndices.includes(index)) {
+                    box.classList.add('quick-sort-comparing');
+                }
+                // Then partition elements
+                else if (highlightRange && index >= highlightRange.start && index <= highlightRange.end) {
+                    box.classList.add('quick-sort-partition');
+                }
+                // Default
+                else {
+                    box.classList.add('quick-sort-normal');
                 }
             });
             

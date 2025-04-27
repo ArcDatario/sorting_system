@@ -1,3 +1,4 @@
+
 <style>
     h1 {
         text-align: center;
@@ -104,11 +105,11 @@
     }
 
     .radix-bucket {
-        min-width: 100px;
+        min-width: 80px;
         min-height: 150px;
         background-color: #f8f9fa;
         border-radius: 8px;
-        padding: 10px;
+        padding: 5px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -251,13 +252,32 @@
     body.dark-mode .radix-bucket-header {
         color: #ecf0f1;
     }
+    .radix-current-step{
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: black;
+        min-height: 30px;
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+    }
 </style>
-
 <main class="main-content radix-sort" id="radix-sort" style="display:none;">
     <h1>Radix Sort Visualization</h1>
-    <div class="radix-controls">
+    
+    <div id="radix-visualization">
+        <div id="radix-array-container"></div>
+
+        <div class="radix-current-step"></div>
+
+        <div class="radix-controls">
         <button id="radix-generate-btn">Generate New Array</button>
         <button id="radix-sort-btn">Radix Sort</button>
+        <button id="radix-prev-btn">Prev</button>
+        <button id="radix-next-btn">Next</button>
+
         <div class="radix-slider-container">
             <label for="radix-size-slider">Array Size:</label>
             <input type="range" id="radix-size-slider" min="4" max="7" value="4">
@@ -265,12 +285,10 @@
         </div>
         <div class="radix-slider-container">
             <label for="radix-speed-slider">Speed:</label>
-            <input type="range" id="radix-speed-slider" min="1" max="10" value="3">
-            <span id="radix-speed-value">3</span>
+            <input type="range" id="radix-speed-slider" min="1" max="10" value="1">
+            <span id="radix-speed-value">1</span>
         </div>
     </div>
-    <div id="radix-visualization">
-        <div id="radix-array-container"></div>
         <div class="radix-buckets-container" id="radix-buckets-container"></div>
         <div id="radix-steps-container"></div>
     </div>
@@ -289,311 +307,262 @@
         </div>
     </div>
 </main>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // DOM elements
-        const radixArrayContainer = document.getElementById('radix-array-container');
-        const radixBucketsContainer = document.getElementById('radix-buckets-container');
-        const radixStepsContainer = document.getElementById('radix-steps-container');
-        const radixGenerateBtn = document.getElementById('radix-generate-btn');
-        const radixSortBtn = document.getElementById('radix-sort-btn');
-        const radixSizeSlider = document.getElementById('radix-size-slider');
-        const radixSizeValue = document.getElementById('radix-size-value');
-        const radixSpeedSlider = document.getElementById('radix-speed-slider');
-        const radixSpeedValue = document.getElementById('radix-speed-value');
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const radixArrayContainer = document.getElementById('radix-array-container');
+    const radixBucketsContainer = document.getElementById('radix-buckets-container');
+    const radixStepsContainer = document.getElementById('radix-steps-container');
+    const radixCurrentStepDiv = document.querySelector('.radix-current-step');
+    const radixGenerateBtn = document.getElementById('radix-generate-btn');
+    const radixSortBtn = document.getElementById('radix-sort-btn');
+    // Add these two buttons to your HTML controls!
+    let radixPrevBtn = document.getElementById('radix-prev-btn');
+    let radixNextBtn = document.getElementById('radix-next-btn');
+    const radixSizeSlider = document.getElementById('radix-size-slider');
+    const radixSizeValue = document.getElementById('radix-size-value');
+    const radixSpeedSlider = document.getElementById('radix-speed-slider');
+    const radixSpeedValue = document.getElementById('radix-speed-value');
 
-        // Variables
-        let radixArray = [];
-        let radixArraySize = parseInt(radixSizeSlider.value);
-        let radixSortSpeed = parseInt(radixSpeedSlider.value);
-        let isRadixSorting = false;
-        let radixAnimationSpeed = 1000 / radixSortSpeed;
-        let radixSteps = [];
-        let currentRadixStep = 0;
+    // Variables
+    let radixArray = [];
+    let radixArraySize = parseInt(radixSizeSlider.value);
+    let radixSortSpeed = parseInt(radixSpeedSlider.value);
+    let radixAnimationSpeed = 1000 / radixSortSpeed;
+    let radixStepSnapshots = [];
+    let radixStepIndex = 0;
+    let isRadixSorting = false;
+    let radixAutoSortTimeout = null;
 
-        // Initialize
-        updateRadixSizeValue();
-        updateRadixSpeedValue();
-        generateNewRadixArray();
-
-        // Event listeners
-        radixGenerateBtn.addEventListener('click', generateNewRadixArray);
-        radixSortBtn.addEventListener('click', startRadixSort);
-        radixSizeSlider.addEventListener('input', updateRadixSizeValue);
-        radixSpeedSlider.addEventListener('input', updateRadixSpeedValue);
-
-        // Functions
-        function updateRadixSizeValue() {
-            radixArraySize = parseInt(radixSizeSlider.value);
-            radixSizeValue.textContent = radixArraySize;
-            generateNewRadixArray();
+    // Add Prev/Next buttons if not present
+    function ensurePrevNextButtons() {
+        if (!radixPrevBtn || !radixNextBtn) {
+            const controls = document.querySelector('.radix-controls');
+            radixPrevBtn = document.createElement('button');
+            radixPrevBtn.id = 'radix-prev-btn';
+            radixPrevBtn.textContent = 'Prev';
+            radixNextBtn = document.createElement('button');
+            radixNextBtn.id = 'radix-next-btn';
+            radixNextBtn.textContent = 'Next';
+            controls.insertBefore(radixPrevBtn, controls.children[2]);
+            controls.insertBefore(radixNextBtn, controls.children[3]);
         }
+    }
+    ensurePrevNextButtons();
 
-        function updateRadixSpeedValue() {
-            radixSortSpeed = parseInt(radixSpeedSlider.value);
-            radixSpeedValue.textContent = radixSortSpeed;
-            radixAnimationSpeed = 1000 / radixSortSpeed;
-        }
+    // Initialize
+    updateRadixSizeValue();
+    updateRadixSpeedValue();
+    generateNewRadixArray();
 
-        function generateNewRadixArray() {
-            if (isRadixSorting) return;
-            
-            radixArray = [];
-            for (let i = 0; i < radixArraySize; i++) {
-                radixArray.push(Math.floor(Math.random() * 900) + 100); // 3-digit numbers (100-999)
-            }
-            
-            renderRadixArray();
-            radixBucketsContainer.innerHTML = '';
-            radixStepsContainer.innerHTML = '';
-            radixSteps = [];
-            currentRadixStep = 0;
-        }
-
-        function renderRadixArray() {
-            radixArrayContainer.innerHTML = '';
-            
-            radixArray.forEach((value, index) => {
-                const card = document.createElement('div');
-                card.className = 'radix-card';
-                card.textContent = value;
-                card.setAttribute('data-index', index);
-                
-                const indexLabel = document.createElement('div');
-                indexLabel.className = 'radix-card-index';
-                indexLabel.textContent = `[${index}]`;
-                
-                card.appendChild(indexLabel);
-                radixArrayContainer.appendChild(card);
-            });
-        }
-
-        function renderBuckets(buckets, currentDigit) {
-            radixBucketsContainer.innerHTML = '';
-            
-            for (let i = 0; i < 10; i++) {
-                const bucket = document.createElement('div');
-                bucket.className = 'radix-bucket';
-                
-                const header = document.createElement('div');
-                header.className = 'radix-bucket-header';
-                header.textContent = `Digit ${currentDigit}: ${i}`;
-                bucket.appendChild(header);
-                
-                const content = document.createElement('div');
-                content.className = 'radix-bucket-content';
-                
-                if (buckets[i]) {
-                    buckets[i].forEach(num => {
-                        const item = document.createElement('div');
-                        item.className = 'radix-bucket-item';
-                        item.textContent = num;
-                        content.appendChild(item);
-                    });
-                }
-                
-                bucket.appendChild(content);
-                radixBucketsContainer.appendChild(bucket);
-            }
-        }
-
-        function highlightDigit(number, digitPos) {
-            const str = number.toString();
-            if (digitPos >= str.length) return '0';
-            
-            const digit = str[str.length - 1 - digitPos];
-            return str.substring(0, str.length - 1 - digitPos) + 
-                   `<span class="radix-digit-highlight">${digit}</span>` + 
-                   str.substring(str.length - digitPos);
-        }
-
-        function addRadixStep(description, isActive = false) {
-            const step = document.createElement('div');
-            step.className = `radix-step ${isActive ? 'active' : ''}`;
-            step.innerHTML = description;
-            radixStepsContainer.appendChild(step);
-            radixSteps.push(step);
-            
-            // Auto-scroll to the latest step
-            radixStepsContainer.scrollTop = radixStepsContainer.scrollHeight;
-        }
-
-        function updateRadixSteps(currentIndex) {
-            radixSteps.forEach((step, index) => {
-                step.className = 'radix-step';
-                if (index < currentIndex) step.classList.add('completed');
-                if (index === currentIndex) step.classList.add('active');
-            });
-        }
-
-        async function startRadixSort() {
-            if (isRadixSorting) return;
-            
-            isRadixSorting = true;
-            radixGenerateBtn.disabled = true;
-            radixSortBtn.disabled = true;
-            radixStepsContainer.innerHTML = '';
-            radixSteps = [];
-            currentRadixStep = 0;
-            
-            // Initial steps
-            addRadixStep("Starting Radix Sort Algorithm", true);
-            addRadixStep("Find the maximum number to know number of digits");
-            addRadixStep("For each digit position, from least to most significant:");
-            addRadixStep("&nbsp;&nbsp;- Distribute numbers into buckets based on current digit");
-            addRadixStep("&nbsp;&nbsp;- Collect numbers from buckets in order");
-            addRadixStep("Repeat until all digit positions are processed");
-            
-            // Create a copy of the array to sort
-            const sortingArray = [...radixArray];
-            
-            // Perform radix sort with visualization
-            await radixSort(sortingArray);
-            
-            addRadixStep("Radix Sort completed!", false);
-            updateRadixSteps(radixSteps.length);
-            
-            isRadixSorting = false;
-            radixGenerateBtn.disabled = false;
-            radixSortBtn.disabled = false;
-        }
-
-        async function radixSort(arr) {
-            // Get maximum number to know number of digits
-            const maxNum = Math.max(...arr);
-            const maxDigits = maxNum.toString().length;
-            
-            addRadixStep(`Maximum number is ${maxNum} with ${maxDigits} digits`, true);
-            updateRadixSteps(1);
-            await new Promise(resolve => setTimeout(resolve, radixAnimationSpeed));
-            
-            for (let digitPos = 0; digitPos < maxDigits; digitPos++) {
-                addRadixStep(`Processing digit at position ${digitPos} (${digitPos === 0 ? 'least' : digitPos === maxDigits-1 ? 'most' : ''} significant)`, true);
-                updateRadixSteps(2);
-                
-                // Create 10 buckets (0-9)
-                const buckets = Array.from({ length: 10 }, () => []);
-                
-                // Distribute numbers into buckets based on current digit
-                addRadixStep(`Distributing numbers into buckets based on digit at position ${digitPos}`, true);
-                updateRadixSteps(3);
-                
-                for (let i = 0; i < arr.length; i++) {
-                    const num = arr[i];
-                    const digit = getDigit(num, digitPos);
-                    
-                    // Highlight current digit in the number
-                    const cards = document.querySelectorAll('.radix-card');
-                    cards[i].innerHTML = highlightDigit(num, digitPos) + 
-                                        `<div class="radix-card-index">[${i}]</div>`;
-                    cards[i].classList.add('current-digit');
-                    
-                    addRadixStep(`Number ${num} goes to bucket ${digit} (digit at position ${digitPos} is ${digit})`, true);
-                    updateRadixSteps(3);
-                    
-                    await new Promise(resolve => setTimeout(resolve, radixAnimationSpeed));
-                    
-                    // Add to bucket
-                    buckets[digit].push(num);
-                    
-                    // Update buckets visualization
-                    renderBuckets(buckets, digitPos);
-                    
-                    // Highlight the bucket item being added
-                    const bucketItems = document.querySelectorAll(`.radix-bucket:nth-child(${digit + 1}) .radix-bucket-item`);
-                    if (bucketItems.length > 0) {
-                        bucketItems[bucketItems.length - 1].classList.add('current');
-                    }
-                    
-                    await new Promise(resolve => setTimeout(resolve, radixAnimationSpeed));
-                    
-                    // Remove highlight
-                    cards[i].classList.remove('current-digit');
-                    if (bucketItems.length > 0) {
-                        bucketItems[bucketItems.length - 1].classList.remove('current');
-                    }
-                }
-                
-                // Collect numbers from buckets in order
-                addRadixStep(`Collecting numbers from buckets in order (0 to 9)`, true);
-                updateRadixSteps(4);
-                
-                let index = 0;
-                for (let bucketNum = 0; bucketNum < 10; bucketNum++) {
-                    if (buckets[bucketNum].length > 0) {
-                        addRadixStep(`Processing bucket ${bucketNum} with ${buckets[bucketNum].length} items`, true);
-                        updateRadixSteps(4);
-                        
-                        for (let num of buckets[bucketNum]) {
-                            // Find the card in the original array that matches this number
-                            // (This is simplified for visualization - in actual radix sort, we'd reconstruct the array)
-                            const cardIndex = arr.indexOf(num);
-                            if (cardIndex !== -1) {
-                                const card = document.querySelector(`.radix-card[data-index="${cardIndex}"]`);
-                                card.classList.add('moving');
-                                card.innerHTML = num + `<div class="radix-card-index">[${index}]</div>`;
-                                
-                                addRadixStep(`Moving ${num} to position ${index} in the array`, true);
-                                updateRadixSteps(4);
-                                
-                                await new Promise(resolve => setTimeout(resolve, radixAnimationSpeed));
-                                
-                                card.classList.remove('moving');
-                                card.classList.add('radix-move-animation');
-                                await new Promise(resolve => setTimeout(resolve, 500));
-                                card.classList.remove('radix-move-animation');
-                            }
-                            
-                            arr[index] = num;
-                            index++;
-                        }
-                    }
-                }
-                
-                // Update array visualization
-                renderRadixArray();
-                await updateRadixVisualization(arr, digitPos + 1);
-                
-                addRadixStep(`Pass ${digitPos + 1} complete. Array after processing digit at position ${digitPos}: ${arr.join(', ')}`, true);
-                updateRadixSteps(5);
-                
-                await new Promise(resolve => setTimeout(resolve, radixAnimationSpeed));
-            }
-            
-            // Final visualization - all elements sorted
-            await updateRadixVisualization(arr, maxDigits, true);
-            
-            addRadixStep("All digit positions processed - array is now sorted", true);
-            updateRadixSteps(6);
-            
-            // Update the original array
-            radixArray = [...arr];
-        }
-
-        function getDigit(num, pos) {
-            return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
-        }
-
-        async function updateRadixVisualization(arr, digitPos, allSorted = false) {
-            // Update array visualization
-            const cards = document.querySelectorAll('.radix-card');
-            
-            arr.forEach((value, index) => {
-                const card = cards[index];
-                card.innerHTML = value + `<div class="radix-card-index">[${index}]</div>`;
-                
-                // Reset classes
-                card.className = 'radix-card';
-                
-                // Add appropriate classes
-                if (allSorted) {
-                    card.classList.add('sorted');
-                }
-            });
-            
-            // Add delay for animation
-            await new Promise(resolve => setTimeout(resolve, radixAnimationSpeed));
+    // Event listeners
+    radixGenerateBtn.addEventListener('click', generateNewRadixArray);
+    radixSortBtn.addEventListener('click', startRadixAutoSort);
+    radixPrevBtn.addEventListener('click', function() {
+        stopRadixAutoSort();
+        if (radixStepIndex > 0) {
+            radixStepIndex--;
+            renderRadixStepSnapshot(radixStepIndex);
         }
     });
+    radixNextBtn.addEventListener('click', function() {
+        stopRadixAutoSort();
+        if (radixStepIndex < radixStepSnapshots.length - 1) {
+            radixStepIndex++;
+            renderRadixStepSnapshot(radixStepIndex);
+        }
+    });
+    radixSizeSlider.addEventListener('input', updateRadixSizeValue);
+    radixSpeedSlider.addEventListener('input', updateRadixSpeedValue);
+
+    // Functions
+    function updateRadixSizeValue() {
+        radixArraySize = parseInt(radixSizeSlider.value);
+        radixSizeValue.textContent = radixArraySize;
+        generateNewRadixArray();
+    }
+
+    function updateRadixSpeedValue() {
+        radixSortSpeed = parseInt(radixSpeedSlider.value);
+        radixSpeedValue.textContent = radixSortSpeed;
+        radixAnimationSpeed = 1000 / radixSortSpeed;
+    }
+
+    function generateNewRadixArray() {
+        stopRadixAutoSort();
+        radixArray = [];
+        for (let i = 0; i < radixArraySize; i++) {
+            radixArray.push(Math.floor(Math.random() * 900) + 100); // 3-digit numbers (100-999)
+        }
+        radixStepSnapshots = [];
+        radixStepIndex = 0;
+        precomputeRadixSortSteps();
+        renderRadixStepSnapshot(radixStepIndex);
+    }
+
+    function renderRadixArray(arr = radixArray, highlightIndices = [], sortedIndices = []) {
+        radixArrayContainer.innerHTML = '';
+        arr.forEach((value, index) => {
+            const card = document.createElement('div');
+            card.className = 'radix-card';
+            card.textContent = value;
+            card.setAttribute('data-index', index);
+            if (highlightIndices.includes(index)) card.classList.add('current-digit');
+            if (sortedIndices.includes(index)) card.classList.add('sorted');
+            const indexLabel = document.createElement('div');
+            indexLabel.className = 'radix-card-index';
+            indexLabel.textContent = `[${index}]`;
+            card.appendChild(indexLabel);
+            radixArrayContainer.appendChild(card);
+        });
+    }
+
+    function renderBuckets(buckets, currentDigit) {
+        radixBucketsContainer.innerHTML = '';
+        for (let i = 0; i < 10; i++) {
+            const bucket = document.createElement('div');
+            bucket.className = 'radix-bucket';
+            const header = document.createElement('div');
+            header.className = 'radix-bucket-header';
+            header.textContent = `Digit ${currentDigit}: ${i}`;
+            bucket.appendChild(header);
+            const content = document.createElement('div');
+            content.className = 'radix-bucket-content';
+            if (buckets[i]) {
+                buckets[i].forEach(num => {
+                    const item = document.createElement('div');
+                    item.className = 'radix-bucket-item';
+                    item.textContent = num;
+                    content.appendChild(item);
+                });
+            }
+            bucket.appendChild(content);
+            radixBucketsContainer.appendChild(bucket);
+        }
+    }
+
+    function addRadixStepSnapshot(arr, buckets, highlightIndices, sortedIndices, description) {
+        radixStepSnapshots.push({
+            arr: [...arr],
+            buckets: buckets ? buckets.map(b => [...b]) : null,
+            highlightIndices: [...highlightIndices],
+            sortedIndices: [...sortedIndices],
+            description: description
+        });
+    }
+
+    function renderRadixStepSnapshot(idx) {
+        const snap = radixStepSnapshots[idx];
+        if (!snap) return;
+        renderRadixArray(snap.arr, snap.highlightIndices, snap.sortedIndices);
+        if (snap.buckets) {
+            renderBuckets(snap.buckets, snap.currentDigit || 0);
+        } else {
+            radixBucketsContainer.innerHTML = '';
+        }
+
+        // Show only previous and current steps in #radix-steps-container
+        radixStepsContainer.innerHTML = '';
+        for (let i = 0; i <= idx; i++) {
+            const s = radixStepSnapshots[i];
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'radix-step';
+            if (i < idx) stepDiv.classList.add('completed');
+            if (i === idx) stepDiv.classList.add('active');
+            stepDiv.textContent = s.description;
+            radixStepsContainer.appendChild(stepDiv);
+        }
+        // Auto-scroll to bottom so latest step is visible
+        radixStepsContainer.scrollTop = radixStepsContainer.scrollHeight;
+
+        // Show only the current step in .radix-current-step
+        radixCurrentStepDiv.textContent = snap.description || '';
+
+        // Prev/Next are only disabled at the ends
+        radixPrevBtn.disabled = idx === 0;
+        radixNextBtn.disabled = radixStepSnapshots.length === 0 || idx === radixStepSnapshots.length - 1;
+    }
+
+    function precomputeRadixSortSteps() {
+        radixStepSnapshots = [];
+        // Initial steps
+        addRadixStepSnapshot([...radixArray], null, [], [], "Starting Radix Sort Algorithm");
+        addRadixStepSnapshot([...radixArray], null, [], [], "Find the maximum number to know number of digits");
+        addRadixStepSnapshot([...radixArray], null, [], [], "For each digit position, from least to most significant:");
+        addRadixStepSnapshot([...radixArray], null, [], [], "- Distribute numbers into buckets based on current digit");
+        addRadixStepSnapshot([...radixArray], null, [], [], "- Collect numbers from buckets in order");
+        addRadixStepSnapshot([...radixArray], null, [], [], "Repeat until all digit positions are processed");
+
+        const arr = [...radixArray];
+        const maxNum = Math.max(...arr);
+        const maxDigits = maxNum.toString().length;
+        addRadixStepSnapshot([...arr], null, [], [], `Maximum number is ${maxNum} with ${maxDigits} digits`);
+
+        for (let digitPos = 0; digitPos < maxDigits; digitPos++) {
+            addRadixStepSnapshot([...arr], null, [], [], `Processing digit at position ${digitPos} (${digitPos === 0 ? 'least' : digitPos === maxDigits-1 ? 'most' : ''} significant)`);
+            // Create 10 buckets (0-9)
+            const buckets = Array.from({ length: 10 }, () => []);
+            // Distribute numbers into buckets based on current digit
+            addRadixStepSnapshot([...arr], buckets, [], [], `Distributing numbers into buckets based on digit at position ${digitPos}`);
+            for (let i = 0; i < arr.length; i++) {
+                const num = arr[i];
+                const digit = getDigit(num, digitPos);
+                addRadixStepSnapshot([...arr], buckets.map(b => [...b]), [i], [], `Number ${num} goes to bucket ${digit} (digit at position ${digitPos} is ${digit})`);
+                buckets[digit].push(num);
+                addRadixStepSnapshot([...arr], buckets.map(b => [...b]), [i], [], `Placed ${num} in bucket ${digit}`);
+            }
+            // Collect numbers from buckets in order
+            addRadixStepSnapshot([...arr], buckets.map(b => [...b]), [], [], `Collecting numbers from buckets in order (0 to 9)`);
+            let index = 0;
+            for (let bucketNum = 0; bucketNum < 10; bucketNum++) {
+                if (buckets[bucketNum].length > 0) {
+                    addRadixStepSnapshot([...arr], buckets.map(b => [...b]), [], [], `Processing bucket ${bucketNum} with ${buckets[bucketNum].length} items`);
+                    for (let num of buckets[bucketNum]) {
+                        addRadixStepSnapshot([...arr], buckets.map(b => [...b]), [], [], `Moving ${num} to position ${index} in the array`);
+                        arr[index] = num;
+                        index++;
+                        addRadixStepSnapshot([...arr], buckets.map(b => [...b]), [], [], `Array now: ${arr.join(', ')}`);
+                    }
+                }
+            }
+            addRadixStepSnapshot([...arr], null, [], [], `Pass ${digitPos + 1} complete. Array after processing digit at position ${digitPos}: ${arr.join(', ')}`);
+        }
+        // Final visualization - all elements sorted
+        addRadixStepSnapshot([...arr], null, [], Array.from({length: arr.length}, (_, i) => i), "All digit positions processed - array is now sorted");
+        addRadixStepSnapshot([...arr], null, [], Array.from({length: arr.length}, (_, i) => i), "Radix Sort completed!");
+    }
+
+    function getDigit(num, pos) {
+        return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
+    }
+
+    function startRadixAutoSort() {
+        if (isRadixSorting) return;
+        isRadixSorting = true;
+        radixGenerateBtn.disabled = true;
+        radixSortBtn.disabled = true;
+        function playStep() {
+            if (radixStepIndex < radixStepSnapshots.length - 1) {
+                radixStepIndex++;
+                renderRadixStepSnapshot(radixStepIndex);
+                radixAutoSortTimeout = setTimeout(playStep, radixAnimationSpeed);
+            } else {
+                isRadixSorting = false;
+                radixGenerateBtn.disabled = false;
+                radixSortBtn.disabled = false;
+            }
+        }
+        playStep();
+    }
+
+    function stopRadixAutoSort() {
+        if (radixAutoSortTimeout) {
+            clearTimeout(radixAutoSortTimeout);
+            radixAutoSortTimeout = null;
+        }
+        isRadixSorting = false;
+        radixGenerateBtn.disabled = false;
+        radixSortBtn.disabled = false;
+    }
+});
 </script>

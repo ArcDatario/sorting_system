@@ -240,400 +240,362 @@
         background-color: var(--background);
         color: white;
     }
-        
+        .heap-current-steps{
+            text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: black;
+        min-height: 30px;
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        }
 </style>
 
+<!-- ... keep your <style> as is ... -->
 
 <main class="main-content heap-sort" id="heap-sort" style="display:none;">
-        <h1>Heap Sort Visualization</h1>
+    <h1>Heap Sort Visualization</h1>
+    
+    <div id="heapsort-visualization">
+        <div id="heapsort-array-container"></div>
+
+        <div class="heap-current-steps"></div>
+
         <div class="controls">
-            <button id="heapsort-generate-btn">Generate New Array</button>
-            <button id="heapsort-sort-btn">Heap Sort</button>
-            <div class="slider-container">
-                <label for="heapsort-size-slider">Array Size:</label>
-                <input type="range" id="heapsort-size-slider" min="5" max="7" value="5">
-                <span id="heapsort-size-value">5</span>
-            </div>
-            <div class="slider-container">
-                <label for="heapsort-speed-slider">Speed:</label>
-                <input type="range" id="heapsort-speed-slider" min="1" max="10" value="5">
-                <span id="heapsort-speed-value">5</span>
-            </div>
+        <button id="heapsort-generate-btn">Generate New Array</button>
+        <button id="heapsort-sort-btn">Heap Sort</button>
+        <button id="heapsort-prev-btn">Previous Step</button>
+        <button id="heapsort-next-btn">Next Step</button>
+        <div class="slider-container">
+            <label for="heapsort-size-slider">Array Size:</label>
+            <input type="range" id="heapsort-size-slider" min="5" max="7" value="5">
+            <span id="heapsort-size-value">5</span>
         </div>
-        <div id="heapsort-visualization">
-            <div id="heapsort-array-container"></div>
-            <div id="heapsort-heap-container" class="heapsort-hidden"></div>
-            <div id="heapsort-steps-container"></div>
+        <div class="slider-container">
+            <label for="heapsort-speed-slider">Speed:</label>
+            <input type="range" id="heapsort-speed-slider" min="1" max="10" value="1">
+            <span id="heapsort-speed-value">1</span>
         </div>
-        <div class="heapsort-legend">
-            <div class="heapsort-legend-item">
-                <div class="heapsort-color-box comparing"></div>
-                <span>Comparing</span>
-            </div>
-            <div class="heapsort-legend-item">
-                <div class="heapsort-color-box swapping"></div>
-                <span>Swapping</span>
-            </div>
-            <div class="heapsort-legend-item">
-                <div class="heapsort-color-box sorted"></div>
-                <span>Sorted</span>
-            </div>
-            <div class="heapsort-legend-item">
-                <div class="heapsort-color-box heap-node"></div>
-                <span>Heap Node</span>
-            </div>
+    </div>
+        <div id="heapsort-heap-container" class="heapsort-hidden"></div>
+        <div id="heapsort-steps-container"></div>
+    </div>
+   
+    <div class="heapsort-legend">
+        <div class="heapsort-legend-item">
+            <div class="heapsort-color-box comparing"></div>
+            <span>Comparing</span>
         </div>
+        <div class="heapsort-legend-item">
+            <div class="heapsort-color-box swapping"></div>
+            <span>Swapping</span>
+        </div>
+        <div class="heapsort-legend-item">
+            <div class="heapsort-color-box sorted"></div>
+            <span>Sorted</span>
+        </div>
+        <div class="heapsort-legend-item">
+            <div class="heapsort-color-box heap-node"></div>
+            <span>Heap Node</span>
+        </div>
+    </div>
+</main>
 
-    </main>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const heapsortArrayContainer = document.getElementById('heapsort-array-container');
+    const heapsortHeapContainer = document.getElementById('heapsort-heap-container');
+    const heapsortStepsContainer = document.getElementById('heapsort-steps-container');
+    const heapCurrentStepsDiv = document.querySelector('.heap-current-steps'); // <-- cache this
+    const heapsortGenerateBtn = document.getElementById('heapsort-generate-btn');
+    const heapsortSortBtn = document.getElementById('heapsort-sort-btn');
+    const heapsortPrevBtn = document.getElementById('heapsort-prev-btn');
+    const heapsortNextBtn = document.getElementById('heapsort-next-btn');
+    const heapsortSizeSlider = document.getElementById('heapsort-size-slider');
+    const heapsortSizeValue = document.getElementById('heapsort-size-value');
+    const heapsortSpeedSlider = document.getElementById('heapsort-speed-slider');
+    const heapsortSpeedValue = document.getElementById('heapsort-speed-value');
 
+    // Variables
+    let heapsortArray = [];
+    let heapsortArraySize = parseInt(heapsortSizeSlider.value);
+    let heapsortSpeed = parseInt(heapsortSpeedSlider.value);
+    let heapsortAnimationSpeed = 1000 / heapsortSpeed;
+    let heapsortSortingSteps = [];
+    let heapsortCurrentSortingStep = 0;
+    let heapsortIsSorting = false;
+    let heapsortAutoSortTimeout = null;
 
-    <script>
-           document.addEventListener('DOMContentLoaded', function() {
-            // DOM elements
-            const heapsortArrayContainer = document.getElementById('heapsort-array-container');
-            const heapsortHeapContainer = document.getElementById('heapsort-heap-container');
-            const heapsortStepsContainer = document.getElementById('heapsort-steps-container');
-            const heapsortGenerateBtn = document.getElementById('heapsort-generate-btn');
-            const heapsortSortBtn = document.getElementById('heapsort-sort-btn');
-            const heapsortSizeSlider = document.getElementById('heapsort-size-slider');
-            const heapsortSizeValue = document.getElementById('heapsort-size-value');
-            const heapsortSpeedSlider = document.getElementById('heapsort-speed-slider');
-            const heapsortSpeedValue = document.getElementById('heapsort-speed-value');
+    // Initialize
+    heapsortUpdateSizeValue();
+    heapsortUpdateSpeedValue();
+    heapsortGenerateNewArray();
 
-            // Variables
-            let heapsortArray = [];
-            let heapsortArraySize = parseInt(heapsortSizeSlider.value);
-            let heapsortSpeed = parseInt(heapsortSpeedSlider.value);
-            let heapsortIsSorting = false;
-            let heapsortAnimationSpeed = 1000 / heapsortSpeed;
-            let heapsortSteps = [];
-            let heapsortCurrentStep = 0;
+    // Event listeners
+    heapsortGenerateBtn.addEventListener('click', heapsortGenerateNewArray);
+    heapsortSortBtn.addEventListener('click', heapsortAutoSort);
+    heapsortSizeSlider.addEventListener('input', heapsortUpdateSizeValue);
+    heapsortSpeedSlider.addEventListener('input', heapsortUpdateSpeedValue);
+    heapsortPrevBtn.addEventListener('click', function() {
+        if (heapsortCurrentSortingStep > 0) {
+            heapsortStopAutoSort();
+            heapsortCurrentSortingStep--;
+            heapsortRenderStep(heapsortCurrentSortingStep);
+        }
+    });
+    heapsortNextBtn.addEventListener('click', function() {
+        if (heapsortCurrentSortingStep < heapsortSortingSteps.length - 1) {
+            heapsortStopAutoSort();
+            heapsortCurrentSortingStep++;
+            heapsortRenderStep(heapsortCurrentSortingStep);
+        }
+    });
 
-            // Initialize
-            heapsortUpdateSizeValue();
-            heapsortUpdateSpeedValue();
-            heapsortGenerateNewArray();
+    function heapsortUpdateSizeValue() {
+        heapsortArraySize = parseInt(heapsortSizeSlider.value);
+        heapsortSizeValue.textContent = heapsortArraySize;
+        heapsortGenerateNewArray();
+    }
 
-            // Event listeners
-            heapsortGenerateBtn.addEventListener('click', heapsortGenerateNewArray);
-            heapsortSortBtn.addEventListener('click', heapsortStartHeapSort);
-            heapsortSizeSlider.addEventListener('input', heapsortUpdateSizeValue);
-            heapsortSpeedSlider.addEventListener('input', heapsortUpdateSpeedValue);
+    function heapsortUpdateSpeedValue() {
+        heapsortSpeed = parseInt(heapsortSpeedSlider.value);
+        heapsortSpeedValue.textContent = heapsortSpeed;
+        heapsortAnimationSpeed = 1000 / heapsortSpeed;
+    }
 
-            // Functions
-            function heapsortUpdateSizeValue() {
-                heapsortArraySize = parseInt(heapsortSizeSlider.value);
-                heapsortSizeValue.textContent = heapsortArraySize;
-                heapsortGenerateNewArray();
-            }
+    function heapsortGenerateNewArray() {
+        heapsortStopAutoSort();
+        heapsortArray = [];
+        for (let i = 0; i < heapsortArraySize; i++) {
+            heapsortArray.push(Math.floor(Math.random() * 90) + 10);
+        }
+        heapsortSortingSteps = [];
+        heapsortCurrentSortingStep = 0;
+        heapsortHeapContainer.classList.add('heapsort-hidden');
+        heapsortPrecomputeSteps();
+        heapsortRenderStep(0);
+        heapsortPrevBtn.disabled = true;
+        heapsortNextBtn.disabled = heapsortSortingSteps.length <= 1;
+        heapsortSortBtn.disabled = false;
+    }
 
-            function heapsortUpdateSpeedValue() {
-                heapsortSpeed = parseInt(heapsortSpeedSlider.value);
-                heapsortSpeedValue.textContent = heapsortSpeed;
-                heapsortAnimationSpeed = 1000 / heapsortSpeed;
-            }
-
-            function heapsortGenerateNewArray() {
-                if (heapsortIsSorting) return;
-                
-                heapsortArray = [];
-                for (let i = 0; i < heapsortArraySize; i++) {
-                    heapsortArray.push(Math.floor(Math.random() * 90) + 10); // Values between 10-100
-                }
-                
-                heapsortRenderArray();
-                heapsortHeapContainer.classList.add('heapsort-hidden');
-                heapsortStepsContainer.innerHTML = '';
-                heapsortSteps = [];
-                heapsortCurrentStep = 0;
-            }
-
-            function heapsortRenderArray() {
-                heapsortArrayContainer.innerHTML = '';
-                const maxValue = Math.max(...heapsortArray, 1);
-                
-                heapsortArray.forEach((value, index) => {
-                    const bar = document.createElement('div');
-                    bar.className = 'heapsort-array-bar';
-                    bar.style.height = `${(value / maxValue) * 100}%`;
-                    
-                    const label = document.createElement('div');
-                    label.className = 'heapsort-array-bar-label';
-                    label.textContent = value;
-                    
-                    bar.appendChild(label);
-                    bar.setAttribute('data-index', index);
-                    heapsortArrayContainer.appendChild(bar);
-                });
-            }
-
-            function heapsortRenderHeap(heapArray, highlightedIndices = [], swapIndices = [], sortedIndices = []) {
-                heapsortHeapContainer.innerHTML = '';
-                heapsortHeapContainer.classList.remove('heapsort-hidden');
-                
-                if (heapArray.length === 0) return;
-                
-                // Calculate heap levels
-                const levels = Math.ceil(Math.log2(heapArray.length + 1));
-                const nodePositions = [];
-                const nodeSize = 40;
-                const levelHeight = 80;
-                
-                // Create heap levels and nodes
-                for (let level = 0; level < levels; level++) {
-                    const levelStart = Math.pow(2, level) - 1;
-                    const levelEnd = Math.min(Math.pow(2, level + 1) - 1, heapArray.length);
-                    const nodesInLevel = levelEnd - levelStart;
-                    
-                    const levelDiv = document.createElement('div');
-                    levelDiv.className = 'heapsort-heap-level';
-                    levelDiv.style.marginTop = level === 0 ? '0' : '40px';
-                    
-                    for (let i = levelStart; i < levelEnd; i++) {
-                        const node = document.createElement('div');
-                        node.className = 'heapsort-heap-node';
-                        
-                        if (highlightedIndices.includes(i)) {
-                            node.classList.add('comparing');
-                        } else if (swapIndices.includes(i)) {
-                            node.classList.add('swapping');
-                        } else if (sortedIndices.includes(i)) {
-                            node.classList.add('sorted');
-                        }
-                        
-                        node.textContent = heapArray[i];
-                        node.setAttribute('data-index', i);
-                        
-                        // Calculate position
-                        const levelWidth = Math.pow(2, levels - level - 1) * (nodeSize + 60);
-                        const posX = (i - levelStart) * levelWidth + (levelWidth / 2) - (nodeSize / 2);
-                        const posY = level * levelHeight;
-                        
-                        node.style.left = `${posX}px`;
-                        node.style.top = `${posY}px`;
-                        node.style.position = 'absolute';
-                        
-                        nodePositions[i] = { x: posX + nodeSize / 2, y: posY + nodeSize / 2 };
-                        
-                        levelDiv.appendChild(node);
-                    }
-                    
-                    heapsortHeapContainer.appendChild(levelDiv);
-                }
-                
-                // Draw connections between nodes
-                for (let i = 0; i < heapArray.length; i++) {
-                    const leftChild = 2 * i + 1;
-                    const rightChild = 2 * i + 2;
-                    
-                    if (leftChild < heapArray.length && nodePositions[i] && nodePositions[leftChild]) {
-                        heapsortDrawConnection(nodePositions[i], nodePositions[leftChild], 'left');
-                    }
-                    
-                    if (rightChild < heapArray.length && nodePositions[i] && nodePositions[rightChild]) {
-                        heapsortDrawConnection(nodePositions[i], nodePositions[rightChild], 'right');
-                    }
-                }
-            }
-
-            function heapsortDrawConnection(from, to, direction) {
-                const line = document.createElement('div');
-                line.className = 'heapsort-connection-line';
-                
-                const length = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
-                const angle = Math.atan2(to.y - from.y, to.x - from.x) * 180 / Math.PI;
-                
-                line.style.width = `${length}px`;
-                line.style.left = `${from.x}px`;
-                line.style.top = `${from.y}px`;
-                line.style.transform = `rotate(${angle}deg)`;
-                
-                heapsortHeapContainer.appendChild(line);
-            }
-
-            function heapsortAddStep(description, isActive = false) {
-                const step = document.createElement('div');
-                step.className = `heapsort-step ${isActive ? 'active' : ''}`;
-                step.textContent = description;
-                heapsortStepsContainer.appendChild(step);
-                heapsortSteps.push(step);
-                
-                // Auto-scroll to the latest step
-                heapsortStepsContainer.scrollTop = heapsortStepsContainer.scrollHeight;
-            }
-
-            function heapsortUpdateSteps(currentIndex) {
-                heapsortSteps.forEach((step, index) => {
-                    step.className = 'heapsort-step';
-                    if (index < currentIndex) step.classList.add('completed');
-                    if (index === currentIndex) step.classList.add('active');
-                });
-            }
-
-            async function heapsortStartHeapSort() {
-                if (heapsortIsSorting) return;
-                
-                heapsortIsSorting = true;
-                heapsortGenerateBtn.disabled = true;
-                heapsortSortBtn.disabled = true;
-                heapsortStepsContainer.innerHTML = '';
-                heapsortSteps = [];
-                heapsortCurrentStep = 0;
-                
-                // Initial steps
-                heapsortAddStep("Starting Heap Sort Algorithm", true);
-                heapsortAddStep("Building Max Heap from the array");
-                heapsortAddStep("After building max heap, the largest element is at the root");
-                heapsortAddStep("We will repeatedly extract the largest element and rebuild the heap");
-                
-                // Create a copy of the array to sort
-                const sortingArray = [...heapsortArray];
-                
-                // Perform heap sort with visualization
-                await heapsortHeapSort(sortingArray);
-                
-                heapsortAddStep("Heap Sort completed!", false);
-                heapsortUpdateSteps(heapsortSteps.length);
-                
-                heapsortIsSorting = false;
-                heapsortGenerateBtn.disabled = false;
-                heapsortSortBtn.disabled = false;
-            }
-
-            async function heapsortHeapSort(arr) {
-                const n = arr.length;
-                let sortedIndices = [];
-                
-                // Build max heap
-                heapsortAddStep("Building max heap...", true);
-                heapsortUpdateSteps(1);
-                await new Promise(resolve => setTimeout(resolve, heapsortAnimationSpeed));
-                
-                for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-                    heapsortAddStep(`Heapifying subtree rooted at index ${i}`, true);
-                    heapsortUpdateSteps(1);
-                    await heapsortHeapify(arr, n, i, sortedIndices);
-                }
-                
-                heapsortAddStep("Max heap built successfully", true);
-                heapsortUpdateSteps(2);
-                await new Promise(resolve => setTimeout(resolve, heapsortAnimationSpeed));
-                
-                // Heap sort
-                for (let i = n - 1; i > 0; i--) {
-                    heapsortAddStep(`Moving root element (${arr[0]}) to end at position ${i}`, true);
-                    heapsortUpdateSteps(3);
-                    
-                    // Move current root to end
-                    await heapsortSwap(arr, 0, i);
-                    sortedIndices.push(i);
-                    
-                    heapsortAddStep(`Heapifying the reduced heap (size ${i})`, true);
-                    heapsortUpdateSteps(3);
-                    
-                    // Heapify the reduced heap
-                    await heapsortHeapify(arr, i, 0, sortedIndices);
-                }
-                
-                sortedIndices.push(0);
-                
-                // Final visualization
-                await heapsortUpdateVisualization(arr, [], [], sortedIndices);
-                
-                heapsortAddStep("Array is now completely sorted", true);
-                heapsortUpdateSteps(4);
-                
-                // Update the original array
-                heapsortArray = [...arr];
-            }
-
-            async function heapsortHeapify(arr, n, i, sortedIndices) {
-                let largest = i;
-                const left = 2 * i + 1;
-                const right = 2 * i + 2;
-                
-                // Compare with left child
-                if (left < n) {
-                    heapsortAddStep(`Comparing parent (${arr[i]}) with left child (${arr[left]})`, true);
-                    heapsortUpdateSteps(1);
-                    await heapsortUpdateVisualization(arr, [i, left], [], sortedIndices);
-                    
-                    if (arr[left] > arr[largest]) {
-                        largest = left;
-                        heapsortAddStep(`Left child is larger (${arr[left]} > ${arr[i]})`, true);
-                        heapsortUpdateSteps(1);
-                    }
-                }
-                
-                // Compare with right child
-                if (right < n) {
-                    heapsortAddStep(`Comparing parent (${arr[i]}) with right child (${arr[right]})`, true);
-                    heapsortUpdateSteps(1);
-                    await heapsortUpdateVisualization(arr, [i, right], [], sortedIndices);
-                    
-                    if (arr[right] > arr[largest]) {
-                        largest = right;
-                        heapsortAddStep(`Right child is larger (${arr[right]} > ${arr[i]})`, true);
-                        heapsortUpdateSteps(1);
-                    }
-                }
-                
-                // If largest is not root
-                if (largest !== i) {
-                    heapsortAddStep(`Swapping parent (${arr[i]}) with larger child (${arr[largest]})`, true);
-                    heapsortUpdateSteps(1);
-                    await heapsortSwap(arr, i, largest);
-                    
-                    heapsortAddStep(`Recursively heapifying affected subtree`, true);
-                    heapsortUpdateSteps(1);
-                    await heapsortHeapify(arr, n, largest, sortedIndices);
-                } else {
-                    heapsortAddStep(`Subtree rooted at index ${i} satisfies heap property`, true);
-                    heapsortUpdateSteps(1);
-                }
-            }
-
-            async function heapsortSwap(arr, i, j) {
-                await heapsortUpdateVisualization(arr, [i, j], [i, j]);
-                
-                const temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-                
-                heapsortAddStep(`Swapped elements at indices ${i} and ${j}`, true);
-                heapsortUpdateSteps(1);
-                
-                await heapsortUpdateVisualization(arr, [], [i, j]);
-            }
-
-            async function heapsortUpdateVisualization(arr, highlightedIndices = [], swapIndices = [], sortedIndices = []) {
-                // Update array visualization
-                const bars = document.querySelectorAll('.heapsort-array-bar');
-                const maxValue = Math.max(...arr, 1);
-                
-                arr.forEach((value, index) => {
-                    const bar = bars[index];
-                    bar.style.height = `${(value / maxValue) * 100}%`;
-                    bar.querySelector('.heapsort-array-bar-label').textContent = value;
-                    
-                    // Reset classes
-                    bar.className = 'heapsort-array-bar';
-                    
-                    // Add appropriate classes
-                    if (highlightedIndices.includes(index)) {
-                        bar.classList.add('comparing');
-                    } else if (swapIndices.includes(index)) {
-                        bar.classList.add('swapping');
-                    } else if (sortedIndices.includes(index)) {
-                        bar.classList.add('sorted');
-                    }
-                });
-                
-                // Update heap visualization
-                heapsortRenderHeap(arr, highlightedIndices, swapIndices, sortedIndices);
-                
-                // Add delay for animation
-                await new Promise(resolve => setTimeout(resolve, heapsortAnimationSpeed));
-            }
+    function heapsortRenderArray(arr, highlighted = [], swapping = [], sorted = []) {
+        heapsortArrayContainer.innerHTML = '';
+        const maxValue = Math.max(...arr, 1);
+        arr.forEach((value, idx) => {
+            const bar = document.createElement('div');
+            bar.className = 'heapsort-array-bar';
+            bar.style.height = `${(value / maxValue) * 100}%`;
+            const label = document.createElement('div');
+            label.className = 'heapsort-array-bar-label';
+            label.textContent = value;
+            bar.appendChild(label);
+            bar.setAttribute('data-index', idx);
+            if (highlighted.includes(idx)) bar.classList.add('comparing');
+            else if (swapping.includes(idx)) bar.classList.add('swapping');
+            else if (sorted.includes(idx)) bar.classList.add('sorted');
+            heapsortArrayContainer.appendChild(bar);
         });
-    </script>
+    }
+
+    function heapsortRenderHeap(arr, highlighted = [], swapping = [], sorted = []) {
+        heapsortHeapContainer.innerHTML = '';
+        heapsortHeapContainer.classList.remove('heapsort-hidden');
+        if (arr.length === 0) return;
+        const levels = Math.ceil(Math.log2(arr.length + 1));
+        const nodeSize = 40;
+        const levelHeight = 80;
+        const nodePositions = [];
+        for (let level = 0; level < levels; level++) {
+            const levelStart = Math.pow(2, level) - 1;
+            const levelEnd = Math.min(Math.pow(2, level + 1) - 1, arr.length);
+            const levelDiv = document.createElement('div');
+            levelDiv.className = 'heapsort-heap-level';
+            levelDiv.style.marginTop = level === 0 ? '0' : '40px';
+            for (let i = levelStart; i < levelEnd; i++) {
+                const node = document.createElement('div');
+                node.className = 'heapsort-heap-node';
+                if (highlighted.includes(i)) node.classList.add('comparing');
+                else if (swapping.includes(i)) node.classList.add('swapping');
+                else if (sorted.includes(i)) node.classList.add('sorted');
+                node.textContent = arr[i];
+                node.setAttribute('data-index', i);
+                const levelWidth = Math.pow(2, levels - level - 1) * (nodeSize + 60);
+                const posX = (i - levelStart) * levelWidth + (levelWidth / 2) - (nodeSize / 2);
+                const posY = level * levelHeight;
+                node.style.left = `${posX}px`;
+                node.style.top = `${posY}px`;
+                node.style.position = 'absolute';
+                nodePositions[i] = { x: posX + nodeSize / 2, y: posY + nodeSize / 2 };
+                levelDiv.appendChild(node);
+            }
+            heapsortHeapContainer.appendChild(levelDiv);
+        }
+        // Draw connections
+        for (let i = 0; i < arr.length; i++) {
+            const leftChild = 2 * i + 1;
+            const rightChild = 2 * i + 2;
+            if (leftChild < arr.length && nodePositions[i] && nodePositions[leftChild]) {
+                heapsortDrawConnection(nodePositions[i], nodePositions[leftChild]);
+            }
+            if (rightChild < arr.length && nodePositions[i] && nodePositions[rightChild]) {
+                heapsortDrawConnection(nodePositions[i], nodePositions[rightChild]);
+            }
+        }
+    }
+
+    function heapsortDrawConnection(from, to) {
+        const line = document.createElement('div');
+        line.className = 'heapsort-connection-line';
+        const length = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
+        const angle = Math.atan2(to.y - from.y, to.x - from.x) * 180 / Math.PI;
+        line.style.width = `${length}px`;
+        line.style.left = `${from.x}px`;
+        line.style.top = `${from.y}px`;
+        line.style.transform = `rotate(${angle}deg)`;
+        heapsortHeapContainer.appendChild(line);
+    }
+
+    // Render all steps in info panel, highlight current, and show current step in .heap-current-steps
+    
+function heapsortRenderStep(idx) {
+    const step = heapsortSortingSteps[idx];
+    if (!step) return;
+    heapsortRenderArray(step.arr, step.highlighted, step.swapping, step.sorted);
+    heapsortRenderHeap(step.arr, step.highlighted, step.swapping, step.sorted);
+
+    // Show only previous and current steps in #heapsort-steps-container
+    heapsortStepsContainer.innerHTML = '';
+    for (let i = 0; i <= idx; i++) {
+        const s = heapsortSortingSteps[i];
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'heapsort-step';
+        if (i < idx) stepDiv.classList.add('completed');
+        if (i === idx) stepDiv.classList.add('active');
+        stepDiv.textContent = s.description;
+        heapsortStepsContainer.appendChild(stepDiv);
+    }
+
+    // Display only the current step description in .heap-current-steps
+    if (heapCurrentStepsDiv) {
+        heapCurrentStepsDiv.textContent = step.description || '';
+    }
+
+    heapsortPrevBtn.disabled = idx === 0;
+    heapsortNextBtn.disabled = idx === heapsortSortingSteps.length - 1;
+}
+
+
+
+    function heapsortPrecomputeSteps() {
+        // Precompute all steps for the current array
+        heapsortSortingSteps = [];
+        const arr = [...heapsortArray];
+        let sortedIndices = [];
+        // Build max heap
+        heapsortAddStep(arr, [], [], sortedIndices, "Building max heap...");
+        for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
+            heapsortAddStep(arr, [i], [], sortedIndices, `Heapifying subtree rooted at index ${i}`);
+            heapsortHeapify(arr, arr.length, i, sortedIndices);
+        }
+        heapsortAddStep(arr, [], [], sortedIndices, "Max heap built successfully.");
+        // Heap sort
+        for (let i = arr.length - 1; i > 0; i--) {
+            heapsortAddStep(arr, [0, i], [0, i], sortedIndices, `Moving root (${arr[0]}) to end at position ${i}`);
+            swap(arr, 0, i);
+            sortedIndices = [...sortedIndices, i];
+            heapsortAddStep(arr, [0], [], sortedIndices, `Heapifying reduced heap (size ${i})`);
+            heapsortHeapify(arr, i, 0, sortedIndices);
+        }
+        sortedIndices = Array.from({length: arr.length}, (_, i) => i);
+        heapsortAddStep(arr, [], [], sortedIndices, "Array is now completely sorted.");
+    }
+
+    function heapsortAddStep(arr, highlighted, swapping, sorted, description) {
+        heapsortSortingSteps.push({
+            arr: [...arr],
+            highlighted: [...highlighted],
+            swapping: [...swapping],
+            sorted: [...sorted],
+            description
+        });
+    }
+
+    function heapsortHeapify(arr, n, i, sortedIndices) {
+        let largest = i;
+        const left = 2 * i + 1;
+        const right = 2 * i + 2;
+        if (left < n) {
+            heapsortAddStep(arr, [i, left], [], sortedIndices, `Comparing parent (${arr[i]}) with left child (${arr[left]})`);
+            if (arr[left] > arr[largest]) {
+                largest = left;
+                heapsortAddStep(arr, [left], [], sortedIndices, `Left child is larger (${arr[left]} > ${arr[i]})`);
+            }
+        }
+        if (right < n) {
+            heapsortAddStep(arr, [i, right], [], sortedIndices, `Comparing parent (${arr[i]}) with right child (${arr[right]})`);
+            if (arr[right] > arr[largest]) {
+                largest = right;
+                heapsortAddStep(arr, [right], [], sortedIndices, `Right child is larger (${arr[right]} > ${arr[i]})`);
+            }
+        }
+        if (largest !== i) {
+            heapsortAddStep(arr, [i, largest], [i, largest], sortedIndices, `Swapping parent (${arr[i]}) with larger child (${arr[largest]})`);
+            swap(arr, i, largest);
+            heapsortAddStep(arr, [largest], [], sortedIndices, `Recursively heapifying affected subtree`);
+            heapsortHeapify(arr, n, largest, sortedIndices);
+        } else {
+            heapsortAddStep(arr, [i], [], sortedIndices, `Subtree rooted at index ${i} satisfies heap property`);
+        }
+    }
+
+    function swap(arr, i, j) {
+        const temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+    // Auto-sort (play all steps with animation)
+    function heapsortAutoSort() {
+        if (heapsortIsSorting) {
+            heapsortStopAutoSort();
+            return;
+        }
+        heapsortIsSorting = true;
+        heapsortSortBtn.disabled = true;
+        heapsortGenerateBtn.disabled = true;
+        heapsortPrevBtn.disabled = true;
+        heapsortNextBtn.disabled = true;
+        heapsortCurrentSortingStep = 0;
+        function playStep() {
+            heapsortRenderStep(heapsortCurrentSortingStep);
+            if (heapsortCurrentSortingStep < heapsortSortingSteps.length - 1) {
+                heapsortCurrentSortingStep++;
+                heapsortAutoSortTimeout = setTimeout(playStep, heapsortAnimationSpeed);
+            } else {
+                heapsortIsSorting = false;
+                heapsortSortBtn.disabled = false;
+                heapsortGenerateBtn.disabled = false;
+                heapsortPrevBtn.disabled = false;
+                heapsortNextBtn.disabled = false;
+            }
+        }
+        playStep();
+    }
+
+    function heapsortStopAutoSort() {
+        if (heapsortAutoSortTimeout) {
+            clearTimeout(heapsortAutoSortTimeout);
+            heapsortAutoSortTimeout = null;
+        }
+        heapsortIsSorting = false;
+        heapsortSortBtn.disabled = false;
+        heapsortGenerateBtn.disabled = false;
+        heapsortPrevBtn.disabled = heapsortCurrentSortingStep === 0;
+        heapsortNextBtn.disabled = heapsortCurrentSortingStep === heapsortSortingSteps.length - 1;
+    }
+});
+</script>

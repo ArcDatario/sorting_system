@@ -7,8 +7,7 @@
             <button class="tree-tab-btn tab-btn" onclick="openTreeTab(event, 'tree-python-tab')">Python</button>
             <button class="tree-tab-btn tab-btn" onclick="openTreeTab(event, 'tree-java-tab')">Java</button>
             <button class="tree-tab-btn tab-btn" onclick="openTreeTab(event, 'tree-js-tab')">JavaScript</button>
-            <button class="tree-tab-btn tab-btn" onclick="openTreeTab(event, 'tree-csharp-tab')">C#</button>
-            <button class="tree-tab-btn tab-btn" onclick="openTreeTab(event, 'tree-php-tab')">PHP</button>
+          
         </div>
 
         <!-- C++ Tab -->
@@ -206,117 +205,6 @@ console.log(<span class="code-string">"Sorted array:"</span>, sortedArr);</code>
             </div>
         </div>
 
-        <!-- C# Tab -->
-        <div id="tree-csharp-tab" class="tree-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
-<span class="code-keyword">using</span> System.Collections.Generic;
-
-<span class="code-keyword">class</span> <span class="code-class">Node</span> {
-    <span class="code-keyword">public</span> <span class="code-type">int</span> Data;
-    <span class="code-keyword">public</span> Node Left, Right;
-    <span class="code-keyword">public</span> <span class="code-function">Node</span>(<span class="code-type">int</span> item) {
-        Data = item;
-        Left = Right = <span class="code-keyword">null</span>;
-    }
-}
-
-<span class="code-keyword">class</span> <span class="code-class">TreeSort</span> {
-    Node root;
-    
-    <span class="code-keyword">void</span> <span class="code-function">Insert</span>(<span class="code-type">int</span> key) {
-        root = InsertRec(root, key);
-    }
-    
-    Node <span class="code-function">InsertRec</span>(Node root, <span class="code-type">int</span> key) {
-        <span class="code-keyword">if</span> (root == <span class="code-keyword">null</span>) {
-            root = <span class="code-keyword">new</span> Node(key);
-            <span class="code-keyword">return</span> root;
-        }
-        <span class="code-keyword">if</span> (key &lt; root.Data)
-            root.Left = InsertRec(root.Left, key);
-        <span class="code-keyword">else if</span> (key > root.Data)
-            root.Right = InsertRec(root.Right, key);
-        <span class="code-keyword">return</span> root;
-    }
-    
-    <span class="code-keyword">void</span> <span class="code-function">InOrderRec</span>(Node root, List&lt;<span class="code-type">int</span>&gt; result) {
-        <span class="code-keyword">if</span> (root != <span class="code-keyword">null</span>) {
-            InOrderRec(root.Left, result);
-            result.Add(root.Data);
-            InOrderRec(root.Right, result);
-        }
-    }
-    
-    <span class="code-keyword">public</span> <span class="code-type">void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr) {
-        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr)
-            Insert(num);
-        List&lt;<span class="code-type">int</span>&gt; sortedList = <span class="code-keyword">new</span> List&lt;<span class="code-type">int</span>&gt;();
-        InOrderRec(root, sortedList);
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; arr.Length; i++)
-            arr[i] = sortedList[i];
-    }
-    
-    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
-        <span class="code-type">int</span>[] arr = {<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>};
-        <span class="code-class">TreeSort</span> tree = <span class="code-keyword">new</span> <span class="code-class">TreeSort</span>();
-        tree.Sort(arr);
-        Console.Write(<span class="code-string">"Sorted array: "</span>);
-        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) Console.Write(num + <span class="code-string">" "</span>);
-    }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- PHP Tab -->
-        <div id="tree-php-tab" class="tree-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-php"><span class="code-keyword">class</span> <span class="code-class">Node</span> {
-    <span class="code-keyword">public</span> <span class="code-variable">$data</span>;
-    <span class="code-keyword">public</span> <span class="code-variable">$left</span>;
-    <span class="code-keyword">public</span> <span class="code-variable">$right</span>;
-    <span class="code-keyword">public function</span> <span class="code-function">__construct</span>(<span class="code-variable">$value</span>) {
-        <span class="code-variable">$this</span>->data = <span class="code-variable">$value</span>;
-        <span class="code-variable">$this</span>->left = <span class="code-keyword">null</span>;
-        <span class="code-variable">$this</span>->right = <span class="code-keyword">null</span>;
-    }
-}
-
-<span class="code-keyword">function</span> <span class="code-function">insert</span>(<span class="code-variable">$root</span>, <span class="code-variable">$value</span>) {
-    <span class="code-keyword">if</span> (<span class="code-variable">$root</span> === <span class="code-keyword">null</span>) {
-        <span class="code-keyword">return</span> <span class="code-keyword">new</span> <span class="code-class">Node</span>(<span class="code-variable">$value</span>);
-    }
-    <span class="code-keyword">if</span> (<span class="code-variable">$value</span> &lt; <span class="code-variable">$root</span>->data) {
-        <span class="code-variable">$root</span>->left = insert(<span class="code-variable">$root</span>->left, <span class="code-variable">$value</span>);
-    } <span class="code-keyword">else</span> {
-        <span class="code-variable">$root</span>->right = insert(<span class="code-variable">$root</span>->right, <span class="code-variable">$value</span>);
-    }
-    <span class="code-keyword">return</span> <span class="code-variable">$root</span>;
-}
-
-<span class="code-keyword">function</span> <span class="code-function">inOrderTraversal</span>(<span class="code-variable">$root</span>, &<span class="code-variable">$result</span>) {
-    <span class="code-keyword">if</span> (<span class="code-variable">$root</span> !== <span class="code-keyword">null</span>) {
-        inOrderTraversal(<span class="code-variable">$root</span>->left, <span class="code-variable">$result</span>);
-        <span class="code-variable">$result</span>[] = <span class="code-variable">$root</span>->data;
-        inOrderTraversal(<span class="code-variable">$root</span>->right, <span class="code-variable">$result</span>);
-    }
-}
-
-<span class="code-keyword">function</span> <span class="code-function">treeSort</span>(<span class="code-variable">$arr</span>) {
-    <span class="code-variable">$root</span> = <span class="code-keyword">null</span>;
-    <span class="code-keyword">foreach</span> (<span class="code-variable">$arr</span> <span class="code-keyword">as</span> <span class="code-variable">$num</span>) {
-        <span class="code-variable">$root</span> = insert(<span class="code-variable">$root</span>, <span class="code-variable">$num</span>);
-    }
-    <span class="code-variable">$sortedArr</span> = [];
-    inOrderTraversal(<span class="code-variable">$root</span>, <span class="code-variable">$sortedArr</span>);
-    <span class="code-keyword">return</span> <span class="code-variable">$sortedArr</span>;
-}
-
-<span class="code-variable">$arr</span> = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
-<span class="code-variable">$sortedArr</span> = treeSort(<span class="code-variable">$arr</span>);
-echo <span class="code-string">"Sorted array: "</span> . implode(<span class="code-string">" "</span>, <span class="code-variable">$sortedArr</span>);</code></pre>
-            </div>
-        </div>
     </div>
 </div>
 

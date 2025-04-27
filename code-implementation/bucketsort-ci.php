@@ -1,3 +1,4 @@
+
 <!-- Bucket Sort -->
 <h2>Bucket Sort Implementations</h2>
 <div class="bucket-sort-implementations">
@@ -7,8 +8,6 @@
             <button class="bucket-tab-btn tab-btn" onclick="openBucketTab(event, 'bucket-python-tab')">Python</button>
             <button class="bucket-tab-btn tab-btn" onclick="openBucketTab(event, 'bucket-java-tab')">Java</button>
             <button class="bucket-tab-btn tab-btn" onclick="openBucketTab(event, 'bucket-js-tab')">JavaScript</button>
-            <button class="bucket-tab-btn tab-btn" onclick="openBucketTab(event, 'bucket-csharp-tab')">C#</button>
-            <button class="bucket-tab-btn tab-btn" onclick="openBucketTab(event, 'bucket-php-tab')">PHP</button>
         </div>
 
         <!-- C++ Tab -->
@@ -162,86 +161,6 @@ bucket_sort(arr)
 <span class="code-keyword">let</span> arr = [<span class="code-number">0.897</span>, <span class="code-number">0.565</span>, <span class="code-number">0.656</span>, <span class="code-number">0.1234</span>, <span class="code-number">0.665</span>, <span class="code-number">0.3434</span>];
 bucketSort(arr);
 console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
-            </div>
-        </div>
-
-        <!-- C# Tab -->
-        <div id="bucket-csharp-tab" class="bucket-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
-<span class="code-keyword">using</span> System.Collections.Generic;
-<span class="code-keyword">using</span> System.Linq;
-
-<span class="code-keyword">class</span> <span class="code-class">BucketSort</span> {
-    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">float</span>[] arr) {
-        <span class="code-type">int</span> n = arr.Length;
-        
-        <span class="code-comment">// Create n empty buckets</span>
-        <span class="code-type">List</span>&lt;<span class="code-type">float</span>&gt;[] buckets = <span class="code-keyword">new</span> <span class="code-type">List</span>&lt;<span class="code-type">float</span>&gt;[n];
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n; i++)
-            buckets[i] = <span class="code-keyword">new</span> <span class="code-type">List</span>&lt;<span class="code-type">float</span>&gt;();
-        
-        <span class="code-comment">// Put array elements in different buckets</span>
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n; i++) {
-            <span class="code-type">int</span> bucketIndex = (<span class="code-type">int</span>) (n * arr[i]);
-            buckets[bucketIndex].Add(arr[i]);
-        }
-        
-        <span class="code-comment">// Sort individual buckets</span>
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n; i++)
-            buckets[i].Sort();
-        
-        <span class="code-comment">// Concatenate all buckets into arr[]</span>
-        <span class="code-type">int</span> index = <span class="code-number">0</span>;
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n; i++)
-            <span class="code-keyword">for</span> (<span class="code-type">int</span> j = <span class="code-number">0</span>; j &lt; buckets[i].Count; j++)
-                arr[index++] = buckets[i][j];
-    }
-    
-    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
-        <span class="code-type">float</span>[] arr = {<span class="code-number">0.897f</span>, <span class="code-number">0.565f</span>, <span class="code-number">0.656f</span>, <span class="code-number">0.1234f</span>, <span class="code-number">0.665f</span>, <span class="code-number">0.3434f</span>};
-        Sort(arr);
-        
-        Console.Write(<span class="code-string">"Sorted array: "</span>);
-        <span class="code-keyword">foreach</span> (<span class="code-type">float</span> num <span class="code-keyword">in</span> arr)
-            Console.Write(num + <span class="code-string">" "</span>);
-    }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- PHP Tab -->
-        <div id="bucket-php-tab" class="bucket-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">bucketSort</span>(&<span class="code-variable">$arr</span>) {
-    <span class="code-variable">$n</span> = <span class="code-function">count</span>(<span class="code-variable">$arr</span>);
-    
-    <span class="code-comment">// Create n empty buckets</span>
-    <span class="code-variable">$buckets</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-variable">$n</span>, <span class="code-keyword">array</span>());
-    
-    <span class="code-comment">// Put array elements in different buckets</span>
-    <span class="code-keyword">foreach</span> (<span class="code-variable">$arr</span> <span class="code-keyword">as</span> <span class="code-variable">$num</span>) {
-        <span class="code-variable">$bucketIndex</span> = <span class="code-function">floor</span>(<span class="code-variable">$n</span> * <span class="code-variable">$num</span>);
-        <span class="code-function">array_push</span>(<span class="code-variable">$buckets</span>[<span class="code-variable">$bucketIndex</span>], <span class="code-variable">$num</span>);
-    }
-    
-    <span class="code-comment">// Sort individual buckets</span>
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$i</span> &lt; <span class="code-variable">$n</span>; <span class="code-variable">$i</span>++) {
-        <span class="code-function">sort</span>(<span class="code-variable">$buckets</span>[<span class="code-variable">$i</span>]);
-    }
-    
-    <span class="code-comment">// Concatenate all buckets into arr[]</span>
-    <span class="code-variable">$index</span> = <span class="code-number">0</span>;
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$i</span> &lt; <span class="code-variable">$n</span>; <span class="code-variable">$i</span>++) {
-        <span class="code-keyword">foreach</span> (<span class="code-variable">$buckets</span>[<span class="code-variable">$i</span>] <span class="code-keyword">as</span> <span class="code-variable">$num</span>) {
-            <span class="code-variable">$arr</span>[<span class="code-variable">$index</span>++] = <span class="code-variable">$num</span>;
-        }
-    }
-}
-
-<span class="code-variable">$arr</span> = [<span class="code-number">0.897</span>, <span class="code-number">0.565</span>, <span class="code-number">0.656</span>, <span class="code-number">0.1234</span>, <span class="code-number">0.665</span>, <span class="code-number">0.3434</span>];
-bucketSort(<span class="code-variable">$arr</span>);
-echo <span class="code-string">"Sorted array: "</span> . <span class="code-function">implode</span>(<span class="code-string">" "</span>, <span class="code-variable">$arr</span>);</code></pre>
             </div>
         </div>
     </div>

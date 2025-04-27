@@ -1,10 +1,13 @@
+
+<?php
+// No PHP logic needed; this is a pure HTML/JS/CSS visualization.
+?>
 <style>
     h1 {
         text-align: center;
         color: #2c3e50;
         margin-bottom: 20px;
     }
-
     .tree-controls {
         display: flex;
         flex-wrap: wrap;
@@ -13,7 +16,6 @@
         align-items: center;
         justify-content: center;
     }
-
     .tree-btn {
         padding: 8px 16px;
         background-color: #3498db;
@@ -24,23 +26,13 @@
         font-size: 14px;
         transition: background-color 0.3s;
     }
-
     .tree-btn:hover {
         background-color: #2980b9;
     }
-
     .tree-btn:disabled {
         background-color: #95a5a6;
         cursor: not-allowed;
     }
-
-    .tree-slider-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-    }
-
     #tree-array-container {
         display: flex;
         flex-wrap: wrap;
@@ -53,8 +45,28 @@
         margin-bottom: 20px;
         min-height: 100px;
     }
-
-    .tree-node {
+    #tree-visualization {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background-color: #ecf0f1;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        min-height: 300px;
+        position: relative;
+    }
+    #tree-diagram {
+        position: relative;
+        width: 100%;
+        min-height: 350px;
+        height: 400px;
+        background: #ecf0f1;
+        border-radius: 8px;
+        overflow: visible;
+    }
+    .tree-node-abs {
+        position: absolute;
         width: 50px;
         height: 50px;
         background-color: #3498db;
@@ -64,97 +76,41 @@
         align-items: center;
         color: white;
         font-weight: bold;
-        font-size: 18px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        position: relative;
-        margin: 10px;
+        font-size: 16px;
+        transition: all 0.3s;
+        z-index: 2;
+        box-shadow: 0 2px 8px rgba(44,62,80,0.08);
     }
-
-    .tree-node.current {
-        background-color: #e74c3c;
-        transform: scale(1.1);
-        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    .tree-node.visited {
-        background-color: #2ecc71;
-    }
-
-    .tree-node.sorted {
-        background-color: #2ecc71;
-    }
-
-    .tree-node.highlight {
-        background-color: #9b59b6;
-    }
-
-    .tree-node-index {
+    .tree-node-abs.highlight { background-color: #e74c3c; transform: scale(1.1); box-shadow: 0 0 10px rgba(231, 76, 60, 0.7);}
+    .tree-node-abs.processed { background-color: #2ecc71; }
+    .tree-node-abs.sorted { background-color: #9b59b6; }
+    .tree-svg-connector {
         position: absolute;
-        top: -20px;
-        font-size: 12px;
-        color: #2c3e50;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 1;
     }
-
-    #tree-visualization {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    #tree-canvas {
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-
     #tree-steps-container {
-        width: 100% !important; 
         padding: 15px;
         background-color: #f8f9fa;
         border-radius: 5px;
         border-left: 4px solid #3498db;
         max-height: 200px;
         overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: #4ec9b0 #f8f9fa;
     }
-
-    #tree-steps-container::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    #tree-steps-container::-webkit-scrollbar-track {
-        background: transparent;
-        border-radius: 10px;
-    }
-
-    #tree-steps-container::-webkit-scrollbar-thumb {
-        background-color: #4ec9b0;
-        border-radius: 10px;
-        border: 2px solid transparent;
-    }
-
-    #tree-steps-container::-webkit-scrollbar-thumb:hover {
-        background-color: #3ab8a0;
-    }
-
     .tree-step {
         margin-bottom: 8px;
         font-size: 14px;
         line-height: 1.4;
     }
-
     .tree-step.active {
         font-weight: bold;
         color: #2c3e50;
     }
-
     .tree-step.completed {
         color: #27ae60;
     }
-
     .tree-legend {
         display: flex;
         justify-content: center;
@@ -162,416 +118,443 @@
         margin-top: 20px;
         flex-wrap: wrap;
     }
-
     .tree-legend-item {
         display: flex;
         align-items: center;
         gap: 5px;
         font-size: 14px;
     }
-
-    .tree-color-box {
-        width: 20px;
-        height: 20px;
+    .tree-color-circle {
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
     }
-
-    .tree-color-box.current {
-        background-color: #e74c3c;
+    .tree-current-step {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: black;
+        min-height: 30px;
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
     }
-
-    .tree-color-box.visited {
-        background-color: #2ecc71;
+    .sorted-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
     }
-
-    .tree-color-box.highlight {
+    .sorted-item {
+        width: 40px;
+        height: 40px;
         background-color: #9b59b6;
-    }
-
-    .tree-connection {
-        stroke: #3498db;
-        stroke-width: 2;
-    }
-
-    .tree-connection.highlight {
-        stroke: #9b59b6;
-        stroke-width: 3;
-    }
-
-    body.dark-mode #tree-array-container {
-        background-color: #333;
-    }
-    body.dark-mode #tree-steps-container {
-        background-color: var(--background);
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         color: white;
-    }
-    body.dark-mode .tree-node-index {
-        color: #ecf0f1;
-    }
-    body.dark-mode #tree-canvas {
-        background-color: #444;
+        font-weight: bold;
     }
 </style>
 
 <main class="main-content tree-sort" id="tree-sort" style="display:none;">
     <h1>Tree Sort Visualization</h1>
-    <div class="tree-controls">
-        <button id="tree-generate-btn">Generate New Array</button>
-        <button id="tree-sort-btn">Tree Sort</button>
-        <div class="tree-slider-container">
-            <label for="tree-size-slider">Array Size:</label>
-            <input type="range" id="tree-size-slider" min="3" max="5" value="3">
-            <span id="tree-size-value">3</span>
-        </div>
-        <div class="tree-slider-container">
-            <label for="tree-speed-slider">Speed:</label>
-            <input type="range" id="tree-speed-slider" min="1" max="10" value="3">
-            <span id="tree-speed-value">3</span>
-        </div>
-    </div>
     <div id="tree-visualization">
-        <div id="tree-array-container"></div>
-        <svg id="tree-canvas" width="600" height="250"></svg>
-        <div id="tree-steps-container"></div>
+        <div id="tree-diagram"></div>
+        <div class="sorted-container" id="sorted-output"></div>
     </div>
+    <div id="tree-array-container"></div>
+    <div class="tree-current-step"></div>
+    <div class="tree-controls">
+        <button id="tree-sort-btn" class="tree-btn">Start Tree Sort</button>
+        <button id="tree-prev-btn" class="tree-btn">Previous Step</button>
+        <button id="tree-next-btn" class="tree-btn">Next Step</button>
+    </div>
+    <div id="tree-steps-container"></div>
     <div class="tree-legend">
         <div class="tree-legend-item">
-            <div class="tree-color-box current"></div>
+            <div class="tree-color-circle" style="background-color: #e74c3c;"></div>
             <span>Current Node</span>
         </div>
         <div class="tree-legend-item">
-            <div class="tree-color-box visited"></div>
-            <span>Visited/Processed</span>
+            <div class="tree-color-circle" style="background-color: #2ecc71;"></div>
+            <span>Processed Node</span>
         </div>
         <div class="tree-legend-item">
-            <div class="tree-color-box highlight"></div>
-            <span>Highlighted Path</span>
+            <div class="tree-color-circle" style="background-color: #9b59b6;"></div>
+            <span>Sorted Value</span>
         </div>
     </div>
 </main>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // DOM elements
-        const treeArrayContainer = document.getElementById('tree-array-container');
-        const treeCanvas = document.getElementById('tree-canvas');
-        const treeStepsContainer = document.getElementById('tree-steps-container');
-        const treeGenerateBtn = document.getElementById('tree-generate-btn');
-        const treeSortBtn = document.getElementById('tree-sort-btn');
-        const treeSizeSlider = document.getElementById('tree-size-slider');
-        const treeSizeValue = document.getElementById('tree-size-value');
-        const treeSpeedSlider = document.getElementById('tree-speed-slider');
-        const treeSpeedValue = document.getElementById('tree-speed-value');
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const treeArrayContainer = document.getElementById('tree-array-container');
+    const treeDiagram = document.getElementById('tree-diagram');
+    const sortedOutput = document.getElementById('sorted-output');
+    const treeStepsContainer = document.getElementById('tree-steps-container');
+    const treeCurrentStepDiv = document.querySelector('.tree-current-step');
+    const treeSortBtn = document.getElementById('tree-sort-btn');
+    const treePrevBtn = document.getElementById('tree-prev-btn');
+    const treeNextBtn = document.getElementById('tree-next-btn');
 
-        // Variables
-        let treeArray = [];
-        let treeArraySize = parseInt(treeSizeSlider.value);
-        let treeSortSpeed = parseInt(treeSpeedSlider.value);
-        let isTreeSorting = false;
-        let treeAnimationSpeed = 1000 / treeSortSpeed;
-        let treeSteps = [];
-        let currentTreeStep = 0;
-        let sortedArray = [];
-        let bstRoot = null;
-        let visitedNodes = [];
+    // Fixed, balanced array for clean BST visualization
+    // This array will produce a perfectly balanced BST:
+    //         40
+    //       /    \
+    //     20      60
+    //    / \     / \
+    //  10  30  50  70
+    let treeArray = [40, 20, 60, 10, 30, 50, 70];
 
-        // Initialize
-        updateTreeSizeValue();
-        updateTreeSpeedValue();
-        generateNewTreeArray();
+    let treeStepSnapshots = [];
+    let treeStepIndex = 0;
+    let isTreeSorting = false;
+    let treeAutoSortTimeout = null;
+    let treeAnimationSpeed = 600;
 
-        // Event listeners
-        treeGenerateBtn.addEventListener('click', generateNewTreeArray);
-        treeSortBtn.addEventListener('click', startTreeSort);
-        treeSizeSlider.addEventListener('input', updateTreeSizeValue);
-        treeSpeedSlider.addEventListener('input', updateTreeSpeedValue);
+    // Initialize
+    precomputeTreeSortSteps();
+    treeStepIndex = 0;
+    renderTreeStepSnapshot(treeStepIndex);
 
-        // Functions
-        function updateTreeSizeValue() {
-            treeArraySize = parseInt(treeSizeSlider.value);
-            treeSizeValue.textContent = treeArraySize;
-            generateNewTreeArray();
-        }
-
-        function updateTreeSpeedValue() {
-            treeSortSpeed = parseInt(treeSpeedSlider.value);
-            treeSpeedValue.textContent = treeSortSpeed;
-            treeAnimationSpeed = 1000 / treeSortSpeed;
-        }
-
-        function generateNewTreeArray() {
-            if (isTreeSorting) return;
-            
-            treeArray = [];
-            for (let i = 0; i < treeArraySize; i++) {
-                treeArray.push(Math.floor(Math.random() * 90) + 10); // 2-digit numbers (10-99)
-            }
-            
-            renderTreeArray();
-            clearTreeCanvas();
-            treeStepsContainer.innerHTML = '';
-            treeSteps = [];
-            currentTreeStep = 0;
-            sortedArray = [];
-            bstRoot = null;
-            visitedNodes = [];
-        }
-
-        function renderTreeArray() {
-            treeArrayContainer.innerHTML = '';
-            
-            treeArray.forEach((value, index) => {
-                const node = document.createElement('div');
-                node.className = 'tree-node';
-                node.textContent = value;
-                node.setAttribute('data-index', index);
-                
-                const indexLabel = document.createElement('div');
-                indexLabel.className = 'tree-node-index';
-                indexLabel.textContent = `[${index}]`;
-                
-                node.appendChild(indexLabel);
-                treeArrayContainer.appendChild(node);
-            });
-        }
-
-        function clearTreeCanvas() {
-            treeCanvas.innerHTML = '';
-        }
-
-        function drawTreeNode(node, x, y, level, isHighlighted = false, isVisited = false) {
-            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", x);
-            circle.setAttribute("cy", y);
-            circle.setAttribute("r", 20);
-            circle.setAttribute("fill", isHighlighted ? "#9b59b6" : (isVisited ? "#2ecc71" : "#3498db"));
-            circle.setAttribute("class", isHighlighted ? "tree-node highlight" : (isVisited ? "tree-node visited" : "tree-node"));
-            
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", x);
-            text.setAttribute("y", y + 5);
-            text.setAttribute("text-anchor", "middle");
-            text.setAttribute("fill", "white");
-            text.setAttribute("font-weight", "bold");
-            text.textContent = node.value;
-            
-            treeCanvas.appendChild(circle);
-            treeCanvas.appendChild(text);
-            
-            return {x, y, element: circle};
-        }
-
-        function drawTreeConnection(x1, y1, x2, y2, isHighlighted = false) {
-            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.setAttribute("x1", x1);
-            line.setAttribute("y1", y1 + 20);
-            line.setAttribute("x2", x2);
-            line.setAttribute("y2", y2 - 20);
-            line.setAttribute("stroke", isHighlighted ? "#9b59b6" : "#3498db");
-            line.setAttribute("stroke-width", isHighlighted ? 3 : 2);
-            line.setAttribute("class", isHighlighted ? "tree-connection highlight" : "tree-connection");
-            treeCanvas.appendChild(line);
-        }
-
-        function visualizeTree(root, x = 300, y = 50, level = 0, parentX = null, parentY = null, highlightPath = []) {
-            if (!root) return;
-
-            const isHighlighted = highlightPath.includes(root.value);
-            const isVisited = visitedNodes.includes(root.value);
-            
-            // Draw connection to parent first (so it's behind the node)
-            if (parentX !== null && parentY !== null) {
-                drawTreeConnection(parentX, parentY, x, y, isHighlighted);
-            }
-            
-            // Draw the node
-            const nodePos = drawTreeNode(root, x, y, level, isHighlighted, isVisited);
-            
-            // Calculate horizontal spacing based on level
-            const horizontalSpacing = 200 / (level + 1);
-            
-            // Visualize left and right subtrees
-            if (root.left) {
-                visualizeTree(root.left, x - horizontalSpacing, y + 60, level + 1, x, y, highlightPath);
-            }
-            if (root.right) {
-                visualizeTree(root.right, x + horizontalSpacing, y + 60, level + 1, x, y, highlightPath);
-            }
-        }
-
-        function addTreeStep(description, isActive = false) {
-            const step = document.createElement('div');
-            step.className = `tree-step ${isActive ? 'active' : ''}`;
-            step.textContent = description;
-            treeStepsContainer.appendChild(step);
-            treeSteps.push(step);
-            
-            // Auto-scroll to the latest step
-            treeStepsContainer.scrollTop = treeStepsContainer.scrollHeight;
-        }
-
-        function updateTreeSteps(currentIndex) {
-            treeSteps.forEach((step, index) => {
-                step.className = 'tree-step';
-                if (index < currentIndex) step.classList.add('completed');
-                if (index === currentIndex) step.classList.add('active');
-            });
-        }
-
-        async function startTreeSort() {
-            if (isTreeSorting) return;
-            
-            isTreeSorting = true;
-            treeGenerateBtn.disabled = true;
-            treeSortBtn.disabled = true;
-            treeStepsContainer.innerHTML = '';
-            treeSteps = [];
-            currentTreeStep = 0;
-            sortedArray = [];
-            visitedNodes = [];
-            
-            // Initial steps
-            addTreeStep("Starting Tree Sort Algorithm", true);
-            addTreeStep("1. Build a Binary Search Tree from the array elements");
-            addTreeStep("2. Perform in-order traversal of the BST to get sorted array");
-            
-            // Create a copy of the array to sort
-            const sortingArray = [...treeArray];
-            
-            // Perform tree sort with visualization
-            await treeSort(sortingArray);
-            
-            // After sort is complete, show the final tree with all visited nodes highlighted
-            clearTreeCanvas();
-            visualizeTree(bstRoot);
-            
-            addTreeStep("Tree Sort completed! Sorted array: " + sortedArray.join(', '), false);
-            updateTreeSteps(treeSteps.length);
-            
-            isTreeSorting = false;
-            treeGenerateBtn.disabled = false;
-            treeSortBtn.disabled = false;
-        }
-
-        // Binary Search Tree Node
-        class TreeNode {
-            constructor(value) {
-                this.value = value;
-                this.left = null;
-                this.right = null;
-            }
-        }
-
-        async function treeSort(arr) {
-            addTreeStep("Building Binary Search Tree...", true);
-            updateTreeSteps(1);
-            
-            // Build BST
-            let root = null;
-            let highlightPath = [];
-            
-            for (let i = 0; i < arr.length; i++) {
-                const num = arr[i];
-                highlightPath = [];
-                
-                // Highlight current array element being inserted
-                const nodes = document.querySelectorAll('.tree-node');
-                nodes[i].classList.add('current');
-                
-                addTreeStep(`Inserting element ${num} into BST`, true);
-                updateTreeSteps(1);
-                
-                await new Promise(resolve => setTimeout(resolve, treeAnimationSpeed));
-                
-                // Insert into BST
-                root = await insertIntoBST(root, num, highlightPath);
-                bstRoot = root; // Store the root for final visualization
-                
-                // Visualize the BST with highlight path
-                clearTreeCanvas();
-                visualizeTree(root, 300, 50, 0, null, null, highlightPath);
-                
-                await new Promise(resolve => setTimeout(resolve, treeAnimationSpeed));
-                
-                // Remove highlight
-                nodes[i].classList.remove('current');
-            }
-            
-            addTreeStep("BST construction complete. Now performing in-order traversal...", true);
-            updateTreeSteps(2);
-            
-            // Perform in-order traversal to get sorted array
-            await inOrderTraversal(root);
-            
-            return sortedArray;
-        }
-
-        async function insertIntoBST(node, value, highlightPath) {
-            if (!node) {
-                highlightPath.push(value);
-                addTreeStep(`Creating new node with value ${value}`, true);
-                updateTreeSteps(1);
-                return new TreeNode(value);
-            }
-            
-            highlightPath.push(node.value);
-            
-            // Highlight current node being compared
-            addTreeStep(`Comparing ${value} with node ${node.value}`, true);
-            updateTreeSteps(1);
-            
-            await new Promise(resolve => setTimeout(resolve, treeAnimationSpeed));
-            
-            if (value < node.value) {
-                addTreeStep(`${value} < ${node.value} - moving to left subtree`, true);
-                updateTreeSteps(1);
-                node.left = await insertIntoBST(node.left, value, highlightPath);
-            } else {
-                addTreeStep(`${value} >= ${node.value} - moving to right subtree`, true);
-                updateTreeSteps(1);
-                node.right = await insertIntoBST(node.right, value, highlightPath);
-            }
-            
-            return node;
-        }
-
-        async function inOrderTraversal(node) {
-            if (!node) return;
-            
-            // Traverse left subtree
-            await inOrderTraversal(node.left);
-            
-            // Process current node (add to sorted array)
-            visitedNodes.push(node.value);
-            sortedArray.push(node.value);
-            addTreeStep(`Adding ${node.value} to sorted array: [${sortedArray.join(', ')}]`, true);
-            updateTreeSteps(2);
-            
-            // Update array visualization
-            updateSortedArrayVisualization(sortedArray);
-            
-            // Visualize the tree with current visited nodes
-            clearTreeCanvas();
-            visualizeTree(bstRoot, 300, 50, 0, null, null, [node.value]);
-            
-            await new Promise(resolve => setTimeout(resolve, treeAnimationSpeed));
-            
-            // Traverse right subtree
-            await inOrderTraversal(node.right);
-        }
-
-        function updateSortedArrayVisualization(sortedArr) {
-            const nodes = document.querySelectorAll('.tree-node');
-            
-            sortedArr.forEach((value, index) => {
-                const originalIndex = treeArray.indexOf(value);
-                if (originalIndex !== -1) {
-                    const node = nodes[originalIndex];
-                    node.textContent = value;
-                    node.innerHTML = value + `<div class="tree-node-index">[${index}]</div>`;
-                    node.classList.add('sorted');
-                }
-            });
+    // Event listeners
+    treeSortBtn.addEventListener('click', startTreeAutoSort);
+    treePrevBtn.addEventListener('click', function() {
+        stopTreeAutoSort();
+        if (treeStepIndex > 0) {
+            treeStepIndex--;
+            renderTreeStepSnapshot(treeStepIndex);
         }
     });
+    treeNextBtn.addEventListener('click', function() {
+        stopTreeAutoSort();
+        if (treeStepIndex < treeStepSnapshots.length - 1) {
+            treeStepIndex++;
+            renderTreeStepSnapshot(treeStepIndex);
+        }
+    });
+
+    function renderTreeArray(arr = treeArray, highlightedIndex = -1) {
+        treeArrayContainer.innerHTML = '';
+        arr.forEach((value, index) => {
+            const card = document.createElement('div');
+            card.className = 'tree-node-abs';
+            if (index === highlightedIndex) {
+                card.classList.add('highlight');
+            }
+            card.textContent = value;
+            card.style.position = 'static';
+            card.style.margin = '0 8px';
+            treeArrayContainer.appendChild(card);
+        });
+    }
+
+    // --- Render tree nodes horizontally in sorted (in-order) order ---
+    function renderTree(treeData) {
+        treeDiagram.innerHTML = '';
+        if (!treeData || !treeData.root) return;
+
+        // 1. Get in-order traversal of nodes (sorted order)
+        let inOrderNodes = [];
+        function inOrder(node, depth = 0, parent = null) {
+            if (!node) return;
+            inOrder(node.left, depth + 1, node);
+            inOrderNodes.push({ node, depth, parent });
+            inOrder(node.right, depth + 1, node);
+        }
+        inOrder(treeData.root);
+
+        // 2. Assign x/y positions: x by in-order index, y by depth
+        const nodeSize = 50;
+        const hSpacing = 80;
+        const vSpacing = 90;
+        let diagramWidth = treeDiagram.offsetWidth || 600;
+        let totalNodes = inOrderNodes.length;
+        let leftMargin = (diagramWidth - (totalNodes * hSpacing)) / 2;
+        if (leftMargin < 0) leftMargin = 10;
+
+        // Map node references to their positions for connector drawing
+        let nodePosMap = new Map();
+        inOrderNodes.forEach((entry, idx) => {
+            let x = leftMargin + idx * hSpacing;
+            let y = entry.depth * vSpacing + 30;
+            entry.node._x = x;
+            entry.node._y = y;
+            nodePosMap.set(entry.node, { x, y });
+        });
+
+        // 3. Draw SVG connectors (parent to child)
+        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.classList.add('tree-svg-connector');
+        svg.setAttribute('width', diagramWidth);
+        svg.setAttribute('height', (Math.max(...inOrderNodes.map(e => e.depth)) + 2) * vSpacing);
+        svg.style.position = 'absolute';
+        svg.style.left = '0';
+        svg.style.top = '0';
+
+        inOrderNodes.forEach(entry => {
+            let { node, parent } = entry;
+            if (parent) {
+                let from = nodePosMap.get(parent);
+                let to = nodePosMap.get(node);
+                if (from && to) {
+                    let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute('x1', from.x + nodeSize/2);
+                    line.setAttribute('y1', from.y + nodeSize);
+                    line.setAttribute('x2', to.x + nodeSize/2);
+                    line.setAttribute('y2', to.y);
+                    line.setAttribute('stroke', '#95a5a6');
+                    line.setAttribute('stroke-width', '3');
+                    svg.appendChild(line);
+                }
+            }
+        });
+        treeDiagram.appendChild(svg);
+
+        // 4. Render nodes absolutely
+        inOrderNodes.forEach(entry => {
+            let node = entry.node;
+            let div = document.createElement('div');
+            div.className = 'tree-node-abs';
+            if (node.status === 'current') div.classList.add('highlight');
+            if (node.status === 'processed') div.classList.add('processed');
+            if (node.status === 'sorted') div.classList.add('sorted');
+            div.textContent = node.value;
+            div.style.left = (node._x) + 'px';
+            div.style.top = (node._y) + 'px';
+            treeDiagram.appendChild(div);
+        });
+    }
+
+    function renderSortedOutput(sortedValues = []) {
+        sortedOutput.innerHTML = '';
+        sortedValues.forEach(value => {
+            const item = document.createElement('div');
+            item.className = 'sorted-item';
+            item.textContent = value;
+            sortedOutput.appendChild(item);
+        });
+    }
+
+    function addTreeStepSnapshot(arr, treeData, highlightedIndex, sortedValues, description) {
+        treeStepSnapshots.push({
+            arr: [...arr],
+            treeData: JSON.parse(JSON.stringify(treeData)),
+            highlightedIndex: highlightedIndex,
+            sortedValues: [...sortedValues],
+            description: description
+        });
+    }
+
+    // Helper: Deep clone tree and mark sorted nodes by value
+    function cloneTreeAndMarkSorted(tree, sortedValues) {
+        function clone(node) {
+            if (!node) return null;
+            let newNode = {
+                value: node.value,
+                left: clone(node.left),
+                right: clone(node.right),
+                status: node.status || ''
+            };
+            if (sortedValues.includes(node.value)) {
+                newNode.status = 'sorted';
+            }
+            return newNode;
+        }
+        return { root: clone(tree.root) };
+    }
+
+    function renderTreeStepSnapshot(idx) {
+        const snap = treeStepSnapshots[idx];
+        if (!snap) return;
+
+        // For in-order traversal steps, mark sorted nodes
+        let treeDataToRender = snap.treeData;
+        if (snap.sortedValues && snap.sortedValues.length > 0) {
+            treeDataToRender = cloneTreeAndMarkSorted(snap.treeData, snap.sortedValues);
+        }
+
+        renderTreeArray(snap.arr, snap.highlightedIndex);
+        renderTree(treeDataToRender);
+        renderSortedOutput(snap.sortedValues);
+
+        // Update steps container
+        treeStepsContainer.innerHTML = '';
+        for (let i = 0; i <= idx; i++) {
+            const s = treeStepSnapshots[i];
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'tree-step';
+            if (i < idx) stepDiv.classList.add('completed');
+            if (i === idx) stepDiv.classList.add('active');
+            stepDiv.textContent = s.description;
+            treeStepsContainer.appendChild(stepDiv);
+        }
+        treeStepsContainer.scrollTop = treeStepsContainer.scrollHeight;
+
+        // Update current step display
+        treeCurrentStepDiv.textContent = snap.description || '';
+
+        // Update button states
+        treePrevBtn.disabled = idx === 0;
+        treeNextBtn.disabled = treeStepSnapshots.length === 0 || idx === treeStepSnapshots.length - 1;
+    }
+
+    function precomputeTreeSortSteps() {
+        treeStepSnapshots = [];
+        const arr = [...treeArray];
+
+        // Initial steps
+        addTreeStepSnapshot([...arr], {root: null}, -1, [], "Starting Tree Sort Algorithm");
+        addTreeStepSnapshot([...arr], {root: null}, -1, [], "Building Binary Search Tree from the array");
+
+        // Tree construction phase
+        let tree = {root: null};
+
+        for (let i = 0; i < arr.length; i++) {
+            const value = arr[i];
+
+            addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), i, [], `Processing element ${value} at index ${i}`);
+
+            if (!tree.root) {
+                tree.root = {value: value, left: null, right: null, status: 'current'};
+                addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), i, [], `Created root node with value ${value}`);
+                tree.root.status = '';
+            } else {
+                let current = tree.root;
+                current.status = 'current';
+                addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), i, [], `Starting at root node (${current.value})`);
+
+                while (true) {
+                    if (value < current.value) {
+                        current.status = 'processed';
+                        if (!current.left) {
+                            current.left = {value: value, left: null, right: null, status: 'current'};
+                            addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), i, [],
+                                `${value} < ${current.value} - inserted as left child`);
+                            current.left.status = '';
+                            break;
+                        } else {
+                            current = current.left;
+                            current.status = 'current';
+                            addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), i, [],
+                                `${value} < ${current.value} - moving to left child`);
+                        }
+                    } else {
+                        current.status = 'processed';
+                        if (!current.right) {
+                            current.right = {value: value, left: null, right: null, status: 'current'};
+                            addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), i, [],
+                                `${value} >= ${current.value} - inserted as right child`);
+                            current.right.status = '';
+                            break;
+                        } else {
+                            current = current.right;
+                            current.status = 'current';
+                            addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), i, [],
+                                `${value} >= ${current.value} - moving to right child`);
+                        }
+                    }
+                }
+            }
+        }
+
+        addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, [], "Binary Search Tree construction complete");
+        addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, [], "Beginning in-order traversal to produce sorted array");
+
+        // In-order traversal phase
+        let sortedValues = [];
+        let stack = [];
+        let current = tree.root;
+        if (current) current.status = 'current';
+        addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, sortedValues,
+            "Starting in-order traversal (Left-Root-Right)");
+
+        // We'll use a map to track which nodes have been sorted by their value and occurrence index
+        let valueCount = {};
+
+        while (current || stack.length > 0) {
+            // Reach the leftmost node
+            while (current) {
+                current.status = 'current';
+                addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, sortedValues,
+                    `Moving to leftmost node (${current.value})`);
+                current.status = 'processed';
+                stack.push(current);
+                current = current.left;
+                if (current) {
+                    current.status = 'current';
+                    addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, sortedValues,
+                        "Moving to left child");
+                }
+            }
+
+            current = stack.pop();
+            current.status = 'current';
+            addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, sortedValues,
+                `Processing node ${current.value} (visiting root after left subtree)`);
+
+            sortedValues.push(current.value);
+
+            // Mark sorted nodes for this snapshot
+            let treeClone = JSON.parse(JSON.stringify(tree));
+            valueCount = {};
+            (function mark(node) {
+                if (!node) return;
+                let val = node.value;
+                valueCount[val] = (valueCount[val] || 0) + 1;
+                let sortedCount = sortedValues.filter(v => v === val).length;
+                if (sortedCount >= valueCount[val]) node.status = 'sorted';
+                mark(node.left);
+                mark(node.right);
+            })(treeClone.root);
+
+            addTreeStepSnapshot([...arr], treeClone, -1, [...sortedValues],
+                `Added ${current.value} to sorted array: [${sortedValues.join(', ')}]`);
+
+            current = current.right;
+            if (current) {
+                current.status = 'current';
+                addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, sortedValues,
+                    "Moving to right child");
+            }
+        }
+
+        addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, sortedValues, "In-order traversal complete");
+        addTreeStepSnapshot([...arr], JSON.parse(JSON.stringify(tree)), -1, sortedValues,
+            `Final sorted array: [${sortedValues.join(', ')}]`);
+    }
+
+    function startTreeAutoSort() {
+        if (isTreeSorting) return;
+        isTreeSorting = true;
+        treeSortBtn.disabled = true;
+
+        function playStep() {
+            if (treeStepIndex < treeStepSnapshots.length - 1) {
+                treeStepIndex++;
+                renderTreeStepSnapshot(treeStepIndex);
+                treeAutoSortTimeout = setTimeout(playStep, treeAnimationSpeed);
+            } else {
+                isTreeSorting = false;
+                treeSortBtn.disabled = false;
+            }
+        }
+        playStep();
+    }
+    function stopTreeAutoSort() {
+        if (treeAutoSortTimeout) {
+            clearTimeout(treeAutoSortTimeout);
+            treeAutoSortTimeout = null;
+        }
+        isTreeSorting = false;
+        treeSortBtn.disabled = false;
+    }
+    // Show the visualization (remove this if you control visibility elsewhere)
+    document.getElementById('tree-sort').style.display = '';
+});
 </script>

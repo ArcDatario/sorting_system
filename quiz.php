@@ -4,9 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorting Algorithms Quiz | SortArtOnline</title>
+    <link rel="icon" href="assets/images/sort-icon.png" type="image/png">
     <link rel="stylesheet" href="assets/css/styles.css">
      
 <link rel="stylesheet" href="assets/css/quiz.css">
+
+<style>
+.bar,
+.bar.placeholder {
+    transition: transform 0.35s cubic-bezier(.22, .61, .36, 1), background-color 0.3s, height 0.3s !important;
+}
+.bar.placeholder {
+    background: #b3e5fc !important;
+    border: 2px dashed #2196F3 !important;
+    opacity: 0.7 !important;
+    min-width: 32px;
+    min-height: 30px;
+}
+.bar.dragging {
+    opacity: 0.6;
+    transform: scale(1.08);
+    z-index: 10;
+    background: #b2dfdb;
+    pointer-events: none;
+}
+.sorting-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    min-height: 60px;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.sortable-box,
+.sortable-box.placeholder {
+    transition: transform 0.7s cubic-bezier(.22, .61, .36, 1), background-color 0.4s;
+}
+.sortable-box.placeholder {
+    background: #b3e5fc !important;
+    border: 2px dashed #2196F3 !important;
+    opacity: 0.7 !important;
+    min-width: 48px;
+    min-height: 48px;
+}
+.sortable-box.dragging {
+    opacity: 0.6;
+    transform: scale(1.08);
+    z-index: 10;
+    background: #b2dfdb;
+}
+
+</style>
 
 </head>
 <body>
@@ -451,6 +500,7 @@ function selectMergeElement(element) {
 }
 
 // Render bar sorting interactive
+
 function renderBarSorting(container, question) {
     const sortingContainer = document.createElement('div');
     sortingContainer.className = 'sorting-container';
@@ -458,44 +508,144 @@ function renderBarSorting(container, question) {
     const maxValue = Math.max(...question.data);
     const heightFactor = 150 / maxValue;
 
-    currentInteractiveData.forEach((value, index) => {
+    // Local order for the current arrangement (with unique IDs for duplicates)
+    let localOrder = currentInteractiveData.map((value, index) => ({
+        value,
+        uid: `${value}-${index}`
+    }));
+
+    // Helper to create a bar element
+    function createBar(item) {
         const bar = document.createElement('div');
         bar.className = 'bar';
-        bar.style.height = `${value * heightFactor}px`;
-        bar.dataset.value = value;
-        bar.dataset.index = index;
-        bar.draggable = true; // Enable dragging
+        bar.style.height = `${item.value * heightFactor}px`;
+        bar.dataset.value = item.value;
+        bar.dataset.uid = item.uid;
 
         const valueLabel = document.createElement('div');
         valueLabel.className = 'bar-value';
-        valueLabel.textContent = value;
+        valueLabel.textContent = item.value;
 
         bar.appendChild(valueLabel);
-        sortingContainer.appendChild(bar);
+        return bar;
+    }
 
-        // Add drag event listeners
-        bar.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', index);
-            bar.classList.add('dragging');
+    // Create bar elements
+    let barElements = localOrder.map(createBar);
+
+    // State
+    let draggingIndex = null;
+    let placeholderIndex = null;
+    let isDragging = false;
+    let dragOffsetX = 0;
+    let dragStartX = 0;
+    let dragElem = null;
+
+    // Helper to render bars with placeholder
+    function renderBars() {
+        sortingContainer.innerHTML = '';
+        localOrder.forEach((item, idx) => {
+            if (placeholderIndex === idx) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'bar placeholder';
+                placeholder.style.height = `${30}px`;
+                placeholder.style.background = '#b3e5fc';
+                placeholder.style.border = '2px dashed #2196F3';
+                placeholder.style.opacity = '0.7';
+                sortingContainer.appendChild(placeholder);
+            }
+            const bar = createBar(item);
+            bar.style.transition = isDragging ? 'none' : 'transform 0.35s cubic-bezier(.22, .61, .36, 1), background-color 0.3s, height 0.3s';
+            bar.addEventListener('pointerdown', (e) => {
+                if (isDragging) return;
+                isDragging = true;
+                draggingIndex = idx;
+                placeholderIndex = idx;
+                dragElem = bar;
+                dragStartX = e.clientX;
+                dragOffsetX = e.clientX - bar.getBoundingClientRect().left;
+                bar.classList.add('dragging');
+                renderBars();
+                document.addEventListener('pointermove', onPointerMove);
+                document.addEventListener('pointerup', onPointerUp);
+            });
+            if (isDragging && idx === draggingIndex) {
+                bar.classList.add('dragging');
+                bar.style.zIndex = 10;
+                bar.style.position = 'absolute';
+                bar.style.pointerEvents = 'none';
+                bar.style.left = `${dragStartX - dragOffsetX}px`;
+                bar.style.top = `${sortingContainer.getBoundingClientRect().top}px`;
+                bar.style.width = `${bar.offsetWidth}px`;
+            }
+            sortingContainer.appendChild(bar);
         });
-
-        bar.addEventListener('dragend', () => {
-            bar.classList.remove('dragging');
-        });
-    });
-
-    sortingContainer.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        const draggingBar = document.querySelector('.dragging');
-        const afterElement = getDragAfterElement(sortingContainer, e.clientX);
-
-        if (afterElement) {
-            sortingContainer.insertBefore(draggingBar, afterElement);
-        } else {
-            sortingContainer.appendChild(draggingBar);
+        // If dragging to the end, show placeholder at the end
+        if (placeholderIndex === localOrder.length) {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'bar placeholder';
+            placeholder.style.height = `${30}px`;
+            placeholder.style.background = '#b3e5fc';
+            placeholder.style.border = '2px dashed #2196F3';
+            placeholder.style.opacity = '0.7';
+            sortingContainer.appendChild(placeholder);
         }
-    });
+        // Set container to relative for absolute dragging
+        sortingContainer.style.position = isDragging ? 'relative' : '';
+    }
 
+    function onPointerMove(e) {
+        if (!isDragging) return;
+        // Move the dragged bar visually
+        const bars = Array.from(sortingContainer.querySelectorAll('.bar:not(.placeholder)'));
+        const containerRect = sortingContainer.getBoundingClientRect();
+        const mouseX = e.clientX - containerRect.left;
+        // Find the index where to insert the placeholder
+        let newIndex = localOrder.length;
+        let found = false;
+        let accWidth = 0;
+        for (let i = 0; i < bars.length; i++) {
+            if (i === draggingIndex) continue;
+            const barRect = bars[i].getBoundingClientRect();
+            const barCenter = barRect.left + barRect.width / 2 - containerRect.left;
+            if (mouseX < barCenter) {
+                newIndex = i;
+                found = true;
+                break;
+            }
+        }
+        // If dragging right and passing over own placeholder, adjust index
+        if (newIndex > draggingIndex) newIndex--;
+        if (newIndex !== placeholderIndex) {
+            placeholderIndex = newIndex;
+            renderBars();
+        }
+        // Move the dragged bar
+        const draggingBar = sortingContainer.querySelector('.bar.dragging');
+        if (draggingBar) {
+            draggingBar.style.left = `${e.clientX - dragOffsetX - containerRect.left}px`;
+        }
+    }
+
+    function onPointerUp(e) {
+        if (!isDragging) return;
+        // Move the dragged item in localOrder
+        const [moved] = localOrder.splice(draggingIndex, 1);
+        localOrder.splice(placeholderIndex, 0, moved);
+        currentInteractiveData = localOrder.map(item => item.value);
+        // Reset state
+        isDragging = false;
+        draggingIndex = null;
+        placeholderIndex = null;
+        dragElem = null;
+        renderBars();
+        document.removeEventListener('pointermove', onPointerMove);
+        document.removeEventListener('pointerup', onPointerUp);
+    }
+
+    renderBars();
+
+    // Add instructions, submit, feedback
     const instructions = document.createElement('p');
     instructions.className = 'interactive-instructions';
     instructions.textContent = `Drag and drop bars to sort them (simulating ${question.algorithm})`;
@@ -503,7 +653,10 @@ function renderBarSorting(container, question) {
     const submitBtn = document.createElement('button');
     submitBtn.className = 'submit-sort-btn';
     submitBtn.textContent = 'Submit Answer';
-    submitBtn.addEventListener('click', () => checkInteractiveAnswer(question));
+    submitBtn.addEventListener('click', () => {
+        currentInteractiveData = localOrder.map(item => item.value);
+        checkInteractiveAnswer(question);
+    });
 
     const feedback = document.createElement('div');
     feedback.id = 'sortFeedback';
@@ -513,6 +666,7 @@ function renderBarSorting(container, question) {
     container.appendChild(submitBtn);
     container.appendChild(feedback);
 }
+
 
 // Helper function to get the element after which the dragged element should be placed
 function getDragAfterElement(container, x) {
@@ -559,61 +713,137 @@ function checkIfSorted(question) {
     }
 }
 
-// Render box sorting interactive
+
 function renderBoxSorting(container, question) {
     const boxContainer = document.createElement('div');
     boxContainer.className = 'box-container';
-    
-    currentInteractiveData.forEach((value, index) => {
+
+    // Local order for the current arrangement (with unique IDs for duplicates)
+    let localOrder = currentInteractiveData.map((value, index) => ({
+        value,
+        uid: `${value}-${index}`
+    }));
+
+    // Helper to create a box element
+    function createBox(item) {
         const box = document.createElement('div');
         box.className = 'sortable-box';
-        box.textContent = value;
-        box.dataset.value = value;
+        box.textContent = item.value;
+        box.dataset.value = item.value;
+        box.dataset.uid = item.uid;
         box.draggable = true;
-        
+        return box;
+    }
+
+    // Create box elements
+    let boxElements = localOrder.map(createBox);
+
+    // Create placeholder
+    const placeholder = document.createElement('div');
+    placeholder.className = 'sortable-box placeholder';
+    placeholder.innerHTML = '&nbsp;';
+
+    // State
+    let draggingElem = null;
+    let draggingUid = null;
+
+    // Drag events
+    boxElements.forEach((box) => {
         box.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', index);
+            draggingElem = box;
+            draggingUid = box.dataset.uid;
             box.classList.add('dragging');
+            // Insert placeholder after the dragged box
+            boxContainer.insertBefore(placeholder, box.nextSibling);
+            setTimeout(() => {
+                box.style.display = 'none';
+            }, 0);
         });
-        
+
         box.addEventListener('dragend', () => {
             box.classList.remove('dragging');
-            // After drag ends, update the data array based on new positions
-            updateBoxDataArray(boxContainer, question);
+            box.style.display = '';
+            if (placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+            draggingElem = null;
+            draggingUid = null;
         });
-        
-        boxContainer.appendChild(box);
     });
-    
+
+    // Dragover logic
     boxContainer.addEventListener('dragover', (e) => {
         e.preventDefault();
-        const draggingBox = document.querySelector('.dragging');
-        const afterElement = getDragAfterElement(boxContainer, e.clientX, e.clientY);
-        
-        if (afterElement) {
-            boxContainer.insertBefore(draggingBox, afterElement);
-        } else {
-            boxContainer.appendChild(draggingBox);
+        if (!draggingElem) return;
+
+        // Find the box we're hovering over
+        const boxes = Array.from(boxContainer.querySelectorAll('.sortable-box:not(.dragging):not(.placeholder)'));
+        let insertBefore = null;
+        for (let box of boxes) {
+            const rect = box.getBoundingClientRect();
+            if (e.clientX < rect.left + rect.width / 2) {
+                insertBefore = box;
+                break;
+            }
+        }
+        // Only move placeholder if its position would change
+        if (insertBefore !== placeholder) {
+            boxContainer.insertBefore(placeholder, insertBefore);
         }
     });
-    
+
+    // Drop logic
+    boxContainer.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (!draggingElem) return;
+
+        // Find new index for placeholder
+        const newIndex = Array.from(boxContainer.children).indexOf(placeholder);
+
+        // Remove placeholder and show dragged box
+        if (placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+        draggingElem.classList.remove('dragging');
+        draggingElem.style.display = '';
+
+        // Move the dragged box to the new position in the DOM
+        boxContainer.insertBefore(draggingElem, boxContainer.children[newIndex]);
+
+        // Update localOrder based on new DOM order using data-uid
+        const newOrder = Array.from(boxContainer.querySelectorAll('.sortable-box')).map(box => ({
+            value: parseInt(box.dataset.value),
+            uid: box.dataset.uid
+        }));
+        localOrder = [...newOrder];
+        currentInteractiveData = localOrder.map(item => item.value);
+
+        draggingElem = null;
+        draggingUid = null;
+    });
+
+    // Initial render
+    boxElements.forEach(box => boxContainer.appendChild(box));
+
+    // Add instructions, submit, feedback
     const instructions = document.createElement('p');
     instructions.className = 'interactive-instructions';
     instructions.textContent = `Drag and drop boxes to sort them (simulating ${question.algorithm})`;
-    
+
     const submitBtn = document.createElement('button');
     submitBtn.className = 'submit-sort-btn';
     submitBtn.textContent = 'Submit Answer';
-    submitBtn.addEventListener('click', () => checkInteractiveAnswer(question));
-    
+    submitBtn.addEventListener('click', () => {
+        currentInteractiveData = localOrder.map(item => item.value);
+        checkInteractiveAnswer(question);
+    });
+
     const feedback = document.createElement('div');
     feedback.id = 'sortFeedback';
-    
+
     container.appendChild(instructions);
     container.appendChild(boxContainer);
     container.appendChild(submitBtn);
     container.appendChild(feedback);
 }
+
+
 
 // Helper function for drag and drop
 function getDragAfterElement(container, x, y) {

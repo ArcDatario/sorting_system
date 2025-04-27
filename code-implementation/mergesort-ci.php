@@ -7,8 +7,6 @@
             <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-python-tab')">Python</button>
             <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-java-tab')">Java</button>
             <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-js-tab')">JavaScript</button>
-            <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-csharp-tab')">C#</button>
-            <button class="merge-tab-btn tab-btn" onclick="openMergeTab(event, 'merge-php-tab')">PHP</button>
         </div>
 
         <!-- C++ Tab -->
@@ -225,126 +223,6 @@ merge_sort(arr)
 <span class="code-keyword">let</span> arr = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
 mergeSort(arr, <span class="code-number">0</span>, arr.length - <span class="code-number">1</span>);
 console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
-            </div>
-        </div>
-
-        <!-- C# Tab -->
-        <div id="merge-csharp-tab" class="merge-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
-
-<span class="code-keyword">class</span> <span class="code-class">MergeSort</span> {
-    <span class="code-keyword">static void</span> <span class="code-function">Merge</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> l, <span class="code-type">int</span> m, <span class="code-type">int</span> r) {
-        <span class="code-type">int</span> n1 = m - l + <span class="code-number">1</span>;
-        <span class="code-type">int</span> n2 = r - m;
-
-        <span class="code-type">int</span>[] L = <span class="code-keyword">new</span> <span class="code-type">int</span>[n1];
-        <span class="code-type">int</span>[] R = <span class="code-keyword">new</span> <span class="code-type">int</span>[n2];
-
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n1; ++i)
-            L[i] = arr[l + i];
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = <span class="code-number">0</span>; j &lt; n2; ++j)
-            R[j] = arr[m + <span class="code-number">1</span> + j];
-
-        <span class="code-type">int</span> i = <span class="code-number">0</span>, j = <span class="code-number">0</span>;
-        <span class="code-type">int</span> k = l;
-        <span class="code-keyword">while</span> (i &lt; n1 && j &lt; n2) {
-            <span class="code-keyword">if</span> (L[i] &lt;= R[j]) {
-                arr[k] = L[i];
-                i++;
-            } <span class="code-keyword">else</span> {
-                arr[k] = R[j];
-                j++;
-            }
-            k++;
-        }
-
-        <span class="code-keyword">while</span> (i &lt; n1) {
-            arr[k] = L[i];
-            i++;
-            k++;
-        }
-
-        <span class="code-keyword">while</span> (j &lt; n2) {
-            arr[k] = R[j];
-            j++;
-            k++;
-        }
-    }
-
-    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> l, <span class="code-type">int</span> r) {
-        <span class="code-keyword">if</span> (l &lt; r) {
-            <span class="code-type">int</span> m = l + (r - l) / <span class="code-number">2</span>;
-            Sort(arr, l, m);
-            Sort(arr, m + <span class="code-number">1</span>, r);
-            Merge(arr, l, m, r);
-        }
-    }
-
-    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
-        <span class="code-type">int</span>[] arr = {<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>};
-        Sort(arr, <span class="code-number">0</span>, arr.Length - <span class="code-number">1</span>);
-        Console.Write(<span class="code-string">"Sorted array: "</span>);
-        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) {
-            Console.Write(num + <span class="code-string">" "</span>);
-        }
-    }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- PHP Tab -->
-        <div id="merge-php-tab" class="merge-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">merge</span>(&<span class="code-variable">$arr</span>, <span class="code-variable">$l</span>, <span class="code-variable">$m</span>, <span class="code-variable">$r</span>) {
-    <span class="code-variable">$n1</span> = <span class="code-variable">$m</span> - <span class="code-variable">$l</span> + <span class="code-number">1</span>;
-    <span class="code-variable">$n2</span> = <span class="code-variable">$r</span> - <span class="code-variable">$m</span>;
-
-    <span class="code-variable">$L</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-variable">$n1</span>, <span class="code-number">0</span>);
-    <span class="code-variable">$R</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-variable">$n2</span>, <span class="code-number">0</span>);
-
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$i</span> &lt; <span class="code-variable">$n1</span>; <span class="code-variable">$i</span>++)
-        <span class="code-variable">$L</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$l</span> + <span class="code-variable">$i</span>];
-    <span class="code-keyword">for</span> (<span class="code-variable">$j</span> = <span class="code-number">0</span>; <span class="code-variable">$j</span> &lt; <span class="code-variable">$n2</span>; <span class="code-variable">$j</span>++)
-        <span class="code-variable">$R</span>[<span class="code-variable">$j</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$m</span> + <span class="code-number">1</span> + <span class="code-variable">$j</span>];
-
-    <span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$j</span> = <span class="code-number">0</span>; <span class="code-variable">$k</span> = <span class="code-variable">$l</span>;
-    <span class="code-keyword">while</span> (<span class="code-variable">$i</span> &lt; <span class="code-variable">$n1</span> && <span class="code-variable">$j</span> &lt; <span class="code-variable">$n2</span>) {
-        <span class="code-keyword">if</span> (<span class="code-variable">$L</span>[<span class="code-variable">$i</span>] &lt;= <span class="code-variable">$R</span>[<span class="code-variable">$j</span>]) {
-            <span class="code-variable">$arr</span>[<span class="code-variable">$k</span>] = <span class="code-variable">$L</span>[<span class="code-variable">$i</span>];
-            <span class="code-variable">$i</span>++;
-        } <span class="code-keyword">else</span> {
-            <span class="code-variable">$arr</span>[<span class="code-variable">$k</span>] = <span class="code-variable">$R</span>[<span class="code-variable">$j</span>];
-            <span class="code-variable">$j</span>++;
-        }
-        <span class="code-variable">$k</span>++;
-    }
-
-    <span class="code-keyword">while</span> (<span class="code-variable">$i</span> &lt; <span class="code-variable">$n1</span>) {
-        <span class="code-variable">$arr</span>[<span class="code-variable">$k</span>] = <span class="code-variable">$L</span>[<span class="code-variable">$i</span>];
-        <span class="code-variable">$i</span>++;
-        <span class="code-variable">$k</span>++;
-    }
-
-    <span class="code-keyword">while</span> (<span class="code-variable">$j</span> &lt; <span class="code-variable">$n2</span>) {
-        <span class="code-variable">$arr</span>[<span class="code-variable">$k</span>] = <span class="code-variable">$R</span>[<span class="code-variable">$j</span>];
-        <span class="code-variable">$j</span>++;
-        <span class="code-variable">$k</span>++;
-    }
-}
-
-<span class="code-keyword">function</span> <span class="code-function">mergeSort</span>(&<span class="code-variable">$arr</span>, <span class="code-variable">$l</span>, <span class="code-variable">$r</span>) {
-    <span class="code-keyword">if</span> (<span class="code-variable">$l</span> &lt; <span class="code-variable">$r</span>) {
-        <span class="code-variable">$m</span> = <span class="code-variable">$l</span> + <span class="code-function">intval</span>((<span class="code-variable">$r</span> - <span class="code-variable">$l</span>) / <span class="code-number">2</span>);
-        mergeSort(<span class="code-variable">$arr</span>, <span class="code-variable">$l</span>, <span class="code-variable">$m</span>);
-        mergeSort(<span class="code-variable">$arr</span>, <span class="code-variable">$m</span> + <span class="code-number">1</span>, <span class="code-variable">$r</span>);
-        merge(<span class="code-variable">$arr</span>, <span class="code-variable">$l</span>, <span class="code-variable">$m</span>, <span class="code-variable">$r</span>);
-    }
-}
-
-<span class="code-variable">$arr</span> = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
-mergeSort(<span class="code-variable">$arr</span>, <span class="code-number">0</span>, <span class="code-function">count</span>(<span class="code-variable">$arr</span>) - <span class="code-number">1</span>);
-echo <span class="code-string">"Sorted array: "</span> . <span class="code-function">implode</span>(<span class="code-string">" "</span>, <span class="code-variable">$arr</span>);</code></pre>
             </div>
         </div>
     </div>

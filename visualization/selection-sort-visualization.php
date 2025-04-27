@@ -203,13 +203,32 @@
     body.dark-mode .selection-card-index {
         color: #ecf0f1;
     }
+    .selection-current-step{
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: black;
+        min-height: 30px;
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+    }
 </style>
 
 <main class="main-content selection-sort" id="selection-sort" style="display:none;">
     <h1>Selection Sort Visualization</h1>
-    <div class="selection-controls">
+   
+    <div id="selection-visualization">
+        <div id="selection-array-container"></div>
+
+        <div class="selection-current-step"></div>
+
+        <div class="selection-controls">
         <button id="selection-generate-btn">Generate New Array</button>
         <button id="selection-sort-btn">Selection Sort</button>
+        <button id="selection-prev-btn">Prev</button>
+        <button id="selection-next-btn">Next</button>
         <div class="selection-slider-container">
             <label for="selection-size-slider">Array Size:</label>
             <input type="range" id="selection-size-slider" min="5" max="15" value="8">
@@ -217,12 +236,11 @@
         </div>
         <div class="selection-slider-container">
             <label for="selection-speed-slider">Speed:</label>
-            <input type="range" id="selection-speed-slider" min="1" max="10" value="5">
-            <span id="selection-speed-value">5</span>
+            <input type="range" id="selection-speed-slider" min="1" max="10" value="1">
+            <span id="selection-speed-value">1</span>
         </div>
     </div>
-    <div id="selection-visualization">
-        <div id="selection-array-container"></div>
+
         <div id="selection-steps-container"></div>
     </div>
     <div class="selection-legend">
@@ -244,248 +262,218 @@
         </div>
     </div>
 </main>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // DOM elements
-        const selectionArrayContainer = document.getElementById('selection-array-container');
-        const selectionStepsContainer = document.getElementById('selection-steps-container');
-        const selectionGenerateBtn = document.getElementById('selection-generate-btn');
-        const selectionSortBtn = document.getElementById('selection-sort-btn');
-        const selectionSizeSlider = document.getElementById('selection-size-slider');
-        const selectionSizeValue = document.getElementById('selection-size-value');
-        const selectionSpeedSlider = document.getElementById('selection-speed-slider');
-        const selectionSpeedValue = document.getElementById('selection-speed-value');
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const selectionArrayContainer = document.getElementById('selection-array-container');
+    const selectionStepsContainer = document.getElementById('selection-steps-container');
+    const selectionCurrentStepDiv = document.querySelector('.selection-current-step');
+    const selectionGenerateBtn = document.getElementById('selection-generate-btn');
+    const selectionSortBtn = document.getElementById('selection-sort-btn');
+    const selectionPrevBtn = document.getElementById('selection-prev-btn');
+    const selectionNextBtn = document.getElementById('selection-next-btn');
+    const selectionSizeSlider = document.getElementById('selection-size-slider');
+    const selectionSizeValue = document.getElementById('selection-size-value');
+    const selectionSpeedSlider = document.getElementById('selection-speed-slider');
+    const selectionSpeedValue = document.getElementById('selection-speed-value');
 
-        // Variables
-        let selectionArray = [];
-        let selectionArraySize = parseInt(selectionSizeSlider.value);
-        let selectionSortSpeed = parseInt(selectionSpeedSlider.value);
-        let isSelectionSorting = false;
-        let selectionAnimationSpeed = 1000 / selectionSortSpeed;
-        let selectionSteps = [];
-        let currentSelectionStep = 0;
+    // Variables
+    let selectionArray = [];
+    let selectionArraySize = parseInt(selectionSizeSlider.value);
+    let selectionSortSpeed = parseInt(selectionSpeedSlider.value);
+    let selectionAnimationSpeed = 1000 / selectionSortSpeed;
+    let selectionStepSnapshots = [];
+    let selectionStepIndex = 0;
+    let isSelectionSorting = false;
+    let selectionAutoSortTimeout = null;
 
-        // Initialize
-        updateSelectionSizeValue();
-        updateSelectionSpeedValue();
-        generateNewSelectionArray();
+    // Initialize
+    updateSelectionSizeValue();
+    updateSelectionSpeedValue();
+    generateNewSelectionArray();
 
-        // Event listeners
-        selectionGenerateBtn.addEventListener('click', generateNewSelectionArray);
-        selectionSortBtn.addEventListener('click', startSelectionSort);
-        selectionSizeSlider.addEventListener('input', updateSelectionSizeValue);
-        selectionSpeedSlider.addEventListener('input', updateSelectionSpeedValue);
-
-        // Functions
-        function updateSelectionSizeValue() {
-            selectionArraySize = parseInt(selectionSizeSlider.value);
-            selectionSizeValue.textContent = selectionArraySize;
-            generateNewSelectionArray();
-        }
-
-        function updateSelectionSpeedValue() {
-            selectionSortSpeed = parseInt(selectionSpeedSlider.value);
-            selectionSpeedValue.textContent = selectionSortSpeed;
-            selectionAnimationSpeed = 1000 / selectionSortSpeed;
-        }
-
-        function generateNewSelectionArray() {
-            if (isSelectionSorting) return;
-            
-            selectionArray = [];
-            for (let i = 0; i < selectionArraySize; i++) {
-                selectionArray.push(Math.floor(Math.random() * 90) + 10); // Values between 10-100
-            }
-            
-            renderSelectionArray();
-            selectionStepsContainer.innerHTML = '';
-            selectionSteps = [];
-            currentSelectionStep = 0;
-        }
-
-        function renderSelectionArray() {
-            selectionArrayContainer.innerHTML = '';
-            
-            selectionArray.forEach((value, index) => {
-                const card = document.createElement('div');
-                card.className = 'selection-card';
-                card.textContent = value;
-                card.setAttribute('data-index', index);
-                
-                const indexLabel = document.createElement('div');
-                indexLabel.className = 'selection-card-index';
-                indexLabel.textContent = `[${index}]`;
-                
-                card.appendChild(indexLabel);
-                selectionArrayContainer.appendChild(card);
-            });
-        }
-
-        function addSelectionStep(description, isActive = false) {
-            const step = document.createElement('div');
-            step.className = `selection-step ${isActive ? 'active' : ''}`;
-            step.textContent = description;
-            selectionStepsContainer.appendChild(step);
-            selectionSteps.push(step);
-            
-            // Auto-scroll to the latest step
-            selectionStepsContainer.scrollTop = selectionStepsContainer.scrollHeight;
-        }
-
-        function updateSelectionSteps(currentIndex) {
-            selectionSteps.forEach((step, index) => {
-                step.className = 'selection-step';
-                if (index < currentIndex) step.classList.add('completed');
-                if (index === currentIndex) step.classList.add('active');
-            });
-        }
-
-        async function startSelectionSort() {
-            if (isSelectionSorting) return;
-            
-            isSelectionSorting = true;
-            selectionGenerateBtn.disabled = true;
-            selectionSortBtn.disabled = true;
-            selectionStepsContainer.innerHTML = '';
-            selectionSteps = [];
-            currentSelectionStep = 0;
-            
-            // Initial steps
-            addSelectionStep("Starting Selection Sort Algorithm", true);
-            addSelectionStep("Find the minimum element in the unsorted part of the array");
-            addSelectionStep("Swap it with the first unsorted element");
-            addSelectionStep("Repeat until the array is sorted");
-            
-            // Create a copy of the array to sort
-            const sortingArray = [...selectionArray];
-            
-            // Perform selection sort with visualization
-            await selectionSort(sortingArray);
-            
-            addSelectionStep("Selection Sort completed!", false);
-            updateSelectionSteps(selectionSteps.length);
-            
-            isSelectionSorting = false;
-            selectionGenerateBtn.disabled = false;
-            selectionSortBtn.disabled = false;
-        }
-
-        async function selectionSort(arr) {
-            const n = arr.length;
-            let sortedIndices = [];
-            
-            for (let i = 0; i < n - 1; i++) {
-                addSelectionStep(`Starting pass ${i + 1}: Finding minimum in unsorted portion`, true);
-                updateSelectionSteps(1);
-                
-                // Assume current index is minimum
-                let minIndex = i;
-                await updateSelectionVisualization(arr, [], minIndex, sortedIndices);
-                
-                addSelectionStep(`Assuming element at index ${i} (${arr[i]}) is the minimum`, true);
-                updateSelectionSteps(1);
-                await new Promise(resolve => setTimeout(resolve, selectionAnimationSpeed));
-                
-                // Find the minimum in the unsorted part
-                for (let j = i + 1; j < n; j++) {
-                    addSelectionStep(`Comparing ${arr[j]} at index ${j} with current minimum ${arr[minIndex]}`, true);
-                    updateSelectionSteps(1);
-                    
-                    // Highlight comparison
-                    await updateSelectionVisualization(arr, [j, minIndex], minIndex, sortedIndices);
-                    
-                    if (arr[j] < arr[minIndex]) {
-                        minIndex = j;
-                        addSelectionStep(`New minimum found: ${arr[minIndex]} at index ${minIndex}`, true);
-                        updateSelectionSteps(1);
-                        await updateSelectionVisualization(arr, [], minIndex, sortedIndices);
-                    }
-                }
-                
-                // If we found a different minimum, swap them
-                if (minIndex !== i) {
-                    addSelectionStep(`Swapping ${arr[i]} with minimum ${arr[minIndex]}`, true);
-                    updateSelectionSteps(2);
-                    
-                    // Highlight swap
-                    await updateSelectionVisualization(arr, [], minIndex, sortedIndices, [i, minIndex]);
-                    
-                    // Perform the swap
-                    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-                    
-                    // Animate the swap
-                    await animateSwap(i, minIndex);
-                    
-                    addSelectionStep(`Swap complete: ${arr[i]} is now at index ${i}`, true);
-                    updateSelectionSteps(2);
-                } else {
-                    addSelectionStep(`No swap needed - ${arr[i]} is already the minimum`, true);
-                    updateSelectionSteps(2);
-                }
-                
-                // Mark this position as sorted
-                sortedIndices.push(i);
-                await updateSelectionVisualization(arr, [], -1, sortedIndices);
-            }
-            
-            // The last element is automatically sorted
-            sortedIndices.push(n - 1);
-            
-            // Final visualization - all elements sorted
-            await updateSelectionVisualization(arr, [], -1, sortedIndices);
-            
-            addSelectionStep("Array is now completely sorted", true);
-            updateSelectionSteps(3);
-            
-            // Update the original array
-            selectionArray = [...arr];
-        }
-
-        async function updateSelectionVisualization(arr, comparingIndices = [], minIndex = -1, sortedIndices = [], swapIndices = []) {
-            // Update array visualization
-            const cards = document.querySelectorAll('.selection-card');
-            
-            arr.forEach((value, index) => {
-                const card = cards[index];
-                card.textContent = value;
-                
-                // Reset classes
-                card.className = 'selection-card';
-                
-                // Add appropriate classes
-                if (comparingIndices.includes(index)) {
-                    card.classList.add('comparing');
-                } else if (index === minIndex) {
-                    card.classList.add('minimum');
-                } else if (sortedIndices.includes(index)) {
-                    card.classList.add('sorted');
-                }
-                
-                if (swapIndices.includes(index)) {
-                    card.classList.add('swapping');
-                }
-            });
-            
-            // Add delay for animation
-            await new Promise(resolve => setTimeout(resolve, selectionAnimationSpeed));
-        }
-
-        async function animateSwap(index1, index2) {
-            const cards = document.querySelectorAll('.selection-card');
-            const card1 = cards[index1];
-            const card2 = cards[index2];
-            
-            // Add swap animation class
-            card1.classList.add('selection-swap-animation');
-            card2.classList.add('selection-swap-animation');
-            
-            // Wait for animation to complete
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // Remove animation class
-            card1.classList.remove('selection-swap-animation');
-            card2.classList.remove('selection-swap-animation');
+    // Event listeners
+    selectionGenerateBtn.addEventListener('click', generateNewSelectionArray);
+    selectionSortBtn.addEventListener('click', startSelectionAutoSort);
+    selectionPrevBtn.addEventListener('click', function() {
+        stopSelectionAutoSort();
+        if (selectionStepIndex > 0) {
+            selectionStepIndex--;
+            renderSelectionStepSnapshot(selectionStepIndex);
         }
     });
+    selectionNextBtn.addEventListener('click', function() {
+        stopSelectionAutoSort();
+        if (selectionStepIndex < selectionStepSnapshots.length - 1) {
+            selectionStepIndex++;
+            renderSelectionStepSnapshot(selectionStepIndex);
+        }
+    });
+    selectionSizeSlider.addEventListener('input', updateSelectionSizeValue);
+    selectionSpeedSlider.addEventListener('input', updateSelectionSpeedValue);
+
+    // Functions
+    function updateSelectionSizeValue() {
+        selectionArraySize = parseInt(selectionSizeSlider.value);
+        selectionSizeValue.textContent = selectionArraySize;
+        generateNewSelectionArray();
+    }
+
+    function updateSelectionSpeedValue() {
+        selectionSortSpeed = parseInt(selectionSpeedSlider.value);
+        selectionSpeedValue.textContent = selectionSortSpeed;
+        selectionAnimationSpeed = 1000 / selectionSortSpeed;
+    }
+
+    function generateNewSelectionArray() {
+        stopSelectionAutoSort();
+        selectionArray = [];
+        for (let i = 0; i < selectionArraySize; i++) {
+            selectionArray.push(Math.floor(Math.random() * 90) + 10); // Values between 10-100
+        }
+        precomputeSelectionSortSteps();
+        selectionStepIndex = 0;
+        renderSelectionStepSnapshot(selectionStepIndex);
+    }
+
+    function renderSelectionArray(arr = selectionArray, comparingIndices = [], minIndex = -1, sortedIndices = [], swapIndices = []) {
+        selectionArrayContainer.innerHTML = '';
+        arr.forEach((value, index) => {
+            const card = document.createElement('div');
+            card.className = 'selection-card';
+            card.textContent = value;
+            card.setAttribute('data-index', index);
+
+            const indexLabel = document.createElement('div');
+            indexLabel.className = 'selection-card-index';
+            indexLabel.textContent = `[${index}]`;
+
+            card.appendChild(indexLabel);
+
+            // Add appropriate classes
+            if (comparingIndices.includes(index)) {
+                card.classList.add('comparing');
+            } else if (index === minIndex) {
+                card.classList.add('minimum');
+            } else if (sortedIndices.includes(index)) {
+                card.classList.add('sorted');
+            }
+            if (swapIndices.includes(index)) {
+                card.classList.add('swapping');
+            }
+            selectionArrayContainer.appendChild(card);
+        });
+    }
+
+    function addSelectionStepSnapshot(arr, comparingIndices, minIndex, sortedIndices, swapIndices, description) {
+        selectionStepSnapshots.push({
+            arr: [...arr],
+            comparingIndices: [...comparingIndices],
+            minIndex: minIndex,
+            sortedIndices: [...sortedIndices],
+            swapIndices: [...swapIndices],
+            description: description
+        });
+    }
+
+    function renderSelectionStepSnapshot(idx) {
+        const snap = selectionStepSnapshots[idx];
+        if (!snap) return;
+        renderSelectionArray(snap.arr, snap.comparingIndices, snap.minIndex, snap.sortedIndices, snap.swapIndices);
+
+        // Show only previous and current steps in #selection-steps-container
+        selectionStepsContainer.innerHTML = '';
+        for (let i = 0; i <= idx; i++) {
+            const s = selectionStepSnapshots[i];
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'selection-step';
+            if (i < idx) stepDiv.classList.add('completed');
+            if (i === idx) stepDiv.classList.add('active');
+            stepDiv.textContent = s.description;
+            selectionStepsContainer.appendChild(stepDiv);
+        }
+        // Auto-scroll to bottom so latest step is visible
+        selectionStepsContainer.scrollTop = selectionStepsContainer.scrollHeight;
+
+        // Show only the current step in .selection-current-step
+        selectionCurrentStepDiv.textContent = snap.description || '';
+
+        // Prev/Next are only disabled at the ends
+        selectionPrevBtn.disabled = idx === 0;
+        selectionNextBtn.disabled = selectionStepSnapshots.length === 0 || idx === selectionStepSnapshots.length - 1;
+    }
+
+    function precomputeSelectionSortSteps() {
+        selectionStepSnapshots = [];
+        // Initial steps
+        addSelectionStepSnapshot([...selectionArray], [], -1, [], [], "Starting Selection Sort Algorithm");
+        addSelectionStepSnapshot([...selectionArray], [], -1, [], [], "Find the minimum element in the unsorted part of the array");
+        addSelectionStepSnapshot([...selectionArray], [], -1, [], [], "Swap it with the first unsorted element");
+        addSelectionStepSnapshot([...selectionArray], [], -1, [], [], "Repeat until the array is sorted");
+
+        const arr = [...selectionArray];
+        const n = arr.length;
+        let sortedIndices = [];
+
+        for (let i = 0; i < n - 1; i++) {
+            addSelectionStepSnapshot([...arr], [], i, sortedIndices, [], `Starting pass ${i + 1}: Finding minimum in unsorted portion`);
+            let minIndex = i;
+
+            addSelectionStepSnapshot([...arr], [], minIndex, sortedIndices, [], `Assuming element at index ${i} (${arr[i]}) is the minimum`);
+
+            for (let j = i + 1; j < n; j++) {
+                addSelectionStepSnapshot([...arr], [j, minIndex], minIndex, sortedIndices, [], `Comparing ${arr[j]} at index ${j} with current minimum ${arr[minIndex]}`);
+                if (arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                    addSelectionStepSnapshot([...arr], [], minIndex, sortedIndices, [], `New minimum found: ${arr[minIndex]} at index ${minIndex}`);
+                }
+            }
+
+            if (minIndex !== i) {
+                addSelectionStepSnapshot([...arr], [], minIndex, sortedIndices, [i, minIndex], `Swapping ${arr[i]} with minimum ${arr[minIndex]}`);
+                [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+                addSelectionStepSnapshot([...arr], [], minIndex, sortedIndices, [i, minIndex], `Swap complete: ${arr[i]} is now at index ${i}`);
+            } else {
+                addSelectionStepSnapshot([...arr], [], minIndex, sortedIndices, [], `No swap needed - ${arr[i]} is already the minimum`);
+            }
+
+            sortedIndices.push(i);
+            addSelectionStepSnapshot([...arr], [], -1, sortedIndices, [], `Marked index ${i} as sorted`);
+        }
+
+        sortedIndices.push(n - 1);
+        addSelectionStepSnapshot([...arr], [], -1, sortedIndices, [], "Array is now completely sorted");
+        addSelectionStepSnapshot([...arr], [], -1, sortedIndices, [], "Selection Sort completed!");
+    }
+
+    function startSelectionAutoSort() {
+        if (isSelectionSorting) return;
+        isSelectionSorting = true;
+        selectionGenerateBtn.disabled = true;
+        selectionSortBtn.disabled = true;
+
+        function playStep() {
+            if (selectionStepIndex < selectionStepSnapshots.length - 1) {
+                selectionStepIndex++;
+                renderSelectionStepSnapshot(selectionStepIndex);
+                selectionAutoSortTimeout = setTimeout(playStep, selectionAnimationSpeed);
+            } else {
+                isSelectionSorting = false;
+                selectionGenerateBtn.disabled = false;
+                selectionSortBtn.disabled = false;
+            }
+        }
+        playStep();
+    }
+
+    function stopSelectionAutoSort() {
+        if (selectionAutoSortTimeout) {
+            clearTimeout(selectionAutoSortTimeout);
+            selectionAutoSortTimeout = null;
+        }
+        isSelectionSorting = false;
+        selectionGenerateBtn.disabled = false;
+        selectionSortBtn.disabled = false;
+    }
+});
 </script>

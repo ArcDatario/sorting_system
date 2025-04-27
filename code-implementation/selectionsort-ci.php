@@ -7,8 +7,7 @@
             <button class="selection-tab-btn tab-btn" onclick="openSelectionTab(event, 'selection-python-tab')">Python</button>
             <button class="selection-tab-btn tab-btn" onclick="openSelectionTab(event, 'selection-java-tab')">Java</button>
             <button class="selection-tab-btn tab-btn" onclick="openSelectionTab(event, 'selection-js-tab')">JavaScript</button>
-            <button class="selection-tab-btn tab-btn" onclick="openSelectionTab(event, 'selection-csharp-tab')">C#</button>
-            <button class="selection-tab-btn tab-btn" onclick="openSelectionTab(event, 'selection-php-tab')">PHP</button>
+           
         </div>
 
         <!-- C++ Tab -->
@@ -115,64 +114,7 @@ console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
             </div>
         </div>
 
-        <!-- C# Tab -->
-        <div id="selection-csharp-tab" class="selection-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
-
-<span class="code-keyword">class</span> <span class="code-class">SelectionSort</span> {
-    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr) {
-        <span class="code-type">int</span> n = arr.Length;
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n-<span class="code-number">1</span>; i++) {
-            <span class="code-type">int</span> min_idx = i;
-            <span class="code-keyword">for</span> (<span class="code-type">int</span> j = i+<span class="code-number">1</span>; j &lt; n; j++) {
-                <span class="code-keyword">if</span> (arr[j] &lt; arr[min_idx]) {
-                    min_idx = j;
-                }
-            }
-            <span class="code-type">int</span> temp = arr[min_idx];
-            arr[min_idx] = arr[i];
-            arr[i] = temp;
-        }
-    }
-
-    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
-        <span class="code-type">int</span>[] arr = {<span class="code-number">64</span>, <span class="code-number">25</span>, <span class="code-number">12</span>, <span class="code-number">22</span>, <span class="code-number">11</span>};
-        Sort(arr);
-        Console.Write(<span class="code-string">"Sorted array: "</span>);
-        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) {
-            Console.Write(num + <span class="code-string">" "</span>);
-        }
-    }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- PHP Tab -->
-        <div id="selection-php-tab" class="selection-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">selectionSort</span>(&<span class="code-variable">$arr</span>) {
-    <span class="code-variable">$n</span> = <span class="code-function">count</span>(<span class="code-variable">$arr</span>);
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$i</span> &lt; <span class="code-variable">$n</span>-<span class="code-number">1</span>; <span class="code-variable">$i</span>++) {
-        <span class="code-variable">$min_idx</span> = <span class="code-variable">$i</span>;
-        <span class="code-keyword">for</span> (<span class="code-variable">$j</span> = <span class="code-variable">$i</span>+<span class="code-number">1</span>; <span class="code-variable">$j</span> &lt; <span class="code-variable">$n</span>; <span class="code-variable">$j</span>++) {
-            <span class="code-keyword">if</span> (<span class="code-variable">$arr</span>[<span class="code-variable">$j</span>] &lt; <span class="code-variable">$arr</span>[<span class="code-variable">$min_idx</span>]) {
-                <span class="code-variable">$min_idx</span> = <span class="code-variable">$j</span>;
-            }
-        }
-        <span class="code-keyword">if</span> (<span class="code-variable">$min_idx</span> != <span class="code-variable">$i</span>) {
-            <span class="code-variable">$temp</span> = <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>];
-            <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$min_idx</span>];
-            <span class="code-variable">$arr</span>[<span class="code-variable">$min_idx</span>] = <span class="code-variable">$temp</span>;
-        }
-    }
-}
-
-<span class="code-variable">$arr</span> = [<span class="code-number">64</span>, <span class="code-number">25</span>, <span class="code-number">12</span>, <span class="code-number">22</span>, <span class="code-number">11</span>];
-selectionSort(<span class="code-variable">$arr</span>);
-echo <span class="code-string">"Sorted array: "</span> . <span class="code-function">implode</span>(<span class="code-string">" "</span>, <span class="code-variable">$arr</span>);</code></pre>
-            </div>
-        </div>
+     
     </div>
 </div>
 

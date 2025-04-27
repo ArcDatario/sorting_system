@@ -7,8 +7,7 @@
             <button class="radix-tab-btn tab-btn" onclick="openRadixTab(event, 'radix-python-tab')">Python</button>
             <button class="radix-tab-btn tab-btn" onclick="openRadixTab(event, 'radix-java-tab')">Java</button>
             <button class="radix-tab-btn tab-btn" onclick="openRadixTab(event, 'radix-js-tab')">JavaScript</button>
-            <button class="radix-tab-btn tab-btn" onclick="openRadixTab(event, 'radix-csharp-tab')">C#</button>
-            <button class="radix-tab-btn tab-btn" onclick="openRadixTab(event, 'radix-php-tab')">PHP</button>
+           
         </div>
 
         <!-- C++ Tab -->
@@ -208,115 +207,7 @@ console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
         </div>
 
         <!-- C# Tab -->
-        <div id="radix-csharp-tab" class="radix-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
-
-<span class="code-keyword">class</span> <span class="code-class">RadixSort</span> {
-    <span class="code-keyword">static int</span> <span class="code-function">GetMax</span>(<span class="code-type">int</span>[] arr) {
-        <span class="code-type">int</span> max = arr[<span class="code-number">0</span>];
-        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) {
-            <span class="code-keyword">if</span> (num > max) {
-                max = num;
-            }
-        }
-        <span class="code-keyword">return</span> max;
-    }
-
-    <span class="code-keyword">static void</span> <span class="code-function">CountSort</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> exp) {
-        <span class="code-type">int</span> n = arr.Length;
-        <span class="code-type">int</span>[] output = <span class="code-keyword">new</span> <span class="code-type">int</span>[n];
-        <span class="code-type">int</span>[] count = <span class="code-keyword">new</span> <span class="code-type">int</span>[<span class="code-number">10</span>];
-
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n; i++) {
-            count[(arr[i] / exp) % <span class="code-number">10</span>]++;
-        }
-
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">1</span>; i &lt; <span class="code-number">10</span>; i++) {
-            count[i] += count[i - <span class="code-number">1</span>];
-        }
-
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n - <span class="code-number">1</span>; i >= <span class="code-number">0</span>; i--) {
-            output[count[(arr[i] / exp) % <span class="code-number">10</span>] - <span class="code-number">1</span>] = arr[i];
-            count[(arr[i] / exp) % <span class="code-number">10</span>]--;
-        }
-
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = <span class="code-number">0</span>; i &lt; n; i++) {
-            arr[i] = output[i];
-        }
-    }
-
-    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr) {
-        <span class="code-type">int</span> m = GetMax(arr);
-
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> exp = <span class="code-number">1</span>; m / exp > <span class="code-number">0</span>; exp *= <span class="code-number">10</span>) {
-            CountSort(arr, exp);
-        }
-    }
-
-    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
-        <span class="code-type">int</span>[] arr = {<span class="code-number">170</span>, <span class="code-number">45</span>, <span class="code-number">75</span>, <span class="code-number">90</span>, <span class="code-number">802</span>, <span class="code-number">24</span>, <span class="code-number">2</span>, <span class="code-number">66</span>};
-        Sort(arr);
-        Console.Write(<span class="code-string">"Sorted array: "</span>);
-        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) {
-            Console.Write(num + <span class="code-string">" "</span>);
-        }
-    }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- PHP Tab -->
-        <div id="radix-php-tab" class="radix-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">getMax</span>(<span class="code-variable">$arr</span>) {
-    <span class="code-variable">$max</span> = <span class="code-variable">$arr</span>[<span class="code-number">0</span>];
-    <span class="code-keyword">foreach</span> (<span class="code-variable">$arr</span> <span class="code-keyword">as</span> <span class="code-variable">$num</span>) {
-        <span class="code-keyword">if</span> (<span class="code-variable">$num</span> > <span class="code-variable">$max</span>) {
-            <span class="code-variable">$max</span> = <span class="code-variable">$num</span>;
-        }
-    }
-    <span class="code-keyword">return</span> <span class="code-variable">$max</span>;
-}
-
-<span class="code-keyword">function</span> <span class="code-function">countSort</span>(&<span class="code-variable">$arr</span>, <span class="code-variable">$exp</span>) {
-    <span class="code-variable">$n</span> = <span class="code-function">count</span>(<span class="code-variable">$arr</span>);
-    <span class="code-variable">$output</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-variable">$n</span>, <span class="code-number">0</span>);
-    <span class="code-variable">$count</span> = <span class="code-function">array_fill</span>(<span class="code-number">0</span>, <span class="code-number">10</span>, <span class="code-number">0</span>);
-
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$i</span> &lt; <span class="code-variable">$n</span>; <span class="code-variable">$i</span>++) {
-        <span class="code-variable">$index</span> = (<span class="code-function">int</span>)(<span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] / <span class="code-variable">$exp</span>) % <span class="code-number">10</span>;
-        <span class="code-variable">$count</span>[<span class="code-variable">$index</span>]++;
-    }
-
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">1</span>; <span class="code-variable">$i</span> &lt; <span class="code-number">10</span>; <span class="code-variable">$i</span>++) {
-        <span class="code-variable">$count</span>[<span class="code-variable">$i</span>] += <span class="code-variable">$count</span>[<span class="code-variable">$i</span> - <span class="code-number">1</span>];
-    }
-
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-variable">$n</span> - <span class="code-number">1</span>; <span class="code-variable">$i</span> >= <span class="code-number">0</span>; <span class="code-variable">$i</span>--) {
-        <span class="code-variable">$index</span> = (<span class="code-function">int</span>)(<span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] / <span class="code-variable">$exp</span>) % <span class="code-number">10</span>;
-        <span class="code-variable">$output</span>[<span class="code-variable">$count</span>[<span class="code-variable">$index</span>] - <span class="code-number">1</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>];
-        <span class="code-variable">$count</span>[<span class="code-variable">$index</span>]--;
-    }
-
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-number">0</span>; <span class="code-variable">$i</span> &lt; <span class="code-variable">$n</span>; <span class="code-variable">$i</span>++) {
-        <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$output</span>[<span class="code-variable">$i</span>];
-    }
-}
-
-<span class="code-keyword">function</span> <span class="code-function">radixSort</span>(&<span class="code-variable">$arr</span>) {
-    <span class="code-variable">$m</span> = getMax(<span class="code-variable">$arr</span>);
-
-    <span class="code-keyword">for</span> (<span class="code-variable">$exp</span> = <span class="code-number">1</span>; <span class="code-variable">$m</span> / <span class="code-variable">$exp</span> > <span class="code-number">0</span>; <span class="code-variable">$exp</span> *= <span class="code-number">10</span>) {
-        countSort(<span class="code-variable">$arr</span>, <span class="code-variable">$exp</span>);
-    }
-}
-
-<span class="code-variable">$arr</span> = [<span class="code-number">170</span>, <span class="code-number">45</span>, <span class="code-number">75</span>, <span class="code-number">90</span>, <span class="code-number">802</span>, <span class="code-number">24</span>, <span class="code-number">2</span>, <span class="code-number">66</span>];
-radixSort(<span class="code-variable">$arr</span>);
-echo <span class="code-string">"Sorted array: "</span> . <span class="code-function">implode</span>(<span class="code-string">" "</span>, <span class="code-variable">$arr</span>);</code></pre>
-            </div>
-        </div>
+        
     </div>
 </div>
 

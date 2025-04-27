@@ -1,3 +1,4 @@
+
 <h1>Sorting Algorithm Implementations</h1>
 
 <h2>Heap Sort Implementations</h2>
@@ -8,8 +9,6 @@
             <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-python-tab')">Python</button>
             <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-java-tab')">Java</button>
             <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-js-tab')">JavaScript</button>
-            <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-csharp-tab')">C#</button>
-            <button class="heap-tab-btn tab-btn" onclick="openHeapTab(event, 'heap-php-tab')">PHP</button>
         </div>
 
         <!-- C++ Tab -->
@@ -177,106 +176,6 @@ heap_sort(arr)
 <span class="code-keyword">let</span> arr = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
 heapSort(arr);
 console.log(<span class="code-string">"Sorted array:"</span>, arr);</code></pre>
-            </div>
-        </div>
-
-        <!-- C# Tab -->
-        <div id="heap-csharp-tab" class="heap-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-csharp"><span class="code-keyword">using</span> System;
-
-<span class="code-keyword">class</span> <span class="code-class">HeapSort</span> {
-    <span class="code-keyword">static void</span> <span class="code-function">Heapify</span>(<span class="code-type">int</span>[] arr, <span class="code-type">int</span> n, <span class="code-type">int</span> i) {
-        <span class="code-type">int</span> largest = i;
-        <span class="code-type">int</span> left = <span class="code-number">2</span> * i + <span class="code-number">1</span>;
-        <span class="code-type">int</span> right = <span class="code-number">2</span> * i + <span class="code-number">2</span>;
-
-        <span class="code-keyword">if</span> (left &lt; n && arr[left] > arr[largest])
-            largest = left;
-
-        <span class="code-keyword">if</span> (right &lt; n && arr[right] > arr[largest])
-            largest = right;
-
-        <span class="code-keyword">if</span> (largest != i) {
-            <span class="code-type">int</span> swap = arr[i];
-            arr[i] = arr[largest];
-            arr[largest] = swap;
-
-            Heapify(arr, n, largest);
-        }
-    }
-
-    <span class="code-keyword">static void</span> <span class="code-function">Sort</span>(<span class="code-type">int</span>[] arr) {
-        <span class="code-type">int</span> n = arr.Length;
-
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n / <span class="code-number">2</span> - <span class="code-number">1</span>; i >= <span class="code-number">0</span>; i--)
-            Heapify(arr, n, i);
-
-        <span class="code-keyword">for</span> (<span class="code-type">int</span> i = n - <span class="code-number">1</span>; i > <span class="code-number">0</span>; i--) {
-            <span class="code-type">int</span> temp = arr[<span class="code-number">0</span>];
-            arr[<span class="code-number">0</span>] = arr[i];
-            arr[i] = temp;
-
-            Heapify(arr, i, <span class="code-number">0</span>);
-        }
-    }
-
-    <span class="code-keyword">static void</span> <span class="code-function">Main</span>() {
-        <span class="code-type">int</span>[] arr = {<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>};
-        Sort(arr);
-        Console.Write(<span class="code-string">"Sorted array: "</span>);
-        <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> arr) {
-            Console.Write(num + <span class="code-string">" "</span>);
-        }
-    }
-}</code></pre>
-            </div>
-        </div>
-
-        <!-- PHP Tab -->
-        <div id="heap-php-tab" class="heap-tab-content" style="display:none;">
-            <div class="code-block">
-                <pre><code class="language-php"><span class="code-keyword">function</span> <span class="code-function">heapify</span>(&<span class="code-variable">$arr</span>, <span class="code-variable">$n</span>, <span class="code-variable">$i</span>) {
-    <span class="code-variable">$largest</span> = <span class="code-variable">$i</span>;
-    <span class="code-variable">$left</span> = <span class="code-number">2</span> * <span class="code-variable">$i</span> + <span class="code-number">1</span>;
-    <span class="code-variable">$right</span> = <span class="code-number">2</span> * <span class="code-variable">$i</span> + <span class="code-number">2</span>;
-
-    <span class="code-keyword">if</span> (<span class="code-variable">$left</span> &lt; <span class="code-variable">$n</span> && <span class="code-variable">$arr</span>[<span class="code-variable">$left</span>] > <span class="code-variable">$arr</span>[<span class="code-variable">$largest</span>]) {
-        <span class="code-variable">$largest</span> = <span class="code-variable">$left</span>;
-    }
-
-    <span class="code-keyword">if</span> (<span class="code-variable">$right</span> &lt; <span class="code-variable">$n</span> && <span class="code-variable">$arr</span>[<span class="code-variable">$right</span>] > <span class="code-variable">$arr</span>[<span class="code-variable">$largest</span>]) {
-        <span class="code-variable">$largest</span> = <span class="code-variable">$right</span>;
-    }
-
-    <span class="code-keyword">if</span> (<span class="code-variable">$largest</span> != <span class="code-variable">$i</span>) {
-        <span class="code-variable">$temp</span> = <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>];
-        <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$largest</span>];
-        <span class="code-variable">$arr</span>[<span class="code-variable">$largest</span>] = <span class="code-variable">$temp</span>;
-
-        heapify(<span class="code-variable">$arr</span>, <span class="code-variable">$n</span>, <span class="code-variable">$largest</span>);
-    }
-}
-
-<span class="code-keyword">function</span> <span class="code-function">heapSort</span>(&<span class="code-variable">$arr</span>) {
-    <span class="code-variable">$n</span> = <span class="code-function">count</span>(<span class="code-variable">$arr</span>);
-
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-function">intval</span>(<span class="code-variable">$n</span> / <span class="code-number">2</span>) - <span class="code-number">1</span>; <span class="code-variable">$i</span> >= <span class="code-number">0</span>; <span class="code-variable">$i</span>--) {
-        heapify(<span class="code-variable">$arr</span>, <span class="code-variable">$n</span>, <span class="code-variable">$i</span>);
-    }
-
-    <span class="code-keyword">for</span> (<span class="code-variable">$i</span> = <span class="code-variable">$n</span> - <span class="code-number">1</span>; <span class="code-variable">$i</span> > <span class="code-number">0</span>; <span class="code-variable">$i</span>--) {
-        <span class="code-variable">$temp</span> = <span class="code-variable">$arr</span>[<span class="code-number">0</span>];
-        <span class="code-variable">$arr</span>[<span class="code-number">0</span>] = <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>];
-        <span class="code-variable">$arr</span>[<span class="code-variable">$i</span>] = <span class="code-variable">$temp</span>;
-
-        heapify(<span class="code-variable">$arr</span>, <span class="code-variable">$i</span>, <span class="code-number">0</span>);
-    }
-}
-
-<span class="code-variable">$arr</span> = [<span class="code-number">12</span>, <span class="code-number">11</span>, <span class="code-number">13</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>];
-heapSort(<span class="code-variable">$arr</span>);
-echo <span class="code-string">"Sorted array: "</span> . <span class="code-function">implode</span>(<span class="code-string">" "</span>, <span class="code-variable">$arr</span>);</code></pre>
             </div>
         </div>
     </div>
