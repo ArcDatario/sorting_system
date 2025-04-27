@@ -195,8 +195,8 @@
         </div>
         <div class="quick-sort-slider-container">
             <label for="quick-sort-speed-slider">Speed:</label>
-            <input type="range" id="quick-sort-speed-slider" min="1" max="10" value="3">
-            <span id="quick-sort-speed-value">3</span>
+            <input type="range" id="quick-sort-speed-slider" min="1" max="10" value="1">
+            <span id="quick-sort-speed-value">1</span>
         </div>
     </div>
     <div class="quick-sort-visualization">
