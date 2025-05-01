@@ -404,3 +404,50 @@
  .dark-mode .bar-value {
      color: #eee;
  }
+
+
+ /* bars animation */
+ .bar,
+.bar.placeholder {
+    transition: transform 0.35s cubic-bezier(.22, .61, .36, 1), background-color 0.3s, height 0.3s !important;
+}
+.bar.placeholder {
+    background: #b3e5fc !important;
+    border: 2px dashed #2196F3 !important;
+    opacity: 0.7 !important;
+    min-width: 32px;
+    min-height: 30px;
+}
+.bar.dragging {
+    opacity: 0.6;
+    transform: scale(1.08);
+    z-index: 10;
+    background: #b2dfdb;
+    pointer-events: none;
+}
+.sorting-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    min-height: 60px;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.sortable-box,
+.sortable-box.placeholder {
+    transition: transform 0.7s cubic-bezier(.22, .61, .36, 1), background-color 0.4s;
+}
+.sortable-box.placeholder {
+    background: #b3e5fc !important;
+    border: 2px dashed #2196F3 !important;
+    opacity: 0.7 !important;
+    min-width: 48px;
+    min-height: 48px;
+}
+.sortable-box.dragging {
+    opacity: 0.6;
+    transform: scale(1.08);
+    z-index: 10;
+    background: #b2dfdb;
+}

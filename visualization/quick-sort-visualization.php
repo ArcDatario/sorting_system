@@ -1,3 +1,4 @@
+
 <style>
     h1 {
         text-align: center;
@@ -181,28 +182,46 @@
         background-color: var(--background);
         color: white;
     }
-</style>
 
+    .quick-current-steps{
+            text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: black;
+        min-height: 30px;
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        }
+</style>
 <main class="main-content quick-sort" id="quick-sort" style="display:none;">
     <h1>Quick Sort Visualization</h1>
-    <div class="quick-sort-controls">
-        <button id="quick-sort-generate-btn" class="quick-sort-button">Generate New Array</button>
-        <button id="quick-sort-sort-btn" class="quick-sort-button">Start Quick Sort</button>
-        <div class="quick-sort-slider-container">
-            <label for="quick-sort-size-slider">Array Size:</label>
-            <input type="range" id="quick-sort-size-slider" min="5" max="10" value="8">
-            <span id="quick-sort-size-value">8</span>
-        </div>
-        <div class="quick-sort-slider-container">
-            <label for="quick-sort-speed-slider">Speed:</label>
-            <input type="range" id="quick-sort-speed-slider" min="1" max="10" value="1">
-            <span id="quick-sort-speed-value">1</span>
-        </div>
-    </div>
+   
     <div class="quick-sort-visualization">
         <div id="quick-sort-recursion-level" class="quick-sort-recursion-level"></div>
         <div id="quick-sort-status-text" class="quick-sort-status-text"></div>
         <div id="quick-sort-array-display" class="quick-sort-array-container"></div>
+
+        <div class="quick-current-steps"></div>
+
+        <div class="quick-sort-controls">
+            <button id="quick-sort-generate-btn" class="quick-sort-button">Generate New Array</button>
+            <button id="quick-sort-sort-btn" class="quick-sort-button">Auto Sort</button>
+            <button id="quick-sort-prev-btn" class="quick-sort-button">Prev</button>
+            <button id="quick-sort-next-btn" class="quick-sort-button">Next</button>
+            <div class="quick-sort-slider-container">
+                <label for="quick-sort-size-slider">Array Size:</label>
+                <input type="range" id="quick-sort-size-slider" min="5" max="10" value="8">
+                <span id="quick-sort-size-value">8</span>
+            </div>
+            <div class="quick-sort-slider-container">
+                <label for="quick-sort-speed-slider">Speed:</label>
+                <input type="range" id="quick-sort-speed-slider" min="1" max="10" value="1">
+                <span id="quick-sort-speed-value">1</span>
+            </div>
+        </div>
+
         <div id="quick-sort-info-panel" class="quick-sort-info-panel"></div>
     </div>
     <div class="quick-sort-legend">
@@ -230,352 +249,356 @@
 </main>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // DOM elements
-        const quickSortSizeSlider = document.getElementById('quick-sort-size-slider');
-        const quickSortSizeValue = document.getElementById('quick-sort-size-value');
-        const quickSortArrayDisplay = document.getElementById('quick-sort-array-display');
-        const quickSortGenerateBtn = document.getElementById('quick-sort-generate-btn');
-        const quickSortSortBtn = document.getElementById('quick-sort-sort-btn');
-        const quickSortSpeedSlider = document.getElementById('quick-sort-speed-slider');
-        const quickSortSpeedValue = document.getElementById('quick-sort-speed-value');
-        const quickSortStatusText = document.getElementById('quick-sort-status-text');
-        const quickSortInfoPanel = document.getElementById('quick-sort-info-panel');
-        const quickSortRecursionLevel = document.getElementById('quick-sort-recursion-level');
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const quickSortSizeSlider = document.getElementById('quick-sort-size-slider');
+    const quickSortSizeValue = document.getElementById('quick-sort-size-value');
+    const quickSortArrayDisplay = document.getElementById('quick-sort-array-display');
+    const quickSortGenerateBtn = document.getElementById('quick-sort-generate-btn');
+    const quickSortSortBtn = document.getElementById('quick-sort-sort-btn');
+    const quickSortPrevBtn = document.getElementById('quick-sort-prev-btn');
+    const quickSortNextBtn = document.getElementById('quick-sort-next-btn');
+    const quickSortSpeedSlider = document.getElementById('quick-sort-speed-slider');
+    const quickSortSpeedValue = document.getElementById('quick-sort-speed-value');
+    const quickSortStatusText = document.getElementById('quick-sort-status-text');
+    const quickSortInfoPanel = document.getElementById('quick-sort-info-panel');
+    const quickSortRecursionLevel = document.getElementById('quick-sort-recursion-level');
+    const quickCurrentSteps = document.querySelector('.quick-current-steps');
 
-        // Variables
-        let quickSortArray = [];
-        let quickSortArraySize = parseInt(quickSortSizeSlider.value);
-        let quickSortSpeed = parseInt(quickSortSpeedSlider.value);
-        let quickSortAnimationSpeed = 1000 / quickSortSpeed;
-        let quickSortIsSorting = false;
-        let quickSortSteps = [];
-        let quickSortCurrentStep = 0;
-        let quickSortRecursionDepth = 0;
+    // Variables
+    let quickSortArray = [];
+    let quickSortArraySize = parseInt(quickSortSizeSlider.value);
+    let quickSortSpeed = parseInt(quickSortSpeedSlider.value);
+    let quickSortAnimationSpeed = 1000 / quickSortSpeed;
+    let quickSortIsSorting = false;
+    let quickSortSteps = [];
+    let quickSortCurrentStep = 0;
+    let quickSortRecursionDepth = 0;
 
-        // Initialize
-        updateQuickSortSizeValue();
-        updateQuickSortSpeedValue();
+    // Step-by-step variables
+    let stepList = [];
+    let stepIndex = 0;
+    let autoSortActive = false;
+    let autoSortTimeout = null;
+
+    // Step structure: { array: [...], comparing: [...], swapping: [...], sorted: [...], pivot: index, description: string, recursionDepth: int }
+
+    // Initialize
+    updateQuickSortSizeValue();
+    updateQuickSortSpeedValue();
+    generateQuickSortNewArray();
+
+    // Event listeners
+    quickSortGenerateBtn.addEventListener('click', generateQuickSortNewArray);
+    quickSortSortBtn.addEventListener('click', startAutoSort);
+    quickSortPrevBtn.addEventListener('click', prevStep);
+    quickSortNextBtn.addEventListener('click', nextStep);
+    quickSortSizeSlider.addEventListener('input', updateQuickSortSizeValue);
+    quickSortSpeedSlider.addEventListener('input', updateQuickSortSpeedValue);
+
+    function updateQuickSortSizeValue() {
+        quickSortArraySize = parseInt(quickSortSizeSlider.value);
+        quickSortSizeValue.textContent = quickSortArraySize;
         generateQuickSortNewArray();
+    }
 
-        // Event listeners
-        quickSortGenerateBtn.addEventListener('click', generateQuickSortNewArray);
-        quickSortSortBtn.addEventListener('click', startQuickSort);
-        quickSortSizeSlider.addEventListener('input', updateQuickSortSizeValue);
-        quickSortSpeedSlider.addEventListener('input', updateQuickSortSpeedValue);
+    function updateQuickSortSpeedValue() {
+        quickSortSpeed = parseInt(quickSortSpeedSlider.value);
+        quickSortSpeedValue.textContent = quickSortSpeed;
+        quickSortAnimationSpeed = 1000 / quickSortSpeed;
+    }
 
-        // Functions
-        function updateQuickSortSizeValue() {
-            quickSortArraySize = parseInt(quickSortSizeSlider.value);
-            quickSortSizeValue.textContent = quickSortArraySize;
-            generateQuickSortNewArray();
+    function generateQuickSortNewArray() {
+        stopAutoSort();
+        quickSortArray = [];
+        for (let i = 0; i < quickSortArraySize; i++) {
+            quickSortArray.push(Math.floor(Math.random() * 90) + 10); // Values between 10-100
         }
+        renderQuickSortArray(quickSortArray);
+        quickSortInfoPanel.innerHTML = '';
+        quickSortSteps = [];
+        quickSortCurrentStep = 0;
+        quickSortRecursionDepth = 0;
+        quickSortStatusText.textContent = '';
+        quickSortRecursionLevel.textContent = '';
+        quickCurrentSteps.textContent = '';
+        stepList = [];
+        stepIndex = 0;
+        quickSortIsSorting = false;
+        autoSortActive = false;
+        quickSortSortBtn.disabled = false;
+    }
 
-        function updateQuickSortSpeedValue() {
-            quickSortSpeed = parseInt(quickSortSpeedSlider.value);
-            quickSortSpeedValue.textContent = quickSortSpeed;
-            quickSortAnimationSpeed = 1000 / quickSortSpeed;
-        }
+    function renderQuickSortArray(arr, comparingIndices = [], swappingIndices = [], sortedIndices = [], pivotIndex = -1) {
+        quickSortArrayDisplay.innerHTML = '';
+        const row = document.createElement('div');
+        row.className = 'quick-sort-array-row';
 
-        function generateQuickSortNewArray() {
-            if (quickSortIsSorting) return;
+        arr.forEach((value, index) => {
+            const element = document.createElement('div');
+            element.className = 'quick-sort-array-element quick-sort-normal';
+            element.textContent = value;
+            element.dataset.index = index;
 
-            quickSortArray = [];
-            for (let i = 0; i < quickSortArraySize; i++) {
-                quickSortArray.push(Math.floor(Math.random() * 90) + 10); // Values between 10-100
+            const label = document.createElement('div');
+            label.className = 'quick-sort-array-label';
+            label.textContent = `[${index}]`;
+            element.appendChild(label);
+
+            // Coloring
+            if (index === pivotIndex) {
+                element.classList.add('quick-sort-pivot');
+            } else if (sortedIndices && sortedIndices.includes(index)) {
+                element.classList.add('quick-sort-sorted');
+            } else if (swappingIndices && swappingIndices.includes(index)) {
+                element.classList.add('quick-sort-swapping');
+            } else if (comparingIndices && comparingIndices.includes(index)) {
+                element.classList.add('quick-sort-comparing');
+            } else {
+                element.classList.add('quick-sort-normal');
             }
 
-            renderQuickSortArray();
-            quickSortInfoPanel.innerHTML = '';
-            quickSortSteps = [];
-            quickSortCurrentStep = 0;
-            quickSortRecursionDepth = 0;
-            quickSortStatusText.textContent = '';
-            quickSortRecursionLevel.textContent = '';
+            row.appendChild(element);
+        });
+
+        quickSortArrayDisplay.appendChild(row);
+    }
+
+    // Step recording logic
+    function recordStep({arr, comparing = [], swapping = [], sorted = [], pivot = -1, description = '', recursionDepth = 0}) {
+        // Deep copy array for step
+        stepList.push({
+            array: arr.slice(),
+            comparing: comparing.slice(),
+            swapping: swapping.slice(),
+            sorted: sorted.slice(),
+            pivot,
+            description,
+            recursionDepth
+        });
+    }
+
+    // Step-by-step navigation
+    function showStep(idx) {
+        if (idx < 0 || idx >= stepList.length) return;
+        const step = stepList[idx];
+        renderQuickSortArray(step.array, step.comparing, step.swapping, step.sorted, step.pivot);
+        quickSortRecursionLevel.textContent = step.recursionDepth > 0 ? `Recursion Level: ${step.recursionDepth}` : '';
+        quickCurrentSteps.textContent = step.description || '';
+        // Info panel: show all steps up to current
+        quickSortInfoPanel.innerHTML = '';
+        for (let i = 0; i <= idx; i++) {
+            const div = document.createElement('div');
+            div.className = 'quick-sort-step' + (i === idx ? ' active' : '');
+            div.textContent = stepList[i].description;
+            quickSortInfoPanel.appendChild(div);
         }
+        stepIndex = idx;
+        // Restore auto-scroll to latest step
+        quickSortInfoPanel.scrollTop = quickSortInfoPanel.scrollHeight;
+    }
 
-        function renderQuickSortArray(highlightRange = null) {
-            quickSortArrayDisplay.innerHTML = '';
-
-            const row = document.createElement('div');
-            row.className = 'quick-sort-array-row';
-
-            quickSortArray.forEach((value, index) => {
-                const element = document.createElement('div');
-                element.className = 'quick-sort-array-element quick-sort-normal';
-                element.textContent = value;
-                element.dataset.index = index;
-                
-                const label = document.createElement('div');
-                label.className = 'quick-sort-array-label';
-                label.textContent = `[${index}]`;
-                element.appendChild(label);
-                
-                row.appendChild(element);
-            });
-
-            quickSortArrayDisplay.appendChild(row);
-
-            // Add partition highlight if specified
-            if (highlightRange && highlightRange.start !== highlightRange.end) {
-                const highlight = document.createElement('div');
-                highlight.className = 'quick-sort-partition-highlight';
-                
-                const boxes = Array.from(quickSortArrayDisplay.querySelectorAll('.quick-sort-array-element'));
-                const startBox = boxes[highlightRange.start];
-                const endBox = boxes[highlightRange.end];
-                
-                if (startBox && endBox) {
-                    const startRect = startBox.getBoundingClientRect();
-                    const endRect = endBox.getBoundingClientRect();
-                    const containerRect = quickSortArrayDisplay.getBoundingClientRect();
-                    
-                    highlight.style.position = 'absolute';
-                    highlight.style.left = `${startRect.left - containerRect.left}px`;
-                    highlight.style.width = `${endRect.right - startRect.left}px`;
-                    highlight.style.height = `${startRect.height}px`;
-                    
-                    const label = document.createElement('div');
-                    label.className = 'quick-sort-partition-label';
-                    label.textContent = `Partition ${highlightRange.start}-${highlightRange.end}`;
-                    highlight.appendChild(label);
-                    
-                    quickSortArrayDisplay.appendChild(highlight);
-                    highlight.style.zIndex = '-1';
-                }
-            }
+    function nextStep() {
+        stopAutoSort();
+        if (stepIndex < stepList.length - 1) {
+            showStep(stepIndex + 1);
         }
+    }
 
-        function addQuickSortStep(description, isActive = false) {
-            const step = document.createElement('div');
-            step.className = `quick-sort-step ${isActive ? 'active' : ''}`;
-            step.textContent = description;
-            quickSortInfoPanel.appendChild(step);
-            quickSortSteps.push(step);
-
-            // Auto-scroll to the latest step
-            quickSortInfoPanel.scrollTop = quickSortInfoPanel.scrollHeight;
+    function prevStep() {
+        stopAutoSort();
+        if (stepIndex > 0) {
+            showStep(stepIndex - 1);
         }
+    }
 
-        function updateQuickSortSteps(currentIndex) {
-            quickSortSteps.forEach((step, index) => {
-                step.className = 'quick-sort-step';
-                if (index < currentIndex) step.classList.add('completed');
-                if (index === currentIndex) step.classList.add('active');
-            });
+    function stopAutoSort() {
+        autoSortActive = false;
+        if (autoSortTimeout) {
+            clearTimeout(autoSortTimeout);
+            autoSortTimeout = null;
         }
+        quickSortIsSorting = false;
+        quickSortSortBtn.disabled = false;
+    }
 
-        function updateQuickSortStatus(text) {
-            quickSortStatusText.textContent = text;
+    function startAutoSort() {
+        if (quickSortIsSorting || autoSortActive) return;
+        if (stepList.length === 0) {
+            // Generate steps if not yet generated
+            prepareStepsForQuickSort();
         }
+        autoSortActive = true;
+        quickSortIsSorting = true;
+        quickSortSortBtn.disabled = true;
+        autoSortStep();
+    }
 
-        function updateQuickSortRecursionLevel(depth) {
-            quickSortRecursionLevel.textContent = depth > 0 ? `Recursion Level: ${depth}` : '';
+    function autoSortStep() {
+        if (!autoSortActive) return;
+        if (stepIndex < stepList.length - 1) {
+            showStep(stepIndex + 1);
+            autoSortTimeout = setTimeout(autoSortStep, quickSortAnimationSpeed);
+        } else {
+            stopAutoSort();
         }
+    }
 
-        async function startQuickSort() {
-            if (quickSortIsSorting) return;
+    // Prepare all steps for quick sort
+    function prepareStepsForQuickSort() {
+        stepList = [];
+        let arr = quickSortArray.slice();
+        let sortedIndices = [];
+        let recursionDepth = 0;
 
-            quickSortIsSorting = true;
-            quickSortGenerateBtn.disabled = true;
-            quickSortSortBtn.disabled = true;
-            quickSortInfoPanel.innerHTML = '';
-            quickSortSteps = [];
-            quickSortCurrentStep = 0;
-            quickSortRecursionDepth = 0;
-
-            // Initial steps
-            addQuickSortStep("Starting Quick Sort Algorithm", true);
-            addQuickSortStep("Select a pivot element", false);
-            addQuickSortStep("Partition the array around the pivot", false);
-            addQuickSortStep("Recursively sort the sub-arrays", false);
-
-            // Create a copy of the array to sort
-            const sortingArray = [...quickSortArray];
-
-            // Perform quick sort with visualization
-            await quickSort(sortingArray, 0, sortingArray.length - 1);
-
-            // Final visualization - all elements sorted
-            await updateQuickSortVisualization(sortingArray, [], [], Array.from({length: sortingArray.length}, (_, i) => i));
-
-            addQuickSortStep("Quick Sort completed! Array is now sorted", true);
-            updateQuickSortSteps(quickSortSteps.length);
-            updateQuickSortStatus("Sorting completed!");
-
-            quickSortIsSorting = false;
-            quickSortGenerateBtn.disabled = false;
-            quickSortSortBtn.disabled = false;
-        }
-
-        async function quickSort(arr, low, high) {
+        function* quickSortGenerator(arr, low, high, depth) {
             if (low < high) {
-                quickSortRecursionDepth++;
-                updateQuickSortRecursionLevel(quickSortRecursionDepth);
-                
-                addQuickSortStep(`Starting new partition from index ${low} to ${high}`, true);
-                updateQuickSortSteps(1);
-                await new Promise(resolve => setTimeout(resolve, quickSortAnimationSpeed));
-                
-                // Visualize the current partition range
-                renderQuickSortArray({start: low, end: high});
-                await new Promise(resolve => setTimeout(resolve, quickSortAnimationSpeed));
-                
-                // Find partition index
-                const pi = await partition(arr, low, high);
-                
-                addQuickSortStep(`Partition complete. Pivot ${arr[pi]} is now at correct position (index ${pi})`, true);
-                updateQuickSortSteps(2);
-                
-                // Mark pivot as sorted
-                await updateQuickSortVisualization(arr, [], [], [pi], pi, {start: low, end: high});
-                
-                // Recursively sort elements before and after partition
-                addQuickSortStep(`Recursively sorting left partition (${low} to ${pi-1})`, true);
-                updateQuickSortSteps(3);
-                await quickSort(arr, low, pi - 1);
-                
-                addQuickSortStep(`Recursively sorting right partition (${pi+1} to ${high})`, true);
-                updateQuickSortSteps(3);
-                await quickSort(arr, pi + 1, high);
-                
-                quickSortRecursionDepth--;
-                updateQuickSortRecursionLevel(quickSortRecursionDepth);
+                recursionDepth = depth;
+                yield {
+                    arr, comparing: [], swapping: [], sorted: sortedIndices.slice(), pivot: -1,
+                    description: `Starting new partition from index ${low} to ${high}`,
+                    recursionDepth: depth
+                };
+
+                // Partition
+                let piGen = partitionGenerator(arr, low, high, depth);
+                let piResult;
+                while (!(piResult = piGen.next()).done) {
+                    yield piResult.value;
+                }
+                let pi = piResult.value;
+
+                sortedIndices.push(pi);
+
+                yield {
+                    arr, comparing: [], swapping: [], sorted: sortedIndices.slice(), pivot: pi,
+                    description: `Partition complete. Pivot ${arr[pi]} is now at correct position (index ${pi})`,
+                    recursionDepth: depth
+                };
+
+                // Left
+                yield* quickSortGenerator(arr, low, pi - 1, depth + 1);
+
+                // Right
+                yield* quickSortGenerator(arr, pi + 1, high, depth + 1);
             } else if (low === high) {
-                // Single element is already sorted
-                addQuickSortStep(`Single element at index ${low} is already sorted`, true);
-                updateQuickSortSteps(1);
-                await updateQuickSortVisualization(arr, [], [], [low], low);
+                recursionDepth = depth;
+                sortedIndices.push(low);
+                yield {
+                    arr, comparing: [], swapping: [], sorted: sortedIndices.slice(), pivot: low,
+                    description: `Single element at index ${low} is already sorted`,
+                    recursionDepth: depth
+                };
             }
         }
 
-        async function partition(arr, low, high) {
-            // Choose the last element as pivot
-            const pivot = arr[high];
-            let i = low - 1; // Index of smaller element
-            
-            addQuickSortStep(`Selected pivot: ${pivot} (at index ${high})`, true);
-            updateQuickSortSteps(1);
-            await updateQuickSortVisualization(arr, [], [], [], high, {start: low, end: high});
-            
+        function* partitionGenerator(arr, low, high, depth) {
+            let pivot = arr[high];
+            let i = low - 1;
+            yield {
+                arr, comparing: [], swapping: [], sorted: sortedIndices.slice(), pivot: high,
+                description: `Selected pivot: ${pivot} (at index ${high})`,
+                recursionDepth: depth
+            };
             for (let j = low; j < high; j++) {
-                addQuickSortStep(`Comparing element ${arr[j]} (index ${j}) with pivot ${pivot}`, true);
-                updateQuickSortSteps(1);
-                
-                // Highlight elements being compared
-                await updateQuickSortVisualization(arr, [j, high], [], [], high, {start: low, end: high});
-                
-                // If current element is smaller than the pivot
+                yield {
+                    arr, comparing: [j, high], swapping: [], sorted: sortedIndices.slice(), pivot: high,
+                    description: `Comparing element ${arr[j]} (index ${j}) with pivot ${pivot}`,
+                    recursionDepth: depth
+                };
                 if (arr[j] < pivot) {
-                    i++; // Increment index of smaller element
-                    
+                    i++;
                     if (i !== j) {
-                        addQuickSortStep(`${arr[j]} < ${pivot}, swapping with element at index ${i} (${arr[i]})`, true);
-                        updateQuickSortSteps(1);
-                        
-                        // Highlight elements being swapped
-                        await updateQuickSortVisualization(arr, [], [i, j], [], high, {start: low, end: high});
-                        
-                        // Swap arr[i] and arr[j]
+                        yield {
+                            arr, comparing: [], swapping: [i, j], sorted: sortedIndices.slice(), pivot: high,
+                            description: `${arr[j]} < ${pivot}, swapping with element at index ${i} (${arr[i]})`,
+                            recursionDepth: depth
+                        };
                         [arr[i], arr[j]] = [arr[j], arr[i]];
-                        
-                        // Show the swap result
-                        await updateQuickSortVisualization(arr, [], [i, j], [], high, {start: low, end: high});
+                        yield {
+                            arr, comparing: [], swapping: [i, j], sorted: sortedIndices.slice(), pivot: high,
+                            description: `Swapped: ${arr[i]} and ${arr[j]}`,
+                            recursionDepth: depth
+                        };
                     } else {
-                        addQuickSortStep(`${arr[j]} < ${pivot} but no swap needed (i = j = ${i})`, true);
-                        updateQuickSortSteps(1);
-                        await new Promise(resolve => setTimeout(resolve, quickSortAnimationSpeed));
+                        yield {
+                            arr, comparing: [], swapping: [], sorted: sortedIndices.slice(), pivot: high,
+                            description: `${arr[j]} < ${pivot} but no swap needed (i = j = ${i})`,
+                            recursionDepth: depth
+                        };
                     }
                 } else {
-                    addQuickSortStep(`${arr[j]} >= ${pivot}, moving to next element`, true);
-                    updateQuickSortSteps(1);
-                    await new Promise(resolve => setTimeout(resolve, quickSortAnimationSpeed));
+                    yield {
+                        arr, comparing: [], swapping: [], sorted: sortedIndices.slice(), pivot: high,
+                        description: `${arr[j]} >= ${pivot}, moving to next element`,
+                        recursionDepth: depth
+                    };
                 }
             }
-            
-            // Swap the pivot element with the element at i+1
-            addQuickSortStep(`Placing pivot ${pivot} in correct position at index ${i+1}`, true);
-            updateQuickSortSteps(1);
-            await updateQuickSortVisualization(arr, [], [i+1, high], [], high, {start: low, end: high});
-            
+            yield {
+                arr, comparing: [], swapping: [i+1, high], sorted: sortedIndices.slice(), pivot: high,
+                description: `Placing pivot ${pivot} in correct position at index ${i+1}`,
+                recursionDepth: depth
+            };
             [arr[i+1], arr[high]] = [arr[high], arr[i+1]];
-            
-            // Show the final swap
-            await updateQuickSortVisualization(arr, [], [i+1, high], [], i+1, {start: low, end: high});
-            
-            // Return the partition index
-            return i + 1;
+            yield {
+                arr, comparing: [], swapping: [i+1, high], sorted: sortedIndices.slice(), pivot: i+1,
+                description: `Swapped pivot ${pivot} to index ${i+1}`,
+                recursionDepth: depth
+            };
+            return i+1;
         }
 
-        async function updateQuickSortVisualization(arr, comparingIndices = [], swappingIndices = [], sortedIndices = [], pivotIndex = -1, highlightRange = null) {
-            const boxes = document.querySelectorAll('#quick-sort-array-display .quick-sort-array-element');
-            
-            // Clear any existing partition highlights
-            const existingHighlights = document.querySelectorAll('.quick-sort-partition-highlight');
-            existingHighlights.forEach(el => el.remove());
-            
-            // Add new partition highlight if specified
-            if (highlightRange && highlightRange.start !== highlightRange.end) {
-                const highlight = document.createElement('div');
-                highlight.className = 'quick-sort-partition-highlight';
-                
-                const startBox = boxes[highlightRange.start];
-                const endBox = boxes[highlightRange.end];
-                const containerRect = quickSortArrayDisplay.getBoundingClientRect();
-                const startRect = startBox.getBoundingClientRect();
-                const endRect = endBox.getBoundingClientRect();
-                
-                highlight.style.position = 'absolute';
-                highlight.style.left = `${startRect.left - containerRect.left}px`;
-                highlight.style.width = `${endRect.right - startRect.left}px`;
-                highlight.style.height = `${startRect.height}px`;
-                
-                const label = document.createElement('div');
-                label.className = 'quick-sort-partition-label';
-                label.textContent = `Partition ${highlightRange.start}-${highlightRange.end}`;
-                highlight.appendChild(label);
-                
-                quickSortArrayDisplay.appendChild(highlight);
-                highlight.style.zIndex = '-1';
-            }
-            
-            arr.forEach((value, index) => {
-                if (index >= boxes.length) return;
-                
-                const box = boxes[index];
-                box.textContent = value;
-                
-                // Reset classes
-                box.className = 'quick-sort-array-element';
-                
-                // Pivot has highest priority
-                if (index === pivotIndex) {
-                    box.classList.add('quick-sort-pivot');
-                } 
-                // Then sorted elements
-                else if (sortedIndices.includes(index)) {
-                    box.classList.add('quick-sort-sorted');
-                }
-                // Then swapping elements
-                else if (swappingIndices.includes(index)) {
-                    box.classList.add('quick-sort-swapping');
-                }
-                // Then comparing elements
-                else if (comparingIndices.includes(index)) {
-                    box.classList.add('quick-sort-comparing');
-                }
-                // Then partition elements
-                else if (highlightRange && index >= highlightRange.start && index <= highlightRange.end) {
-                    box.classList.add('quick-sort-partition');
-                }
-                // Default
-                else {
-                    box.classList.add('quick-sort-normal');
-                }
-            });
-            
-            // Add delay for animation
-            await new Promise(resolve => setTimeout(resolve, quickSortAnimationSpeed));
+        // Initial step
+        recordStep({
+            arr: arr,
+            comparing: [],
+            swapping: [],
+            sorted: [],
+            pivot: -1,
+            description: "Starting Quick Sort Algorithm",
+            recursionDepth: 0
+        });
+
+        // Generate all steps
+        let gen = quickSortGenerator(arr, 0, arr.length - 1, 1);
+        for (let step of gen) {
+            recordStep(step);
+        }
+
+        // Final step
+        recordStep({
+            arr: arr,
+            comparing: [],
+            swapping: [],
+            sorted: Array.from({length: arr.length}, (_, i) => i),
+            pivot: -1,
+            description: "Quick Sort completed! Array is now sorted",
+            recursionDepth: 0
+        });
+
+        stepIndex = 0;
+        showStep(0);
+    }
+
+    // When Next/Prev is clicked before any sorting, generate steps
+    quickSortNextBtn.addEventListener('click', function() {
+        if (stepList.length === 0) {
+            prepareStepsForQuickSort();
         }
     });
+    quickSortPrevBtn.addEventListener('click', function() {
+        if (stepList.length === 0) {
+            prepareStepsForQuickSort();
+        }
+    });
+
+    // When Auto Sort is clicked before any sorting, generate steps
+    quickSortSortBtn.addEventListener('click', function() {
+        if (stepList.length === 0) {
+            prepareStepsForQuickSort();
+        }
+    });
+
+});
 </script>
