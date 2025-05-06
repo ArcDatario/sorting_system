@@ -33,6 +33,7 @@
     </nav>
     <div class="container">
     <?php include "includes/learn-dynamic-island.php"; ?>
+    
 
     <?php include "visualization/heap-sort-visualization.php"; ?>
     <?php include "visualization/merge-sort-visualization.php"; ?>
@@ -57,9 +58,6 @@
     <button class="dark-mode-toggle" id="darkModeToggle">🌓</button>
 
     <script src="assets/js/script.js"></script>
-
-
-
     <script src="assets/js/dynamic-island.js"></script>
     <script src="assets/js/spinner.js"></script>
     

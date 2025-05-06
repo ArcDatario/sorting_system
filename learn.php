@@ -36,9 +36,8 @@
     <div class="container page-content">
       
             <?php include "includes/learn-dynamic-island.php"; ?>
-     
 
-      
+
             <?php include "sorting-content/bubble-sort.php"; ?>
             <?php include "sorting-content/bucket-sort.php"; ?>
             <?php include "sorting-content/counting-sort.php"; ?>
@@ -93,6 +92,7 @@
     }
 });
         </script>
+        
     <!-- Dark Mode Toggle -->
     <button class="dark-mode-toggle" id="darkModeToggle">🌓</button>
 
